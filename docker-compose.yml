@@ -1,0 +1,8 @@
+services:
+  portfolio-gris:
+    build: .
+    image: portfolio-gris
+    container_name: portfolio-gris
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

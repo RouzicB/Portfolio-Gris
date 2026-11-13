@@ -1,0 +1,103 @@
+/** Ambiance du décor : chaque section en emprunte une, le scroll les mélange */
+export type StageId = "gris" | "rouge" | "vert" | "bleu" | "jaune" | "ciel" | "lune";
+
+/** Soleil (ou lune) : position en % de l'écran, taille en px */
+export interface Sun {
+  x: number;
+  y: number;
+  size: number;
+}
+
+/** Identifiant de section (ancre #section-…) */
+export type SectionId = "accueil" | "profil" | "methode" | "aptitudes" | "parcours" | "projets" | "contact" | "credits";
+
+/** Nom d'icône du jeu d'icônes maison (voir components/icons/GrisIcons.tsx) */
+export type IconName =
+  | "accueil"
+  | "profil"
+  | "methode"
+  | "aptitudes"
+  | "parcours"
+  | "projets"
+  | "contact"
+  | "credits"
+  | "lieu"
+  | "langue"
+  | "formation"
+  | "statut"
+  | "recherche"
+  | "conception"
+  | "interface"
+  | "outils";
+
+/** Palette appliquée à toute la page */
+export interface Palette {
+  skyTop: string;
+  skyBottom: string;
+  accent: string;
+  ink: string;
+  inkSoft: string;
+  veil: string;
+  washNear: string;
+  washFar: string;
+  sun: string;
+}
+
+export interface Section {
+  id: SectionId;
+  /** Libellé court (navigation) */
+  label: string;
+  /** Titre affiché */
+  title: string;
+  /** Phrase d'introduction */
+  intro: string;
+  icon: IconName;
+  /** Ambiance du décor */
+  stage: StageId;
+  /** Soleil de la section */
+  sun: Sun;
+}
+
+export interface CareerStep {
+  year: string;
+  period: string;
+  title: string;
+  place: string;
+  text: string;
+  tags: string[];
+}
+
+export interface ProcessStep {
+  name: string;
+  goal: string;
+  methods: string[];
+}
+
+export interface Project {
+  slug: string;
+  title: string;
+  context: string;
+  year: number;
+  role: string;
+  duration: string;
+  summary: string;
+  problem: string;
+  solution: string;
+  learnings: string[];
+  outcomes: { value: string; label: string }[];
+  tags: string[];
+  tools: string[];
+  /** Étapes de la démarche */
+  process: { title: string; text: string }[];
+  /** Deux teintes pour la vignette peinte */
+  hues: [string, string];
+  /** Ambiance du décor de la page projet */
+  stage: StageId;
+  link?: string;
+}
+
+export interface SkillGroup {
+  name: string;
+  icon: IconName;
+  skills: { name: string; level: number }[];
+}

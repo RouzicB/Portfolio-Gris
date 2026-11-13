@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* ─── Couleurs vivantes ──────────────────────────────────────────────
+   Toute la page lit ces variables. Journey.tsx les réécrit à chaque frame de scroll,
+   en mélangeant l'ambiance de la section quittée et celle de la section suivante :
+   la couleur suit le geste, sans transition déclenchée. Valeurs initiales = l'accueil. */
+@property --sky-top { syntax: "<color>"; inherits: true; initial-value: #ecebe9; }
+@property --sky-bottom { syntax: "<color>"; inherits: true; initial-value: #cfcdca; }
+@property --accent { syntax: "<color>"; inherits: true; initial-value: #7d7a77; }
+@property --ink { syntax: "<color>"; inherits: true; initial-value: #2f2e2d; }
+@property --ink-soft { syntax: "<color>"; inherits: true; initial-value: #66635f; }
+@property --veil { syntax: "<color>"; inherits: true; initial-value: rgba(250, 249, 248, 0.7); }
+@property --wash-near { syntax: "<color>"; inherits: true; initial-value: #a9a6a3; }
+@property --wash-far { syntax: "<color>"; inherits: true; initial-value: #d9d7d4; }
+@property --sun { syntax: "<color>"; inherits: true; initial-value: #fbfaf8; }
+
+@theme inline {
+  --color-sky-top: var(--sky-top);
+  --color-sky-bottom: var(--sky-bottom);
+  --color-accent: var(--accent);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-veil: var(--veil);
+  --color-wash-near: var(--wash-near);
+  --color-wash-far: var(--wash-far);
+  --color-sun: var(--sun);
+}
+
+@theme {
+  /* Titres : géométrique fine et très espacée ; texte : arrondie et douce */
+  --font-display: "Josefin Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Quicksand Variable", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+}
+
+html {
+  /* Une section = un écran. Aimantation douce : elle n'agit que près d'une section, jamais de force */
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+  background: var(--sky-bottom);
+}
+
+body {
+  color: var(--ink);
+  background: transparent;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Titre très espacé, en capitales fines */
+@utility title-spaced {
+  font-family: var(--font-display);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+}
+
+/* Petit libellé espacé (« CHAPITRE II ») */
+@utility label-spaced {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+
+/* Verre dépoli, comme les panneaux posés sur l'aquarelle */
+@utility veil {
+  background: var(--veil);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Mouvements lents ─────────────────────────────────────────────── */
+@keyframes drift {
+  from { transform: translateX(-4%); }
+  to { transform: translateX(4%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+@keyframes rise {
+  from { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.7; }
+  to { transform: translateY(-110vh); opacity: 0; }
+}
+
+.animate-drift { animation: drift 38s ease-in-out infinite alternate; }
+.animate-drift-slow { animation: drift 60s ease-in-out infinite alternate-reverse; }
+.animate-float { animation: float 7s ease-in-out infinite; }
+.animate-twinkle { animation: twinkle 3.6s ease-in-out infinite; }
+.animate-rise { animation: rise 14s linear infinite; }
+
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  60% { transform: translateY(3px); opacity: 0.3; }
+}
+.animate-nudge { animation: nudge 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-drift,
+  .animate-drift-slow,
+  .animate-float,
+  .animate-twinkle,
+  .animate-rise,
+  .animate-nudge { animation: none; }
+}
