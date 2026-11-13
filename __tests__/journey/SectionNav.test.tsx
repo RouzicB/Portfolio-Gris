@@ -11,7 +11,7 @@ describe("SectionNav", () => {
         <SectionNav />
       </JourneyContext.Provider>,
     );
-    expect(screen.getAllByRole("button")).toHaveLength(8);
+    expect(screen.getAllByRole("button")).toHaveLength(7);
     expect(screen.getByRole("button", { name: "Méthode" })).toHaveAttribute("aria-current", "location");
     expect(screen.getByRole("button", { name: "Profil" })).not.toHaveAttribute("aria-current");
   });
@@ -23,7 +23,7 @@ describe("SectionNav", () => {
         <SectionNav />
       </JourneyContext.Provider>,
     );
-    await userEvent.click(screen.getByRole("button", { name: "Crédits" }));
-    expect(goTo).toHaveBeenCalledWith(7);
+    await userEvent.click(screen.getByRole("button", { name: "Contact" }));
+    expect(goTo).toHaveBeenCalledWith(6);
   });
 });

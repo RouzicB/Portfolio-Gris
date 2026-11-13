@@ -103,6 +103,37 @@ export function moundPath(x0: number, x1: number, ground: number, peak: number, 
   return `M${x0} ${ground}C${x0 + w * 0.15} ${peak + 20} ${cx - w * 0.2} ${peak} ${cx} ${peak}S${x1 - w * 0.12} ${peak + 30} ${x1} ${ground}Z`;
 }
 
+/**
+ * Hauteur de la surface d'un monticule (mêmes paramètres que moundPath) pour une abscisse donnée :
+ * sert à planter herbes et objets exactement sur la courbe.
+ */
+export function moundSurface(x0: number, x1: number, ground: number, peak: number, lean = 0) {
+  const w = x1 - x0;
+  const cx = x0 + w / 2 + lean;
+  const segs: [number, number][][] = [
+    [[x0, ground], [x0 + w * 0.15, peak + 20], [cx - w * 0.2, peak], [cx, peak]],
+    [[cx, peak], [2 * cx - (cx - w * 0.2), peak], [x1 - w * 0.12, peak + 30], [x1, ground]],
+  ];
+  const pts: [number, number][] = [];
+  segs.forEach(([p0, p1, p2, p3]) => {
+    for (let i = 0; i <= 60; i++) {
+      const t = i / 60;
+      const u = 1 - t;
+      const f = (k: 0 | 1) => u * u * u * p0[k] + 3 * u * u * t * p1[k] + 3 * u * t * t * p2[k] + t * t * t * p3[k];
+      pts.push([f(0), f(1)]);
+    }
+  });
+  return (x: number) => {
+    if (x <= pts[0][0]) return pts[0][1];
+    for (let i = 1; i < pts.length; i++) {
+      const [ax, ay] = pts[i - 1];
+      const [bx, by] = pts[i];
+      if (x <= bx) return bx === ax ? by : ay + ((x - ax) / (bx - ax)) * (by - ay);
+    }
+    return pts[pts.length - 1][1];
+  };
+}
+
 /** Pseudo-hasard déterministe (même rendu serveur et client) */
 export function seeded(seed: number) {
   let s = seed;

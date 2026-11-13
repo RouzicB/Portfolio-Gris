@@ -70,8 +70,9 @@ body {
 /* Verre dépoli, comme les panneaux posés sur l'aquarelle */
 @utility veil {
   background: var(--veil);
+  /* Propriété standard seule : le minifieur ajoute le préfixe Safari.
+     (Écrire aussi -webkit-backdrop-filter le faisait fusionner en version préfixée, ignorée par Chrome.) */
   backdrop-filter: blur(14px) saturate(1.1);
-  -webkit-backdrop-filter: blur(14px) saturate(1.1);
   border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
 }
 
@@ -112,6 +113,37 @@ body {
 }
 .animate-nudge { animation: nudge 1.8s ease-in-out infinite; }
 
+/* ─── Emblème (anneaux concentriques en orbite) ────────────────────── */
+@keyframes emblem-draw {
+  /* 101 et non 100 : le tracé se referme sans laisser de micro-coupure au point de départ */
+  from { stroke-dashoffset: 101; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes emblem-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes emblem-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.emblem-draw { animation: emblem-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.emblem-spin-slow { animation: emblem-spin 60s linear infinite; }
+.emblem-orbit { animation: emblem-spin 18s linear infinite; }
+.emblem-orbit-rev { animation: emblem-spin 34s linear infinite reverse; }
+.emblem-fade { animation: emblem-fade 1.2s ease-out 0.4s both; }
+
+/* ─── Écran de chargement entre les pages ──────────────────────────── */
+@keyframes loader-out {
+  0%, 70% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+.page-loader { animation: loader-out 1.5s ease-in both; }
+/* Dans l'écran de chargement, l'emblème va plus vite */
+.page-loader .emblem-draw { animation-duration: 0.95s; }
+.page-loader .emblem-orbit { animation-duration: 3s; }
+.page-loader .emblem-orbit-rev { animation-duration: 5s; }
+.page-loader .emblem-fade { animation-duration: 0.5s; animation-delay: 0.1s; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .animate-drift,
@@ -119,5 +151,11 @@ body {
   .animate-float,
   .animate-twinkle,
   .animate-rise,
-  .animate-nudge { animation: none; }
+  .animate-nudge,
+  .emblem-draw,
+  .emblem-spin-slow,
+  .emblem-orbit,
+  .emblem-orbit-rev,
+  .emblem-fade { animation: none; }
+  .page-loader { animation: loader-out 0.5s ease-in both; }
 }

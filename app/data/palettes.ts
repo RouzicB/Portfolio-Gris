@@ -84,7 +84,7 @@ export const palettes: Record<StageId, Palette> = {
     accent: "#f06a8f",
     ink: "#fff1ec",
     inkSoft: "#e2c6cf",
-    veil: "rgba(36, 22, 50, 0.6)",
+    veil: "rgba(36, 22, 50, 0.7)",
     washNear: "#3a2140",
     washFar: "#7a3358",
     sun: "#fff4d6",

@@ -4,6 +4,7 @@ import "@fontsource-variable/josefin-sans";
 import "@fontsource-variable/quicksand";
 import "./globals.css";
 import Providers from "./components/Providers";
+import CreditsLink from "./components/layouts/CreditsLink";
 import { palettes } from "./data/palettes";
 import { site } from "./data/site";
 import { paletteToVars } from "./lib/journey";
@@ -26,7 +27,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="fr" style={initial} suppressHydrationWarning>
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <CreditsLink />
+        </Providers>
       </body>
     </html>
   );

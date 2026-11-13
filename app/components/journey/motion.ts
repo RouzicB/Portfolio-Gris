@@ -11,7 +11,9 @@ export const stagger: Variants = {
 
 export const fadeUp: Variants = {
   hidden: { opacity: 0, y: 22, filter: "blur(6px)" },
-  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.9, ease: WASH } },
+  // transitionEnd retire le filtre une fois l'apparition finie : un `filter` laissé en place
+  // empêcherait le flou d'arrière-plan (backdrop-filter) des cartes contenues de fonctionner.
+  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.9, ease: WASH }, transitionEnd: { filter: "none" } },
 };
 
 export const fadeIn: Variants = {

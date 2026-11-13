@@ -13,7 +13,12 @@ Le décor part du gris et se teinte au fil du scroll ; aucun texte ne l'annonce,
 | 05 | Parcours | Cinq années | Crépuscule doré, cinq pierres flottantes au-dessus des mesas |
 | 06 | Projets | Cartes vers les études de cas | Ciel pastel, grande arche brisée, rai rosé, mer de nuages |
 | 07 | Contact | E-mail, réseaux, CV | Nuit prune, grande lune, arbres géométriques, terrasse fleurie |
-| 08 | Crédits | Direction artistique, ressources, galerie d'icônes | Nuit prune |
+
+**Crédits** (`/credits`) : direction artistique, mentions, ressources et galerie d'icônes, sur une page à part,
+accessible par un lien discret fixé en bas à gauche de l'écran.
+
+**Écran de chargement** : entre deux pages, le monde redevient gris un instant et l'emblème en constellation se trace
+et tourne (`app/template.tsx`, `PageLoader`, `Emblem`). La disparition est en CSS pur : il ne peut pas rester bloqué.
 
 **Pages projet** (`/projets/[slug]`, générées statiquement) : en-tête et fiche, vignette peinte, problème et réponse,
 démarche, résultats, enseignements, projet précédent / suivant. Chaque projet a sa propre ambiance de décor.
@@ -54,15 +59,17 @@ npm run lint
 
 `app/components/icons/GrisIcons.tsx` : jeu d'icônes dessiné pour le site (trait fin et arrondi, et une goutte
 d'aquarelle qui prend la teinte du décor). Navigation, fiche, aptitudes, études de cas, contact, favicon
-(`app/icon.svg`) ; la galerie complète est affichée dans la section Crédits.
+(`app/icon.svg`) ; la galerie complète est affichée sur la page Crédits.
 
 ## Structure
 
 ```
 app/
 ├── layout.tsx            # <html> naît avec la palette grise (rendu serveur)
-├── page.tsx              # Les huit sections dans <Journey>
+├── page.tsx              # Les sept sections dans <Journey>
+├── template.tsx          # Rejoue l'écran de chargement à chaque changement de page
 ├── projets/[slug]/       # Page statique de chaque étude de cas
+├── credits/              # Page des crédits
 ├── not-found.tsx
 ├── globals.css           # @property des couleurs, utilitaires title-spaced / label-spaced / veil, animations
 ├── icon.svg              # Favicon (icône Accueil)
@@ -71,9 +78,11 @@ app/
 │   ├── background/       # Landscape (ciel, soleil, scènes), Parallax (souris)
 │   │   └── art/          # Une scène aquarelle SVG par ambiance + filtres partagés
 │   ├── icons/            # GrisIcons : le jeu d'icônes maison
-│   ├── sections/         # SectionShell + Accueil, Profil, Methode, Aptitudes, Parcours, Projets, Contact, Credits
+│   ├── sections/         # SectionShell + Accueil, Profil, Methode, Aptitudes, Parcours, Projets, Contact
 │   ├── project/          # ProjectCase : la page d'une étude de cas
-│   └── ui/               # ProjectThumb (vignette peinte)
+│   ├── credits/          # CreditsPage
+│   ├── layouts/          # PageScene (gabarit des pages hors accueil), CreditsLink
+│   └── ui/               # ProjectThumb (vignette peinte), Emblem, PageLoader
 ├── data/                 # sections, palettes, site (profil, fiche, crédits), career, process, projects, skills
 ├── lib/                  # journey (position continue, fondu), color (mélange de couleurs)
 └── types/

@@ -17,7 +17,6 @@ describe("contenu", () => {
       "parcours",
       "projets",
       "contact",
-      "credits",
     ]);
   });
 

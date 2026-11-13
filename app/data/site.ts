@@ -6,7 +6,7 @@ export const site = {
   /** Logo de la barre haute, lettres espacées */
   logo: "ROUZIC",
   role: "Étudiant UX/UI Designer · 5e année",
-  tagline: "Je conçois des interfaces calmes et lisibles : la structure d'abord, l'émotion ensuite.",
+  tagline: "Je conçois des interfaces calmes et lisibles : la structure d'abord, l'émotion ensuite.",
   // à compléter
   bio: "En dernière année de master, je relie la recherche utilisateur, l'architecture de l'information et l'interface. J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.",
   description:

@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
-import { motion, useMotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import { adjacentProjects, projects } from "../../data/projects";
-import { palettes, stageSuns } from "../../data/palettes";
-import { site } from "../../data/site";
-import { pad, paletteToVars } from "../../lib/journey";
-import Landscape from "../background/Landscape";
+import { pad } from "../../lib/journey";
+import PageScene from "../layouts/PageScene";
 import {
   ChevronIcon,
   ClockIcon,
@@ -31,44 +29,18 @@ import ProjectThumb from "../ui/ProjectThumb";
 export default function ProjectCase({ slug }: { slug: string }) {
   const nav = adjacentProjects(slug)!;
   const project = projects[nav.index];
-  const palette = palettes[project.stage];
-  const vars = useMemo(() => paletteToVars(palette), [palette]);
-  const still = useMotionValue(0);
-  const stages = useMemo(() => [project.stage], [project.stage]);
-  const suns = useMemo(() => [stageSuns[project.stage]], [project.stage]);
-
-  // <html> prend aussi l'ambiance du projet (fond hors page, barre d'adresse mobile)
-  useEffect(() => {
-    const root = document.documentElement;
-    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
-  }, [vars]);
 
   return (
-    <div style={vars as CSSProperties} className="relative min-h-svh text-ink">
-      <Landscape progress={still} stages={stages} suns={suns} />
-
-      {/* Barre haute */}
-      <header className="fixed inset-x-0 top-0 z-40">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28"
-          style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-top) 55%, transparent 100%)" }}
-          aria-hidden
-        />
-        <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-4 px-4 sm:h-20 sm:px-8">
-          <Link href="/#section-projets" className="flex flex-1 items-center gap-2 text-sm font-semibold text-ink">
-            <ChevronIcon size={18} className="rotate-180" />
-            Projets
-          </Link>
-          <Link href="/" className="title-spaced hidden pl-[0.32em] text-lg text-ink sm:block sm:text-xl" aria-label={`${site.name} — accueil`}>
-            {site.logo}
-          </Link>
-          <p className="flex flex-1 items-center justify-end gap-2 text-xs tabular-nums text-ink-soft">
-            <ProjetsIcon size={18} className="text-ink" />
-            {pad(nav.index + 1)} / {pad(projects.length)}
-          </p>
-        </div>
-        <div className="mx-4 h-px bg-ink/15 sm:mx-8" aria-hidden />
-      </header>
+    <PageScene
+      stage={project.stage}
+      back={{ href: "/#section-projets", label: "Projets" }}
+      aside={
+        <>
+          <ProjetsIcon size={18} className="text-ink" />
+          {pad(nav.index + 1)} / {pad(projects.length)}
+        </>
+      }
+    >
 
       <motion.main
         className="relative mx-auto max-w-[1100px] px-4 pb-24 pt-28 sm:px-8 sm:pt-36"
@@ -191,7 +163,7 @@ export default function ProjectCase({ slug }: { slug: string }) {
           ))}
         </nav>
       </motion.main>
-    </div>
+    </PageScene>
   );
 }
 

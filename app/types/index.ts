@@ -9,7 +9,7 @@ export interface Sun {
 }
 
 /** Identifiant de section (ancre #section-…) */
-export type SectionId = "accueil" | "profil" | "methode" | "aptitudes" | "parcours" | "projets" | "contact" | "credits";
+export type SectionId = "accueil" | "profil" | "methode" | "aptitudes" | "parcours" | "projets" | "contact";
 
 /** Nom d'icône du jeu d'icônes maison (voir components/icons/GrisIcons.tsx) */
 export type IconName =

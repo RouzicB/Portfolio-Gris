@@ -1,5 +1,5 @@
 import { Layer } from "../Parallax";
-import { Frame, archPath, moundPath, seeded } from "./shared";
+import { Frame, archPath, moundPath, moundSurface, seeded } from "./shared";
 
 /** Grande feuille pointue, nervure centrale comprise (origine = pied de la feuille) */
 function Leaf({ x, y, len, width, angle, fill, vein }: { x: number; y: number; len: number; width: number; angle: number; fill: string; vein: string }) {
@@ -14,7 +14,12 @@ function Leaf({ x, y, len, width, angle, fill, vein }: { x: number; y: number; l
 /** Méthode — un jardin : grandes feuilles, lianes en losanges, une arche envahie, une pousse */
 export default function VertArt() {
   const rand = seeded(11);
-  const blades = Array.from({ length: 34 }, (_, i) => ({ x: 40 + i * 46 + rand() * 20, h: 20 + rand() * 40, lean: (rand() - 0.5) * 30 }));
+  // Les brins sont plantés sur la courbe réelle du monticule (et non à hauteur fixe)
+  const surface = moundSurface(-80, 1680, 940, 770, 0);
+  const blades = Array.from({ length: 34 }, (_, i) => {
+    const x = 40 + i * 46 + rand() * 20;
+    return { x, y: surface(x) + 3, h: 18 + rand() * 30, lean: (rand() - 0.5) * 26 };
+  });
   return (
     <>
       <Layer depth={0.12}>
@@ -57,7 +62,7 @@ export default function VertArt() {
           {/* Herbes */}
           <g stroke="#2f5a3d" strokeWidth="2.4" strokeLinecap="round" fill="none">
             {blades.map((b, i) => (
-              <path key={i} d={`M${b.x} ${805 - (Math.abs(800 - b.x) / 800) * 20} q${b.lean / 2} ${-b.h / 2} ${b.lean} ${-b.h}`} />
+              <path key={i} d={`M${b.x} ${b.y} q${b.lean / 2} ${-b.h / 2} ${b.lean} ${-b.h}`} />
             ))}
           </g>
           {/* La pousse */}
