@@ -27,7 +27,8 @@ export default function PageScene({
   const vars = useMemo(() => paletteToVars(palettes[stage]), [stage]);
   const still = useMotionValue(0);
   const stages = useMemo(() => [stage], [stage]);
-  const suns = useMemo(() => [stageSuns[stage]], [stage]);
+  // Page qui défile : le texte passe partout, l'astre se range donc dans le coin haut, plus petit
+  const suns = useMemo(() => [{ x: 92, y: 10, size: Math.min(stageSuns[stage].size, 180) }], [stage]);
 
   // <html> prend aussi l'ambiance (fond hors page, barre d'adresse mobile)
   useEffect(() => {

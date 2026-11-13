@@ -53,8 +53,8 @@ export const credits = {
     url: "https://nomada.studio/",
   },
   resources: [
-    { name: "Josefin Sans", detail: "Santiago Orozco — SIL Open Font License" },
-    { name: "Quicksand", detail: "Andrew Paglinawan — SIL Open Font License" },
+    { name: "Josefin Sans", detail: "Santiago Orozco — SIL Open Font License", specimen: "display", role: "Titres" },
+    { name: "Quicksand", detail: "Andrew Paglinawan — SIL Open Font License", specimen: "sans", role: "Texte" },
     { name: "Next.js, React, Tailwind CSS, Framer Motion", detail: "Licence MIT" },
     { name: "Décors et icônes", detail: "Dessinés en SVG pour ce portfolio" },
   ],
