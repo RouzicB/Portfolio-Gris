@@ -49,7 +49,7 @@ export const sections: Section[] = [
     intro: "Chaque choix a ouvert une branche. Sélectionnez une étape pour la découvrir.",
     icon: "parcours",
     stage: "jaune",
-    sun: { x: 84, y: 16, size: 220 },
+    sun: { x: 84, y: 10, size: 200 },
   },
   {
     id: "projets",

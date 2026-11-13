@@ -192,7 +192,7 @@ function ArchCard({ index }: { index: number }) {
       {/* Fenêtre de l'arche */}
       <span className="relative block aspect-[5/4] overflow-hidden rounded-b-2xl rounded-t-[999px] short:aspect-[2/1]">
         <span className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
-          <ProjectThumb project={p} index={index} />
+          <ProjectThumb project={p} index={index} frame="arch" />
         </span>
         {/* Moulure intérieure */}
         <span aria-hidden className="absolute inset-2 rounded-b-xl rounded-t-[999px] border border-white/50" />

@@ -66,7 +66,9 @@ export default function Parcours() {
         variants={group}
         tabIndex={overflowing ? 0 : undefined}
         aria-label={overflowing ? "Arborescence du parcours, défilable horizontalement" : undefined}
-        className="-mx-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0"
+        // Ne défile (à l'horizontale seulement) que si l'arborescence est plus large que l'écran ;
+        // sinon rien n'est rogné, même pendant l'apparition des cartes qui montent de quelques pixels
+        className={overflowing ? "scrollbar-gris -mx-4 overflow-x-auto overflow-y-hidden px-4 pb-4 pt-1" : "pb-2"}
       >
         <div className="relative mx-auto" style={{ width: size.width, height: size.height, zoom: scale === 1 ? undefined : scale }} role="group" aria-label="Arborescence du parcours">
           {/* Chapitres */}

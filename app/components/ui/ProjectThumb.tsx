@@ -7,10 +7,23 @@ import { archPath, moundPath } from "../background/art/shared";
  * ciel en dégradé, astre cerclé, un motif (arche brisée, pyramides, colonnes en ruine ou arbre-ombrelle),
  * monticule hachuré et pierres en suspens.
  */
-export default function ProjectThumb({ project, index }: { project: Project; index: number }) {
+/** Centre horizontal de chaque motif, pour le recentrer dans une arche */
+const MOTIF_CENTER = [85, 105, 93, 96];
+
+export default function ProjectThumb({
+  project,
+  index,
+  frame = "rect",
+}: {
+  project: Project;
+  index: number;
+  /** "arch" : composition centrée pour une fenêtre en arche (astre au sommet de la voûte, motif recentré) */
+  frame?: "rect" | "arch";
+}) {
+  const arch = frame === "arch";
   const [a, b] = project.hues;
   const id = `thumb-${project.slug}`;
-  const flip = index % 2 === 1;
+  const flip = !arch && index % 2 === 1;
   const motif = index % 4;
   return (
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden focusable="false">
@@ -22,10 +35,21 @@ export default function ProjectThumb({ project, index }: { project: Project; ind
       </defs>
       <rect width="320" height="200" fill={`url(#${id}-sky)`} />
       <g transform={flip ? "translate(320 0) scale(-1 1)" : undefined}>
-        <circle cx="228" cy="62" r="30" fill="#ffffff" opacity="0.9" />
-        <circle cx="228" cy="62" r="44" fill="none" stroke="#ffffff" strokeOpacity="0.5" />
-        <circle cx="228" cy="62" r="58" fill="none" stroke="#ffffff" strokeOpacity="0.25" />
+        {arch ? (
+          <>
+            <circle cx="160" cy="60" r="22" fill="#ffffff" opacity="0.9" />
+            <circle cx="160" cy="60" r="33" fill="none" stroke="#ffffff" strokeOpacity="0.5" />
+            <circle cx="160" cy="60" r="44" fill="none" stroke="#ffffff" strokeOpacity="0.25" />
+          </>
+        ) : (
+          <>
+            <circle cx="228" cy="62" r="30" fill="#ffffff" opacity="0.9" />
+            <circle cx="228" cy="62" r="44" fill="none" stroke="#ffffff" strokeOpacity="0.5" />
+            <circle cx="228" cy="62" r="58" fill="none" stroke="#ffffff" strokeOpacity="0.25" />
+          </>
+        )}
         <g filter="url(#wc-paint)">
+          <g transform={arch ? `translate(160 166) scale(0.78) translate(${-MOTIF_CENTER[motif]} -166)` : undefined}>
           {motif === 0 && <path fillRule="evenodd" d={archPath(40, 70, 90, 110, 46, 0.3)} fill={a} opacity="0.85" />}
           {motif === 1 && (
             <>
@@ -54,8 +78,18 @@ export default function ProjectThumb({ project, index }: { project: Project; ind
               ))}
             </>
           )}
-          <rect x="250" y="120" width="12" height="12" fill={a} transform="rotate(20 256 126)" />
-          <rect x="196" y="104" width="8" height="8" fill={a} transform="rotate(-15 200 108)" />
+          </g>
+          {arch ? (
+            <>
+              <rect x="206" y="118" width="11" height="11" fill={a} transform="rotate(20 211 123)" />
+              <rect x="104" y="104" width="7" height="7" fill={a} transform="rotate(-15 107 107)" />
+            </>
+          ) : (
+            <>
+              <rect x="250" y="120" width="12" height="12" fill={a} transform="rotate(20 256 126)" />
+              <rect x="196" y="104" width="8" height="8" fill={a} transform="rotate(-15 200 108)" />
+            </>
+          )}
           <path d={moundPath(-30, 360, 215, 150, 40)} fill={a} />
         </g>
         <path d={moundPath(-30, 360, 215, 150, 40)} fill="url(#hatch)" />

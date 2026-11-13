@@ -99,7 +99,7 @@ export const stageSuns: Record<StageId, Sun> = {
   rouge: { x: 74, y: 14, size: 90 },
   vert: { x: 22, y: 20, size: 110 },
   bleu: { x: 67, y: 6, size: 200 },
-  jaune: { x: 84, y: 16, size: 220 },
+  jaune: { x: 84, y: 10, size: 200 },
   ciel: { x: 74, y: 18, size: 120 },
   lune: { x: 72, y: 40, size: 340 },
 };

@@ -80,6 +80,21 @@ body {
   border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
 }
 
+/* Barres de défilement : fines, arrondies, à la teinte du décor (jamais la barre grise du système) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--ink) 28%, transparent) transparent;
+}
+/* Barre horizontale du canevas du parcours : un trait d'encre, un peu plus présent */
+@utility scrollbar-gris {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 70%, transparent) color-mix(in srgb, var(--ink) 10%, transparent);
+}
+/* Navigateurs sans scrollbar-color (Safari) */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--ink) 28%, transparent); border-radius: 999px; }
+
 /* Texte posé à même le décor : un halo de la teinte du voile, invisible mais qui garantit la lisibilité
    quand un rocher, une liane ou un nuage passe derrière (contraste WCAG AA vérifié sur chaque section). */
 @utility legible {

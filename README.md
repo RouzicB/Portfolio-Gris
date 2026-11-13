@@ -11,8 +11,8 @@ Le décor part du gris et se teinte au fil du scroll ; aucun texte ne l'annonce,
 | 03 | Méthode | Cinq étapes | Forêt verte : troncs-colonnes, triangles suspendus, tronc en arche |
 | 04 | Aptitudes | Trois modules, niveaux en gouttes, outils | Grotte bleue : arbre lumineux, cadres translucides, eau |
 | 05 | Parcours | Arborescence horizontale : formation, expériences, choix, chemins non empruntés | Nuit dorée : grande lune, tours à dômes, terrasse en gradins |
-| 06 | Projets | Galerie d'arches (1 à 3 visibles, flèches, losanges, glissement) vers les études de cas | Ciel pastel, grande arche brisée, rai rosé, mer de nuages |
-| 07 | Contact | E-mail, réseaux, CV | Nuit prune, grande lune, arbres géométriques, terrasse fleurie |
+| 06 | Projets | Galerie d'arches (1 à 3 visibles, flèches, losanges, glissement) vers les études de cas | Ciel pastel : temple sur une île flottante, escalier suspendu, arche brisée, aqueduc, rocher et arbre-ombrelle, oiseaux, mer de nuages |
+| 07 | Contact | E-mail, réseaux, CV | Nuit prune : constellations, sommets à deux faces, lac scintillant, porte en arche et lianes, arbres géométriques, terrasse à balustres fleurie |
 
 **Crédits** (`/credits`) : direction artistique, mentions, ressources et galerie d'icônes, sur une page à part,
 accessible par un lien discret fixé en bas à gauche de l'écran.

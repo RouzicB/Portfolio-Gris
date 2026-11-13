@@ -24,7 +24,7 @@ export const fadeUp: Variants = {
 /** Groupe sans effet propre : transmet l'apparition en cascade à ses enfants (cartes en verre) */
 export const group: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.07 } },
+  show: { transition: { staggerChildren: 0.035 } },
 };
 
 export const fadeIn: Variants = {
