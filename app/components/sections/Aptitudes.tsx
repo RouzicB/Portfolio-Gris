@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { skillGroups, tools } from "../../data/skills";
 import { pad } from "../../lib/journey";
 import { OutilsIcon, icons } from "../icons/GrisIcons";
-import { fadeUp } from "../journey/motion";
+import { fadeUp, group } from "../journey/motion";
 import SectionShell from "./SectionShell";
 
 /** 04 — Aptitudes : trois familles, un niveau de 1 à 5 en gouttes. */
@@ -36,15 +36,15 @@ export default function Aptitudes() {
         })}
       </div>
 
-      <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-2">
-        <span className="label-spaced mr-2 flex items-center gap-2 text-ink-soft">
+      <motion.div variants={group} className="mt-8 flex flex-wrap items-center gap-2">
+        <motion.span variants={fadeUp} className="label-spaced mr-2 flex items-center gap-2 text-ink-soft">
           <OutilsIcon size={18} className="text-ink" />
           Outils
-        </span>
+        </motion.span>
         {tools.map((t) => (
-          <span key={t} className="veil rounded-full px-3 py-1 text-xs text-ink">
+          <motion.span key={t} variants={fadeUp} className="veil rounded-full px-3 py-1 text-xs text-ink">
             {t}
-          </span>
+          </motion.span>
         ))}
       </motion.div>
     </SectionShell>

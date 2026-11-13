@@ -6,13 +6,18 @@
    la couleur suit le geste, sans transition déclenchée. Valeurs initiales = l'accueil. */
 @property --sky-top { syntax: "<color>"; inherits: true; initial-value: #ecebe9; }
 @property --sky-bottom { syntax: "<color>"; inherits: true; initial-value: #cfcdca; }
-@property --accent { syntax: "<color>"; inherits: true; initial-value: #7d7a77; }
+@property --accent { syntax: "<color>"; inherits: true; initial-value: #66625e; }
 @property --ink { syntax: "<color>"; inherits: true; initial-value: #2f2e2d; }
-@property --ink-soft { syntax: "<color>"; inherits: true; initial-value: #66635f; }
+@property --ink-soft { syntax: "<color>"; inherits: true; initial-value: #4c4946; }
 @property --veil { syntax: "<color>"; inherits: true; initial-value: rgba(250, 249, 248, 0.7); }
 @property --wash-near { syntax: "<color>"; inherits: true; initial-value: #a9a6a3; }
 @property --wash-far { syntax: "<color>"; inherits: true; initial-value: #d9d7d4; }
 @property --sun { syntax: "<color>"; inherits: true; initial-value: #fbfaf8; }
+
+/* Écrans peu hauts (portables) : les sections se compactent pour tenir dans la fenêtre */
+@custom-variant short (@media (max-height: 800px));
+/* Très peu de hauteur (téléphone à l'horizontale, petits téléphones) : on retire le superflu */
+@custom-variant tiny (@media (max-height: 640px));
 
 @theme inline {
   --color-sky-top: var(--sky-top);
@@ -33,8 +38,7 @@
 }
 
 html {
-  /* Une section = un écran. Aimantation douce : elle n'agit que près d'une section, jamais de force */
-  scroll-snap-type: y proximity;
+  /* L'accueil ne défile pas (voyage section par section, voir Journey.tsx) ; les autres pages défilent normalement */
   scroll-behavior: smooth;
   background: var(--sky-bottom);
 }
@@ -74,6 +78,15 @@ body {
      (Écrire aussi -webkit-backdrop-filter le faisait fusionner en version préfixée, ignorée par Chrome.) */
   backdrop-filter: blur(14px) saturate(1.1);
   border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+/* Texte posé à même le décor : un halo de la teinte du voile, invisible mais qui garantit la lisibilité
+   quand un rocher, une liane ou un nuage passe derrière (contraste WCAG AA vérifié sur chaque section). */
+@utility legible {
+  text-shadow:
+    0 0 1px var(--veil),
+    0 0 12px var(--veil),
+    0 0 24px var(--veil);
 }
 
 :focus-visible {
@@ -158,4 +171,6 @@ body {
   .emblem-orbit-rev,
   .emblem-fade { animation: none; }
   .page-loader { animation: loader-out 0.5s ease-in both; }
+  /* Pas de zoom entre les sections : un simple fondu */
+  [data-section-index] { transform: none !important; }
 }

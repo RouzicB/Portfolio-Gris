@@ -1,84 +1,98 @@
 import { Layer } from "../Parallax";
-import { Frame, HangingTriangles, moundPath, seeded } from "./shared";
+import { Frame, seeded } from "./shared";
 
-/** Profil — une forêt de troncs rouges, des triangles suspendus, des monticules clairs et sombres */
+/**
+ * Profil — désert rouge, un seul ton décliné :
+ * grandes montagnes triangulaires pâles, collines en bandes, rochers à facettes,
+ * et un arbre au tronc courbe dont la ramure retombe en peigne.
+ */
 export default function RougeArt() {
   const rand = seeded(17);
-  const petals = Array.from({ length: 26 }, () => ({ x: rand() * 1600, y: 700 + rand() * 190, r: 2 + rand() * 2.5 }));
+  // Ramure en ombrelle : des branches arquées d'où retombent des fils, certains reliés en boucle
+  const arcs = [
+    { p0: [1250, 196], c: [1170, 112], p2: [1070, 176] },
+    { p0: [1250, 196], c: [1340, 106], p2: [1440, 170] },
+    { p0: [1250, 240], c: [1200, 190], p2: [1140, 214] },
+    { p0: [1250, 240], c: [1310, 186], p2: [1370, 210] },
+  ];
+  const drops = arcs.flatMap((a, k) =>
+    Array.from({ length: k < 2 ? 9 : 5 }, (_, i) => {
+      const t = 0.2 + (i / (k < 2 ? 8 : 4)) * 0.8;
+      const u = 1 - t;
+      const x = u * u * a.p0[0] + 2 * u * t * a.c[0] + t * t * a.p2[0];
+      const y = u * u * a.p0[1] + 2 * u * t * a.c[1] + t * t * a.p2[1];
+      return { x, y, len: (k < 2 ? 40 : 26) + rand() * (k < 2 ? 90 : 50), loop: i % 3 === 1 };
+    }),
+  );
+  const debris = Array.from({ length: 14 }, () => ({ x: rand() * 1600, y: 560 + rand() * 260, s: 3 + rand() * 6, r: rand() * 90 }));
+
   return (
     <>
-      <Layer depth={0.08}>
+      <Layer depth={0.05}>
         <Frame>
-          {/* Troncs lointains, très pâles */}
-          <g fill="#efcfcb" filter="url(#wc-paint)">
-            {[120, 330, 470, 610, 980, 1110, 1260, 1420].map((x, i) => (
-              <rect key={x} x={x} y="-20" width={26 + (i % 3) * 14} height="760" />
+          {/* Grande montagne triangulaire, deux faces */}
+          <g filter="url(#wc-paint)">
+            <path d="M960 120 L1640 780 H300Z" fill="#f2ddd7" />
+            <path d="M960 120 L1640 780 H1040Z" fill="#ead0c9" />
+            <path d="M380 420 L720 780 H60Z" fill="#efd6cf" />
+            <path d="M380 420 L720 780 H430Z" fill="#e6c6be" />
+            <path d="M1460 400 L1720 780 H1220Z" fill="#ecd1ca" />
+          </g>
+        </Frame>
+      </Layer>
+
+      <Layer depth={0.22}>
+        <Frame>
+          {/* Collines en bandes successives */}
+          <g filter="url(#wc-paint)">
+            <path d="M0 690 L160 672 L330 688 L520 664 L760 690 L980 668 L1200 686 L1400 662 L1600 684 V900 H0Z" fill="#e2b0a9" />
+            <path d="M0 740 L220 724 L470 744 L700 722 L960 742 L1220 720 L1460 740 L1600 728 V900 H0Z" fill="#d18a84" />
+          </g>
+          {/* Poteaux lointains */}
+          <g stroke="#b9545c" strokeWidth="2" fill="none" opacity="0.7">
+            <path d="M1530 728 V560 M1518 590 H1542 M1520 610 H1540" />
+            <path d="M1568 726 V600 M1558 626 H1578" />
+          </g>
+        </Frame>
+      </Layer>
+
+      <Layer depth={0.6}>
+        <Frame>
+          {/* Arbre au tronc courbe */}
+          <g fill="none" stroke="#7d1a2a" strokeLinecap="round">
+            {/* Tronc courbe */}
+            <path d="M1276 660 C1262 560 1236 470 1250 380 C1262 300 1238 250 1250 196" strokeWidth="9" />
+            {/* Branches arquées en ombrelle */}
+            {arcs.map((a, i) => (
+              <path key={i} d={`M${a.p0.join(" ")} Q${a.c.join(" ")} ${a.p2.join(" ")}`} strokeWidth={i < 2 ? 5 : 3.5} />
             ))}
+            {/* Fils qui retombent, certains refermés en boucle */}
+            <g strokeWidth="2.6">
+              {drops.map((d, i) =>
+                d.loop ? (
+                  <path key={i} d={`M${d.x} ${d.y} v${d.len} a6 6 0 0 0 12 0 v${-d.len * 0.55}`} />
+                ) : (
+                  <path key={i} d={`M${d.x} ${d.y} v${d.len}`} />
+                ),
+              )}
+            </g>
           </g>
-          <path d={moundPath(300, 1300, 760, 560, 80)} fill="#e9d6d0" filter="url(#wc-paint)" />
-        </Frame>
-      </Layer>
 
-      <Layer depth={0.3}>
-        <Frame>
-          <defs>
-            <linearGradient id="rouge-trunk" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#e08a90" />
-              <stop offset="1" stopColor="#c4505d" />
-            </linearGradient>
-          </defs>
-          <g fill="url(#rouge-trunk)" filter="url(#wc-paint)">
-            <rect x="60" y="-20" width="70" height="790" />
-            <rect x="230" y="-20" width="44" height="790" />
-            <rect x="1190" y="-20" width="52" height="790" />
-            <rect x="1360" y="-20" width="84" height="790" />
+          {/* Rochers à facettes */}
+          <g filter="url(#wc-paint)">
+            <path d="M1000 900 L1100 704 L1262 642 L1430 690 L1560 900Z" fill="#b32b3a" />
+            <path d="M1100 704 L1262 642 L1300 770 L1150 812Z" fill="#c94452" />
+            <path d="M1300 770 L1430 690 L1560 900 H1340Z" fill="#8f1f2d" />
+            <path d="M-30 900 L30 770 L170 736 L290 800 L330 900Z" fill="#a8283a" />
+            <path d="M30 770 L170 736 L190 820 L60 850Z" fill="#c23c4c" />
+            <path d="M560 900 L620 830 L720 812 L790 900Z" fill="#9b2434" />
+            <path d="M620 830 L720 812 L700 870Z" fill="#b8384a" />
           </g>
-          {/* Tiges et triangles suspendus */}
-          <HangingTriangles
-            items={[
-              { x: 30, len: 120, size: 34, bend: 20 },
-              { x: 170, len: 70, size: 26, bend: -10 },
-              { x: 300, len: 150, size: 30, bend: 24 },
-              { x: 420, len: 60, size: 22 },
-              { x: 1120, len: 90, size: 26, bend: -18 },
-              { x: 1280, len: 140, size: 34, bend: 16 },
-              { x: 1480, len: 70, size: 24 },
-              { x: 1560, len: 160, size: 30, bend: -20 },
-            ]}
-          />
-          {/* Monticule clair et grande pousse */}
-          <path d={moundPath(820, 1600, 820, 600, 60)} fill="#d6e5da" filter="url(#wc-paint)" />
-          <path d={moundPath(820, 1600, 820, 600, 60)} fill="url(#hatch)" opacity="0.5" />
-          <g transform="translate(1250 612)" filter="url(#wc-paint)">
-            <path d="M0 0 C-10 -60 -50 -110 -120 -120 C-100 -70 -60 -20 0 0Z" fill="#b9d3c2" />
-            <path d="M0 0 C20 -50 70 -80 130 -70 C100 -30 50 -6 0 0Z" fill="#a7c7b3" />
-            <path d="M0 0 C-30 -50 -70 -90 -116 -118 M0 0 C40 -36 80 -58 126 -70" stroke="#7aa08a" strokeWidth="2" fill="none" />
-          </g>
-        </Frame>
-      </Layer>
-
-      <Layer depth={0.75}>
-        <Frame>
-          <g fill="#8f1f33" filter="url(#wc-paint)">
-            <rect x="-30" y="-20" width="110" height="900" />
-            <rect x="1520" y="-20" width="120" height="900" />
-          </g>
-          {/* Monticules sombres hachurés */}
-          <path d={moundPath(-80, 760, 920, 700, -40)} fill="#4a2a35" filter="url(#wc-paint)" />
-          <path d={moundPath(-80, 760, 920, 700, -40)} fill="url(#hatch)" />
-          <path d={moundPath(600, 1680, 930, 760, 40)} fill="#5a3340" filter="url(#wc-paint)" />
-          <path d={moundPath(600, 1680, 930, 760, 40)} fill="url(#hatch)" />
-          {/* Champignons */}
-          <g fill="#c4505d">
-            <path d="M260 712 a22 14 0 0 1 44 0Z" />
-            <rect x="279" y="712" width="6" height="18" fill="#e8c9c4" />
-            <path d="M330 724 a14 9 0 0 1 28 0Z" />
-            <rect x="342" y="724" width="4" height="12" fill="#e8c9c4" />
-          </g>
-          {/* Pétales */}
-          <g fill="#d43a4f">
-            {petals.map((p, i) => (
-              <circle key={i} cx={p.x} cy={p.y} r={p.r} />
+          {/* Fragment de rocher en suspens */}
+          <path d="M70 540 L118 520 L140 560 L96 590Z" fill="#c94452" filter="url(#wc-paint)" className="animate-float" />
+          <g fill="#8f1f2d">
+            {debris.map((d, i) => (
+              <rect key={i} x={d.x} y={d.y} width={d.s} height={d.s} transform={`rotate(${d.r} ${d.x} ${d.y})`} />
             ))}
           </g>
         </Frame>

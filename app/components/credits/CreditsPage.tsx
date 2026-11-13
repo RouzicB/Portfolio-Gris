@@ -4,8 +4,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { credits, site } from "../../data/site";
 import { ArrowUpRightIcon, ChevronIcon, CreditsIcon, iconGallery } from "../icons/GrisIcons";
-import { fadeUp, stagger } from "../journey/motion";
+import { fadeUp, group, stagger } from "../journey/motion";
 import PageScene from "../layouts/PageScene";
+
+const MotionLink = motion.create(Link);
 
 /** Page Crédits : direction artistique, mentions, ressources et galerie d'icônes */
 export default function CreditsPage() {
@@ -13,19 +15,19 @@ export default function CreditsPage() {
   return (
     <PageScene stage="lune" back={{ href: "/", label: "Accueil" }}>
       <motion.main
-        className="relative mx-auto max-w-[1100px] px-4 pb-24 pt-28 sm:px-8 sm:pt-36"
+        className="relative mx-auto max-w-[1100px] px-4 pb-24 pt-24 sm:px-8 sm:pt-28"
         variants={stagger}
         initial="hidden"
         animate="show"
       >
-        <motion.p variants={fadeUp} className="label-spaced flex items-center gap-2 text-ink-soft">
+        <motion.p variants={fadeUp} className="label-spaced legible flex items-center gap-2 text-ink">
           <CreditsIcon size={18} className="text-ink" />
           Crédits
         </motion.p>
-        <motion.h1 variants={fadeUp} className="title-spaced mt-4 text-4xl leading-tight sm:text-6xl">
+        <motion.h1 variants={fadeUp} className="title-spaced legible mt-4 text-[clamp(1.75rem,7vw,3.75rem)] leading-tight">
           Crédits
         </motion.h1>
-        <motion.p variants={fadeUp} className="mt-4 max-w-2xl text-lg text-ink-soft">
+        <motion.p variants={fadeUp} className="legible mt-4 max-w-2xl text-lg text-ink-soft">
           Ce qui a inspiré ce voyage, et comment il a été fabriqué.
         </motion.p>
 
@@ -55,8 +57,8 @@ export default function CreditsPage() {
             </p>
           </motion.article>
 
-          <motion.div variants={fadeUp} className="flex flex-col gap-6">
-            <section className="veil rounded-2xl p-6" aria-labelledby="ressources">
+          <motion.div variants={group} className="flex flex-col gap-6">
+            <motion.section variants={fadeUp} className="veil rounded-2xl p-6" aria-labelledby="ressources">
               <h2 id="ressources" className="label-spaced text-ink-soft">
                 Ressources
               </h2>
@@ -68,33 +70,33 @@ export default function CreditsPage() {
                   </li>
                 ))}
               </ul>
-            </section>
+            </motion.section>
 
-            <section className="veil rounded-2xl p-6" aria-labelledby="icones">
+            <motion.section variants={fadeUp} className="veil rounded-2xl p-6" aria-labelledby="icones">
               <h2 id="icones" className="label-spaced text-ink-soft">
                 Icônes
               </h2>
               <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                Dessinées pour ce portfolio : un trait fin et arrondi comme un pinceau, et une goutte d&apos;aquarelle qui prend
-                la teinte du décor.
+                Dessinées pour ce portfolio : un trait de pinceau qui s&apos;affine aux extrémités, des cercles ouverts et des
+                facettes, et un lavis d&apos;aquarelle qui prend la teinte du décor.
               </p>
               <ul className="mt-4 grid grid-cols-4 gap-2 sm:grid-cols-6">
                 {iconGallery.map(({ name, Icon }) => (
                   <li key={name} className="flex flex-col items-center gap-1.5 rounded-xl py-2" title={name}>
                     <Icon size={24} />
-                    <span className="max-w-full truncate text-[10px] text-ink-soft">{name}</span>
+                    <span className="max-w-full truncate text-[11px] text-ink-soft">{name}</span>
                   </li>
                 ))}
               </ul>
-            </section>
+            </motion.section>
           </motion.div>
         </div>
 
-        <motion.div variants={fadeUp} className="mt-10 flex justify-center">
-          <Link href="/" className="veil inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm">
+        <motion.div variants={group} className="mt-10 flex justify-center">
+          <MotionLink variants={fadeUp} href="/" className="veil inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm">
             <ChevronIcon size={16} className="rotate-180" />
             Revenir au voyage
-          </Link>
+          </MotionLink>
         </motion.div>
       </motion.main>
     </PageScene>

@@ -10,7 +10,7 @@ import SectionShell from "./SectionShell";
 export default function Profil() {
   return (
     <SectionShell index={1}>
-      <div className="grid gap-8 lg:grid-cols-[auto_1fr_1fr] lg:items-start">
+      <div className="grid gap-6 sm:gap-8 md:grid-cols-[auto_1fr] md:items-start lg:grid-cols-[auto_1fr_1fr]">
         <motion.div variants={fadeIn} className="mx-auto lg:mx-0">
           <Portrait />
         </motion.div>
@@ -19,7 +19,7 @@ export default function Profil() {
           <motion.p variants={fadeUp} className="text-lg leading-relaxed text-ink">
             {site.bio}
           </motion.p>
-          <motion.ul variants={fadeUp} className="mt-6 space-y-4">
+          <motion.ul variants={fadeUp} className="veil mt-6 space-y-4 rounded-2xl p-5">
             {values.map((v) => (
               <li key={v.title}>
                 <p className="font-semibold text-ink">{v.title}</p>
@@ -29,7 +29,7 @@ export default function Profil() {
           </motion.ul>
         </div>
 
-        <motion.dl variants={fadeUp} className="veil divide-y divide-ink/10 rounded-2xl px-5 py-2">
+        <motion.dl variants={fadeUp} className="veil divide-y divide-ink/10 rounded-2xl px-5 py-2 md:col-span-2 lg:col-span-1">
           {specs.map((s) => {
             const Icon = icons[s.icon];
             return (
@@ -55,7 +55,7 @@ function Portrait() {
     .map((w) => w[0])
     .join("");
   return (
-    <div className="relative h-48 w-48 sm:h-56 sm:w-56">
+    <div className="relative size-32 sm:size-48 lg:size-56">
       <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full" aria-hidden>
         <circle cx="100" cy="100" r="88" fill="var(--veil)" filter="url(#wc-edge)" />
         <circle cx="100" cy="100" r="97" fill="none" stroke="var(--ink)" strokeWidth="0.6" opacity="0.4" />
@@ -65,7 +65,7 @@ function Portrait() {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={site.portrait} alt={site.name} className="absolute inset-[12%] h-[76%] w-[76%] rounded-full object-cover" />
       ) : (
-        <span className="title-spaced absolute inset-0 grid place-items-center pl-[0.32em] text-4xl text-ink" aria-hidden>
+        <span className="title-spaced absolute inset-0 grid place-items-center pl-[0.32em] text-3xl text-ink sm:text-4xl" aria-hidden>
           {initials}
         </span>
       )}

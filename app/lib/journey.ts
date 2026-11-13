@@ -60,6 +60,32 @@ export function paletteToVars(palette: Palette): Record<string, string> {
   return vars;
 }
 
+/**
+ * Zoom d'une couche (scène ou contenu) selon sa distance à la position courante :
+ * d > 0 : on l'a dépassée, on « entre » dedans (elle grossit) ; d < 0 : elle arrive du fond (un peu plus petite).
+ */
+export function zoomScale(d: number, ahead = 0.45, behind = 0.12): number {
+  if (d >= 1 || d <= -1) return d > 0 ? 1 + ahead : 1 - behind;
+  return d >= 0 ? 1 + blendCurve(d) * ahead : 1 + d * behind;
+}
+
+/** Opacité d'un contenu de section selon sa distance : net quand il est centré, effacé à mi-chemin */
+export function contentOpacity(d: number): number {
+  return Math.min(Math.max(1 - Math.abs(d) * 1.8, 0), 1);
+}
+
+/** Sens de navigation demandé par un geste (molette, glissé) : 1, -1 ou 0 sous le seuil */
+export function gestureDirection(delta: number, threshold: number): -1 | 0 | 1 {
+  if (Math.abs(delta) < threshold) return 0;
+  return delta > 0 ? 1 : -1;
+}
+
+/** Un conteneur peut-il encore défiler dans ce sens ? (contenu plus haut que l'écran, sur mobile surtout) */
+export function canScrollWithin(el: { scrollTop: number; scrollHeight: number; clientHeight: number }, dir: 1 | -1): boolean {
+  if (dir > 0) return el.scrollTop + el.clientHeight < el.scrollHeight - 2;
+  return el.scrollTop > 2;
+}
+
 /** Identifiant d'ancre d'une section */
 export function anchorId(id: string): string {
   return `section-${id}`;

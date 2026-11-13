@@ -58,13 +58,41 @@ export interface Section {
   sun: Sun;
 }
 
-export interface CareerStep {
-  year: string;
-  period: string;
+/**
+ * Arborescence du parcours (même logique que le portfolio principal, posée à l'horizontale) :
+ * start = point de départ, step = étape, choice = décision qui ouvre des branches,
+ * current = étape en cours, locked = chemin non emprunté, future = prochain chapitre.
+ */
+export type FlowKind = "start" | "step" | "choice" | "current" | "locked" | "future";
+
+export interface FlowNode {
+  id: string;
+  kind: FlowKind;
   title: string;
-  place: string;
+  /** Libellé court affiché sur la carte (le titre complet est dans le détail) */
+  short?: string;
+  /** Lieu / établissement / entreprise */
+  place?: string;
+  period?: string;
   text: string;
-  tags: string[];
+  /** Formation ou expérience professionnelle (icône, couloir) */
+  domain?: "formation" | "work";
+  tags?: string[];
+  /** Colonne (le temps, de gauche à droite) et couloir (0 = formation, 1 = expériences, 2 = chemins non empruntés) */
+  col: number;
+  row: number;
+}
+
+export interface FlowEdge {
+  from: string;
+  to: string;
+}
+
+export interface FlowChapter {
+  id: string;
+  title: string;
+  /** Colonnes couvertes [première, dernière] */
+  cols: readonly [number, number];
 }
 
 export interface ProcessStep {

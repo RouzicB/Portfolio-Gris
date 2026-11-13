@@ -1,89 +1,115 @@
 import { Layer } from "../Parallax";
-import { Frame, archPath, moundPath, seeded } from "./shared";
+import { Frame, seeded } from "./shared";
 
-/** Aptitudes — sous la surface : rais de lumière, arche engloutie, méduses, algues à losanges, bulles */
+/**
+ * Aptitudes — grotte bleue, un seul ton décliné :
+ * rais de lumière, arbre lumineux dont les branches montent à la verticale et portent des cadres translucides,
+ * socle en gradins, eau qui reflète, parois sombres et stalactites.
+ */
 export default function BleuArt() {
   const rand = seeded(23);
-  const bubbles = Array.from({ length: 14 }, () => ({
-    left: rand() * 100,
-    size: 4 + rand() * 10,
+  const motes = Array.from({ length: 16 }, () => ({
+    left: 20 + rand() * 60,
+    size: 2 + rand() * 4,
     delay: rand() * 14,
-    duration: 10 + rand() * 10,
+    duration: 12 + rand() * 10,
   }));
+  // Branches : chacune part du tronc, s'écarte puis monte tout droit
+  const branches = [
+    { y0: 440, x: 670, w: 7 },
+    { y0: 410, x: 712, w: 9 },
+    { y0: 380, x: 758, w: 12 },
+    { y0: 380, x: 842, w: 12 },
+    { y0: 410, x: 890, w: 9 },
+    { y0: 450, x: 942, w: 7 },
+    { y0: 490, x: 1000, w: 6 },
+    { y0: 540, x: 1058, w: 5 },
+  ];
+  // Plafond de la grotte, en stalactites
+  let ceiling = "M-20 -20 H1620 V30";
+  for (let x = 1600; x >= -20; x -= 40) {
+    const drop = 30 + rand() * (x < 300 || x > 1300 ? 90 : 26);
+    ceiling += ` L${x + 20} ${drop} L${x} 30`;
+  }
+  ceiling += " Z";
+
   return (
     <>
-      <Layer depth={0.1}>
+      <Layer depth={0.04}>
         <Frame>
-          {/* Surface vue d'en dessous */}
-          <g fill="none" stroke="#f4fbff" strokeLinecap="round" opacity="0.55" className="animate-drift">
-            <path d="M-50 70 C150 50 300 95 500 70 S850 45 1050 70 S1400 95 1650 65" strokeWidth="3" />
-            <path d="M-50 120 C200 100 380 140 600 118 S1000 95 1250 120 S1500 135 1650 115" strokeWidth="1.5" />
+          {/* Rais de lumière obliques */}
+          <g fill="#bfe9f6">
+            <path d="M1100 -20 H1260 L700 920 H520Z" opacity="0.1" />
+            <path d="M1320 -20 H1380 L980 920 H900Z" opacity="0.08" />
+            <path d="M880 -20 H930 L320 920 H250Z" opacity="0.07" />
           </g>
-          {/* Rais de lumière, nets et obliques */}
-          <g fill="#f4fbff" opacity="0.16">
-            <path d="M640 0 H760 L560 900 H360Z" />
-            <path d="M880 0 H930 L1000 900 H880Z" />
-            <path d="M330 0 H370 L120 900 H40Z" />
-          </g>
-          <path d="M0 650 C260 610 500 670 760 640 S1250 600 1600 650 V900 H0Z" fill="#a9cfe0" opacity="0.8" filter="url(#wc-paint)" />
         </Frame>
       </Layer>
 
-      <Layer depth={0.4}>
+      <Layer depth={0.25}>
         <Frame>
-          {/* Arche engloutie, penchée */}
-          <path
-            fillRule="evenodd"
-            d={archPath(60, 520, 220, 300, 120, 0.2)}
-            transform="rotate(-8 170 820)"
-            fill="#4f86ad"
-            filter="url(#wc-paint)"
-          />
-          <path d={moundPath(-60, 520, 900, 760, 0)} fill="#2f6390" filter="url(#wc-paint)" />
-          <path d={moundPath(-60, 520, 900, 760, 0)} fill="url(#hatch)" />
-          <path d={moundPath(1080, 1700, 900, 720, -30)} fill="#2f6390" filter="url(#wc-paint)" />
-          <path d={moundPath(1080, 1700, 900, 720, -30)} fill="url(#hatch)" />
-          {/* Méduses */}
-          <g className="animate-float">
-            {[
-              [1240, 260, 1],
-              [1350, 340, 0.7],
-            ].map(([x, y, s], i) => (
-              <g key={i} transform={`translate(${x} ${y}) scale(${s})`} opacity="0.85">
-                <path d="M-36 0 A36 32 0 0 1 36 0 Q18 8 0 2 Q-18 8 -36 0Z" fill="#f2d4e2" />
-                <path d="M-20 4 q-6 30 4 60 M0 4 q8 34 -2 70 M20 4 q6 28 -4 54" stroke="#f2d4e2" strokeWidth="2" fill="none" />
-              </g>
+          {/* L'arbre est décalé vers la droite pour laisser le titre lisible */}
+          <g transform="translate(250 0)">
+          {/* Lueur derrière l'arbre */}
+          <ellipse cx="800" cy="520" rx="260" ry="380" fill="#7fd3ea" opacity="0.18" filter="url(#wc-cloud)" />
+          {/* Cadres translucides, traversés par les branches (centrés sur elles) */}
+          <g filter="url(#wc-paint)">
+            <rect x="690" y="60" width="220" height="180" fill="#7fd3ea" opacity="0.14" />
+            <rect x="925" y="180" width="150" height="130" fill="#7fd3ea" opacity="0.14" />
+          </g>
+          <g fill="none" stroke="#bfe9f6" strokeOpacity="0.45" strokeWidth="2">
+            <rect x="690" y="60" width="220" height="180" />
+            <rect x="925" y="180" width="150" height="130" />
+          </g>
+          {/* Tronc et branches lumineuses */}
+          <g fill="none" stroke="#cdeef8" strokeLinecap="round" opacity="0.72">
+            <path d="M770 790 C776 640 790 520 800 380 C810 520 824 640 830 790" fill="#cdeef8" strokeWidth="2" />
+            {branches.map((b) => (
+              <path key={b.x} d={`M800 ${b.y0} C800 ${b.y0 - 50} ${b.x} ${b.y0 - 70} ${b.x} ${b.y0 - 150} V-20`} strokeWidth={b.w} />
             ))}
+            {/* Petit candélabre greffé sur la branche qui traverse le second cadre */}
+            <path d="M980 286 v-40 M1020 286 v-40 M980 286 q20 18 40 0" strokeWidth="3" />
+          </g>
+          {/* Socle en gradins */}
+          <g filter="url(#wc-paint)">
+            <rect x="720" y="772" width="160" height="22" fill="#5fa9c6" />
+            <rect x="680" y="794" width="240" height="20" fill="#4f93b3" />
+            <rect x="640" y="814" width="320" height="22" fill="#3d7f9f" />
+          </g>
+          </g>
+          {/* Eau et reflet — sur le même plan que l'arbre : le socle reste posé dessus */}
+          <rect x="-40" y="832" width="1680" height="100" fill="#1f6688" opacity="0.9" />
+          <ellipse cx="1050" cy="862" rx="190" ry="24" fill="#bfe9f6" opacity="0.22" filter="url(#wc-cloud)" />
+          <rect x="1030" y="838" width="40" height="70" fill="#cdeef8" opacity="0.18" filter="url(#wc-cloud)" />
+          <g stroke="#bfe9f6" strokeOpacity="0.3" strokeWidth="2" strokeLinecap="round">
+            <path d="M900 852 H990 M1110 852 H1200 M940 874 H1010 M1090 874 H1160 M1000 894 H1100" />
           </g>
         </Frame>
       </Layer>
 
-      <Layer depth={0.8}>
+      <Layer depth={0.55}>
         <Frame>
-          {/* Algues à losanges */}
-          {[70, 130, 1480, 1540].map((x, i) => (
-            <g key={x} className="animate-float" style={{ animationDelay: `${i * 1.3}s` }}>
-              <path d={`M${x} 900 C${x - 24} 780 ${x + 24} 700 ${x} ${560 - i * 20}`} stroke="#1f4f75" strokeWidth="3" fill="none" />
-              {[820, 760, 700, 640].map((y, k) => (
-                <path key={y} d={`M${x + (k % 2 ? -6 : 6)} ${y - i * 4} l10 14 -10 14 -10 -14z`} fill={k % 2 ? "#2f6fa6" : "#4f8fbf"} />
-              ))}
-            </g>
-          ))}
-          <path d="M0 860 C400 830 900 900 1600 850 V900 H0Z" fill="#183f5e" filter="url(#wc-paint)" />
+          {/* Parois de la grotte */}
+          <g fill="#06121d" filter="url(#wc-edge)">
+            <path d={ceiling} />
+            <path d="M-20 -20 H230 C200 70 260 140 220 220 C190 280 240 340 190 420 C160 470 130 520 150 600 C170 660 120 700 140 760 L260 790 C300 820 300 870 280 920 H-20Z" />
+            <path d="M1620 -20 H1380 C1410 90 1350 170 1400 250 C1440 320 1390 400 1430 470 C1460 540 1420 600 1450 660 L1330 700 C1300 760 1310 840 1340 920 H1620Z" />
+          </g>
         </Frame>
       </Layer>
 
+      {/* Particules de lumière qui montent */}
       <div className="absolute inset-0 overflow-hidden" aria-hidden>
-        {bubbles.map((b, i) => (
+        {motes.map((m, i) => (
           <span
             key={i}
-            className="animate-rise absolute bottom-[-20px] rounded-full border border-white/70 bg-white/10"
+            className="animate-rise absolute bottom-[-10px] rounded-full bg-[#cdeef8]/70"
             style={{
-              left: `${b.left}%`,
-              width: b.size,
-              height: b.size,
-              animationDelay: `${b.delay}s`,
-              animationDuration: `${b.duration}s`,
+              left: `${m.left}%`,
+              width: m.size,
+              height: m.size,
+              animationDelay: `${m.delay}s`,
+              animationDuration: `${m.duration}s`,
             }}
           />
         ))}

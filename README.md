@@ -6,12 +6,12 @@ Le décor part du gris et se teinte au fil du scroll ; aucun texte ne l'annonce,
 
 | # | Section | Contenu | Décor |
 | --- | --- | --- | --- |
-| 01 | Accueil | Nom, rôle, accroche | Brume : aqueduc brisé, colonne, pierres en suspens, mer de nuages |
-| 02 | Profil | Présentation, valeurs, fiche | Forêt de troncs rouges, triangles suspendus, monticules hachurés |
-| 03 | Méthode | Cinq étapes | Jardin de grandes feuilles, lianes, arche envahie, une pousse |
-| 04 | Aptitudes | Trois modules, niveaux en gouttes, outils | Sous la surface : rais de lumière, arche engloutie, méduses |
-| 05 | Parcours | Cinq années | Crépuscule doré, cinq pierres flottantes au-dessus des mesas |
-| 06 | Projets | Cartes vers les études de cas | Ciel pastel, grande arche brisée, rai rosé, mer de nuages |
+| 01 | Accueil | Nom, rôle, accroche | Monde blanc et gris : grande arche brisée à facettes, colonne effondrée, éclats, nuages lourds |
+| 02 | Profil | Présentation, valeurs, fiche | Désert rouge : montagnes triangulaires, rochers à facettes, arbre en ombrelle |
+| 03 | Méthode | Cinq étapes | Forêt verte : troncs-colonnes, triangles suspendus, tronc en arche |
+| 04 | Aptitudes | Trois modules, niveaux en gouttes, outils | Grotte bleue : arbre lumineux, cadres translucides, eau |
+| 05 | Parcours | Arborescence horizontale : formation, expériences, choix, chemins non empruntés | Nuit dorée : grande lune, tours à dômes, terrasse en gradins |
+| 06 | Projets | Galerie d'arches (1 à 3 visibles, flèches, losanges, glissement) vers les études de cas | Ciel pastel, grande arche brisée, rai rosé, mer de nuages |
 | 07 | Contact | E-mail, réseaux, CV | Nuit prune, grande lune, arbres géométriques, terrasse fleurie |
 
 **Crédits** (`/credits`) : direction artistique, mentions, ressources et galerie d'icônes, sur une page à part,
@@ -48,18 +48,33 @@ npm run lint
 
 ## Comment le décor évolue
 
-1. `Journey.tsx` calcule à chaque frame de scroll une position continue entre les centres des sections.
-2. Les palettes des deux sections voisines (`app/data/palettes.ts`) sont mélangées et écrites en variables CSS
-   sur `<html>` : ciel, texte, voiles et accents suivent le geste, sans palier ni transition déclenchée.
-   Une courbe douce (smoothstep) garde la teinte posée quand une section est centrée.
-3. `Landscape.tsx` fond les scènes aquarelle l'une dans l'autre et fait glisser le soleil au même rythme.
-4. L'aimantation du scroll est douce (`proximity`) : elle n'agit que près d'une section.
+1. L'accueil ne défile pas : un geste (molette, glissé tactile, ↑/↓, Page↑/↓, Espace, Début/Fin) amène à la
+   section voisine. Les rafales de molette et l'inertie du pavé tactile ne comptent que pour un pas.
+   Une section plus haute que l'écran (mobile) se parcourt d'abord, puis le geste suivant change de section.
+2. `Journey.tsx` anime alors une position continue (`progress`) d'une section à l'autre, en zoom :
+   la scène quittée grossit et s'efface (on entre dedans), la suivante arrive du fond.
+3. Les palettes des deux sections voisines (`app/data/palettes.ts`) sont mélangées et écrites en variables CSS
+   sur `<html>` au rythme de cette animation ; `Landscape.tsx` fond les scènes, les zoome et fait glisser le soleil.
+4. L'URL suit la section (`#section-projets`…) : on peut y revenir directement, depuis une page projet par exemple.
 
 ## Icônes
 
-`app/components/icons/GrisIcons.tsx` : jeu d'icônes dessiné pour le site (trait fin et arrondi, et une goutte
-d'aquarelle qui prend la teinte du décor). Navigation, fiche, aptitudes, études de cas, contact, favicon
+`app/components/icons/GrisIcons.tsx` : jeu d'icônes dessiné pour le site, dans le vocabulaire de GRIS.
+Chaque trait est peint en cinq passes superposées (de plus en plus épaisses vers le centre) : il s'affine aux
+extrémités comme un coup de pinceau. Cercles ouverts en ensō, triangles et facettes, lavis d'aquarelle translucide
+et point de pigment à la teinte du décor. Navigation, fiche, aptitudes, études de cas, contact, favicon
 (`app/icon.svg`) ; la galerie complète est affichée sur la page Crédits.
+
+## Accessibilité
+
+- Contraste WCAG AA vérifié sur le rendu réel (texte comparé aux pixels du décor derrière lui), section par section,
+  de 320×568 à 2560×1440 : 4,5:1 minimum pour le texte courant, 3:1 pour les grands titres.
+- Le texte posé à même le décor porte un halo de la teinte du voile (utilitaire `legible`) ; sur écran étroit,
+  le soleil ou la lune se range dans un coin du ciel pour ne jamais passer derrière un titre.
+- Navigation complète au clavier (flèches, Page, Espace, Début/Fin), focus visible, sections inactives `inert`,
+  zones tactiles d'au moins 40 px sur mobile, `prefers-reduced-motion` respecté (fondu simple, sans zoom).
+- Responsive : aucune barre de défilement horizontale ; sur mobile, une section plus haute que l'écran se lit
+  en entier avant de passer à la suivante ; le canevas du parcours se réduit légèrement puis défile à l'horizontale.
 
 ## Structure
 
@@ -74,7 +89,7 @@ app/
 ├── globals.css           # @property des couleurs, utilitaires title-spaced / label-spaced / veil, animations
 ├── icon.svg              # Favicon (icône Accueil)
 ├── components/
-│   ├── journey/          # Journey (moteur), JourneyContext, TopBar, SectionNav, motion
+│   ├── journey/          # Journey (moteur), JourneyContext, SectionNav, motion
 │   ├── background/       # Landscape (ciel, soleil, scènes), Parallax (souris)
 │   │   └── art/          # Une scène aquarelle SVG par ambiance + filtres partagés
 │   ├── icons/            # GrisIcons : le jeu d'icônes maison
@@ -83,6 +98,7 @@ app/
 │   ├── credits/          # CreditsPage
 │   ├── layouts/          # PageScene (gabarit des pages hors accueil), CreditsLink
 │   └── ui/               # ProjectThumb (vignette peinte), Emblem, PageLoader
+├── lib/flowchart.ts      # Géométrie de l'arborescence du parcours (nœuds, liens)
 ├── data/                 # sections, palettes, site (profil, fiche, crédits), career, process, projects, skills
 ├── lib/                  # journey (position continue, fondu), color (mélange de couleurs)
 └── types/

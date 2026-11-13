@@ -6,10 +6,10 @@ import { motionValue, type MotionValue } from "framer-motion";
 export interface JourneyState {
   /** Section la plus proche du centre de l'écran */
   active: number;
-  /** Position continue dans le voyage (0 = accueil, 1 = profil…), mise à jour à chaque frame de scroll */
+  /** Position continue dans le voyage (0 = accueil, 1 = profil…), animée pendant chaque transition */
   progress: MotionValue<number>;
-  /** Fait défiler jusqu'à la section demandée */
-  goTo: (index: number) => void;
+  /** Voyage (en zoom) jusqu'à la section demandée ; `instant` = sans animation */
+  goTo: (index: number, instant?: boolean) => void;
 }
 
 export const JourneyContext = createContext<JourneyState>({

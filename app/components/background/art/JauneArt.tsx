@@ -1,67 +1,121 @@
 import { Layer } from "../Parallax";
-import { Frame, seeded } from "./shared";
+import { Cloud, Frame, seeded } from "./shared";
 
-/** Parcours — crépuscule doré : cinq pierres flottantes qui montent, comme cinq années, au-dessus des mesas */
+/** Tour à dôme : socle à colonnes, fenêtre en arche avec lanterne, dôme, flèche, lianes et fleurs */
+function Tower({
+  x,
+  w,
+  h,
+  base,
+  tone,
+  light,
+  seed,
+  detail = true,
+}: {
+  x: number;
+  w: number;
+  h: number;
+  base: number;
+  tone: string;
+  light: string;
+  seed: number;
+  /** false = simple silhouette (tours lointaines) */
+  detail?: boolean;
+}) {
+  const rand = seeded(seed);
+  const top = base - h;
+  const cols = 5;
+  const dw = w * 0.82;
+  // Lianes symétriques de part et d'autre de la fenêtre (longueurs différentes, positions régulières)
+  const vines = Array.from({ length: 6 }, (_, i) => ({ x: x + 10 + (i * (w - 20)) / 5, len: 50 + rand() * 80 }));
+  return (
+    <g>
+      <g filter="url(#wc-paint)">
+        <rect x={x} y={top} width={w} height={h} fill={tone} />
+        <rect x={x - 8} y={top - 10} width={w + 16} height="12" fill={light} />
+        {/* Dôme et flèche */}
+        <path d={`M${x + (w - dw) / 2} ${top - 10} a${dw / 2} ${dw * 0.55} 0 0 1 ${dw} 0Z`} fill={light} />
+        <path d={`M${x + w / 2} ${top - 10 - dw * 0.55} v-34`} stroke={light} strokeWidth="2.5" />
+        <path d={`M${x + w / 2} ${top - 54 - dw * 0.55} c6 8 8 12 8 15 a8 8 0 0 1 -16 0 c0 -3 2 -7 8 -15z`} fill={light} />
+      </g>
+      {detail && (
+        <>
+          {/* Colonnes, du chapiteau jusqu'au sol */}
+          <g stroke={light} strokeOpacity="0.5" strokeWidth="2">
+            {Array.from({ length: cols }, (_, i) => (
+              <path key={i} d={`M${x + ((i + 0.5) * w) / cols} ${top + 150} V${base}`} />
+            ))}
+          </g>
+          {/* Fenêtre en arche, centrée, et sa lanterne */}
+          <path d={`M${x + w / 2 - 18} ${top + 120} v-40 a18 18 0 0 1 36 0 v40z`} fill="#1c160a" />
+          <circle cx={x + w / 2} cy={top + 102} r="14" fill="#fff1c2" opacity="0.5" filter="url(#wc-glow)" className="animate-twinkle" />
+          <circle cx={x + w / 2} cy={top + 102} r="4" fill="#fff1c2" />
+          {/* Lianes qui tombent du chapiteau, et grappes de fleurs à leur départ */}
+          <g stroke="#e3c26f" strokeWidth="1.6" fill="none" opacity="0.75">
+            {vines.map((v, i) => (
+              <path key={i} d={`M${v.x} ${top + 2} q4 ${v.len / 3} -2 ${(v.len * 2) / 3} q-4 ${v.len / 6} 2 ${v.len / 3}`} />
+            ))}
+          </g>
+          <g fill="#f2d27a">
+            {[vines[0], vines[2], vines[3], vines[5]].map((v, i) => (
+              <g key={i}>
+                <circle cx={v.x} cy={top + 6} r="7" />
+                <circle cx={v.x + 6} cy={top + 13} r="5" />
+                <circle cx={v.x - 5} cy={top + 14} r="4" />
+              </g>
+            ))}
+          </g>
+        </>
+      )}
+    </g>
+  );
+}
+
+/**
+ * Parcours — nuit dorée, un seul ton décliné :
+ * grande lune (le soleil du décor), nuages sombres, tours à dômes couvertes de lianes,
+ * terrasse en gradins couronnée de petites coupoles.
+ */
 export default function JauneArt() {
   const rand = seeded(5);
-  const stars = Array.from({ length: 60 }, () => ({ x: rand() * 1600, y: rand() * 420, r: 0.8 + rand() * 1.6, d: rand() * 4 }));
-  const fireflies = Array.from({ length: 9 }, () => ({ x: 80 + rand() * 1440, y: 600 + rand() * 200, d: rand() * 6 }));
-  const stones = [
-    { x: 90, y: 830, s: 54 },
-    { x: 420, y: 815, s: 62 },
-    { x: 760, y: 790, s: 70 },
-    { x: 1110, y: 758, s: 80 },
-    { x: 1450, y: 716, s: 92 },
-  ];
+  const stars = Array.from({ length: 80 }, () => ({ x: rand() * 1600, y: rand() * 560, r: 0.6 + rand() * 1.4, d: rand() * 4 }));
   return (
     <>
-      <Layer depth={0.06}>
+      <Layer depth={0.05}>
         <Frame>
-          <g fill="#fff3d6">
+          <g fill="#fff1c2">
             {stars.map((s, i) => (
               <circle key={i} cx={s.x} cy={s.y} r={s.r} className="animate-twinkle" style={{ animationDelay: `${s.d}s` }} />
             ))}
           </g>
+          <Cloud x={260} y={640} s={1.8} fill="#3a2d12" opacity={0.85} />
+          <Cloud x={1360} y={620} s={1.9} fill="#3a2d12" opacity={0.85} />
+          <Cloud x={820} y={700} s={2.2} fill="#33270f" opacity={0.8} />
         </Frame>
       </Layer>
 
-      <Layer depth={0.3}>
+      {/* Tours, terrasse et sol sur le même plan : tout reste posé, rien ne glisse */}
+      <Layer depth={0.35}>
         <Frame>
-          {/* Mesas plates, aplats successifs */}
+          {/* Sol */}
+          <path d="M-20 846 H1620 V920 H-20Z" fill="#241b09" />
+          <path d="M-20 846 H1620 V920 H-20Z" fill="url(#hatch-light)" opacity="0.25" />
+          {/* Tours lointaines : simples silhouettes */}
+          <Tower x={300} w={74} h={200} base={850} tone="#5e471c" light="#765921" seed={2} detail={false} />
+          <Tower x={1226} w={74} h={210} base={850} tone="#5e471c" light="#765921" seed={4} detail={false} />
+          {/* Tours principales */}
+          <Tower x={70} w={150} h={340} base={850} tone="#a9843a" light="#d9b45a" seed={1} />
+          <Tower x={1380} w={150} h={360} base={850} tone="#a9843a" light="#d9b45a" seed={3} />
+          {/* Terrasse en gradins */}
           <g filter="url(#wc-paint)">
-            <path d="M0 700 H180 L210 640 H420 L450 700 H900 L930 660 H1180 L1210 700 H1600 V900 H0Z" fill="#a9768a" />
-            <path d="M0 760 H300 L330 720 H620 L650 760 H1250 L1280 730 H1500 L1530 760 H1600 V900 H0Z" fill="#7b5276" />
+            <path d="M420 920 L470 850 H1130 L1180 920Z" fill="#8a6a26" />
+            <path d="M510 850 L548 812 H1052 L1090 850Z" fill="#a9843a" />
           </g>
-        </Frame>
-      </Layer>
-
-      <Layer depth={0.75}>
-        <Frame>
-          <path d="M0 820 C300 800 700 850 1000 820 S1450 800 1600 815 V900 H0Z" fill="#3b2a4c" filter="url(#wc-paint)" />
-          <path d="M0 820 C300 800 700 850 1000 820 S1450 800 1600 815 V900 H0Z" fill="url(#hatch)" />
-          {/* Fil lumineux entre les pierres */}
-          <path
-            d={`M${stones.map((s) => `${s.x + s.s / 2} ${s.y - s.s}`).join(" L")}`}
-            stroke="#ffe3a1"
-            strokeWidth="1.5"
-            strokeDasharray="2 7"
-            fill="none"
-            opacity="0.7"
-          />
-          {stones.map((s, i) => (
-            <g key={i} className="animate-float" style={{ animationDelay: `${i * 0.9}s` }} filter="url(#wc-paint)">
-              <rect x={s.x} y={s.y - s.s} width={s.s} height={s.s} fill="#5b4372" />
-              <rect x={s.x} y={s.y - s.s} width={s.s} height={s.s * 0.22} fill="#e9b97a" />
-              {/* Petit arbre triangulaire sur la pierre */}
-              <path d={`M${s.x + s.s * 0.68} ${s.y - s.s} v-14`} stroke="#3b2a4c" strokeWidth="2" />
-              <path d={`M${s.x + s.s * 0.68 - 9} ${s.y - s.s - 12} h18 l-9 -22z`} fill="#f2c14e" />
-            </g>
-          ))}
-          <g fill="#ffd970">
-            {fireflies.map((f, i) => (
-              <g key={i} className="animate-float" style={{ animationDelay: `${f.d}s` }}>
-                <circle cx={f.x} cy={f.y} r="9" opacity="0.45" filter="url(#wc-glow)" />
-                <circle cx={f.x} cy={f.y} r="2.2" />
+          <g fill="#c9a24a">
+            {Array.from({ length: 7 }, (_, i) => 568 + i * 78).map((x) => (
+              <g key={x}>
+                <path d={`M${x - 16} 812 a16 18 0 0 1 32 0Z`} />
+                <path d={`M${x} 794 v-14`} stroke="#c9a24a" strokeWidth="2" />
               </g>
             ))}
           </g>

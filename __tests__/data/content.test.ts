@@ -1,6 +1,6 @@
 import { sections } from "@/app/data/sections";
 import { palettes } from "@/app/data/palettes";
-import { career } from "@/app/data/career";
+import { careerNodes } from "@/app/data/career";
 import { projects } from "@/app/data/projects";
 import { skillGroups } from "@/app/data/skills";
 import { specs } from "@/app/data/site";
@@ -41,8 +41,8 @@ describe("contenu", () => {
     [...sections, ...specs, ...skillGroups].forEach((item) => expect(icons[item.icon]).toBeDefined());
   });
 
-  it("raconte cinq années de parcours, des projets uniques et des niveaux de 1 à 5", () => {
-    expect(career).toHaveLength(5);
+  it("a une seule étape en cours, des projets uniques et des niveaux de 1 à 5", () => {
+    expect(careerNodes.filter((n) => n.kind === "current")).toHaveLength(1);
     expect(new Set(projects.map((p) => p.slug)).size).toBe(projects.length);
     skillGroups.flatMap((g) => g.skills).forEach((s) => {
       expect(s.level).toBeGreaterThanOrEqual(1);

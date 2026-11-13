@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, type ComponentType } from "react";
-import type { MotionValue } from "framer-motion";
+import { useReducedMotion, type MotionValue } from "framer-motion";
 import type { StageId, Sun } from "../../types";
-import { segment, stageWeights } from "../../lib/journey";
+import { segment, stageWeights, zoomScale } from "../../lib/journey";
 import { PointerProvider } from "./Parallax";
 import { WatercolorDefs } from "./art/shared";
 import GrisArt from "./art/GrisArt";
@@ -41,6 +41,7 @@ export default function Landscape({
   suns: Sun[];
 }) {
   const used = useMemo(() => Array.from(new Set(stages)), [stages]);
+  const reduce = useReducedMotion();
   const sceneRefs = useRef<Partial<Record<StageId, HTMLDivElement | null>>>({});
   const sunRef = useRef<HTMLDivElement>(null);
 
@@ -53,22 +54,37 @@ export default function Landscape({
         const w = weights[id] ?? 0;
         el.style.opacity = String(w);
         el.style.visibility = w < 0.004 ? "hidden" : "visible";
+        // Zoom : on entre dans la scène qu'on quitte, la suivante arrive du fond
+        el.style.transform = reduce ? "" : `scale(${zoomScale(f - stages.indexOf(id))})`;
       });
       const { from, to, t } = segment(f, suns.length);
       const a = suns[from];
       const b = suns[to];
       const sun = sunRef.current;
       if (sun && a && b) {
-        sun.style.left = `${a.x + (b.x - a.x) * t}%`;
-        sun.style.top = `${a.y + (b.y - a.y) * t}%`;
-        const size = a.size + (b.size - a.size) * t;
+        // Écrans étroits : l'astre rétrécit et, le texte occupant toute la largeur,
+        // il se range dans le coin haut, de son côté, pour ne jamais passer derrière un titre
+        const vw = window.innerWidth;
+        const k = Math.min(1, Math.max(0.45, vw / 1200));
+        const corner = vw < 1100;
+        const x = a.x + (b.x - a.x) * t;
+        const y = a.y + (b.y - a.y) * t;
+        sun.style.left = `${corner ? (x >= 50 ? 96 : 4) : x}%`;
+        sun.style.top = `${corner ? 2 : y}%`;
+        const size = (a.size + (b.size - a.size) * t) * k;
         sun.style.width = `${size}px`;
         sun.style.height = `${size}px`;
       }
     };
     apply(progress.get());
-    return progress.on("change", apply);
-  }, [progress, stages, suns, used]);
+    const onResize = () => apply(progress.get());
+    window.addEventListener("resize", onResize);
+    const off = progress.on("change", apply);
+    return () => {
+      off();
+      window.removeEventListener("resize", onResize);
+    };
+  }, [progress, stages, suns, used, reduce]);
 
   const initial = stageWeights(progress.get(), stages);
   const sun0 = suns[0];
@@ -104,7 +120,7 @@ export default function Landscape({
             ref={(el) => {
               sceneRefs.current[id] = el;
             }}
-            className="absolute inset-0 will-change-[opacity]"
+            className="absolute inset-0 origin-[50%_58%] will-change-[opacity,transform]"
             style={{ opacity: w, visibility: w < 0.004 ? "hidden" : "visible" }}
           >
             <PointerProvider>

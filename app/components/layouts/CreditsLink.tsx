@@ -16,7 +16,10 @@ export default function CreditsLink() {
     <Link
       href="/credits"
       aria-label={`Crédits — ${credits.short}`}
-      className="veil group fixed bottom-4 left-4 z-40 flex items-center gap-2 rounded-full p-2 text-ink-soft opacity-80 transition hover:text-ink hover:opacity-100 focus-visible:opacity-100 sm:bottom-5 sm:left-6 sm:px-3 sm:py-1.5"
+      className={`veil group fixed left-4 z-40 flex items-center gap-2 rounded-full p-2.5 text-ink-soft transition hover:text-ink sm:left-6 sm:px-3 sm:py-1.5 ${
+        // Sur l'accueil mobile, la navigation par icônes occupe le bas de l'écran : le lien remonte en haut à gauche
+        pathname === "/" ? "top-4 md:top-auto md:bottom-5" : "bottom-4 sm:bottom-5"
+      }`}
     >
       <CreditsIcon size={18} />
       <span className="label-spaced hidden sm:inline">Crédits</span>

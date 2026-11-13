@@ -1,15 +1,18 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
-import { anchorId, pad } from "../../lib/journey";
+import { anchorId, contentOpacity, pad, zoomScale } from "../../lib/journey";
 import { icons } from "../icons/GrisIcons";
+import { useJourney } from "../journey/JourneyContext";
 import { fadeUp, stagger } from "../journey/motion";
 
 /**
- * Gabarit d'une section : un écran plein.
- * Le contenu réapparaît en cascade à chaque passage, comme un souvenir qui revient.
+ * Gabarit d'une section : un écran plein, empilé avec les autres.
+ * Son zoom et son opacité suivent la position du voyage : quand on avance, elle grossit et s'efface
+ * (on entre dans la scène) pendant que la suivante arrive du fond. Seule la section active est interactive.
+ * Si le contenu dépasse l'écran (mobile), la section défile à l'intérieur avant de passer à la suivante.
  */
 export default function SectionShell({
   index,
@@ -23,43 +26,58 @@ export default function SectionShell({
   heading?: boolean;
   className?: string;
 }) {
+  const { progress, active } = useJourney();
   const section = sections[index];
   const titleId = `${anchorId(section.id)}-titre`;
   const Icon = icons[section.icon];
+  const isActive = active === index;
+
+  const opacity = useTransform(progress, (f) => contentOpacity(f - index));
+  // Sans animation demandée, le zoom est neutralisé en CSS (globals.css) : rendu identique côté serveur et client
+  const scale = useTransform(progress, (f) => zoomScale(f - index, 0.35, 0.1));
+  const visibility = useTransform(opacity, (o) => (o < 0.01 ? "hidden" : "visible"));
+
   return (
-    <section
+    <motion.section
       id={anchorId(section.id)}
       data-section-index={index}
       aria-labelledby={titleId}
-      className={`relative flex min-h-svh snap-start items-center px-4 pb-28 pt-24 sm:px-8 md:pb-16 md:pr-24 ${className}`}
+      aria-hidden={!isActive}
+      inert={!isActive}
+      // La section d'arrivée reste à opacité 1 : un parent en fondu couperait le verre dépoli (backdrop-filter)
+      // de ses cartes pendant tout le trajet. Son contenu apparaît carte par carte (fadeUp) ; seule la section
+      // qu'on quitte s'efface en bloc.
+      style={isActive ? { opacity: 1, scale, visibility: "visible" } : { opacity, scale, visibility }}
+      className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >
-      <motion.div
-        className="mx-auto w-full max-w-[1200px]"
-        variants={stagger}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ amount: 0.25 }}
-      >
-        {heading ? (
-          <motion.header variants={fadeUp} className="mb-8 md:mb-12">
-            <p className="label-spaced flex items-center gap-2 text-ink-soft">
-              <Icon size={18} className="text-ink" />
-              <span className="tabular-nums">{pad(index + 1)}</span>
-              <span aria-hidden className="h-px w-6 bg-current opacity-50" />
-              {section.label}
-            </p>
-            <h2 id={titleId} className="title-spaced mt-4 text-3xl leading-tight text-ink sm:text-5xl">
+      <div className="flex min-h-full items-center px-4 pb-28 pt-16 sm:px-8 md:pb-14 md:pr-24 short:pt-10 short:md:pb-8">
+        <motion.div
+          className="mx-auto w-full max-w-[1200px] max-md:legible"
+          variants={stagger}
+          initial="hidden"
+          animate={isActive ? "show" : "hidden"}
+        >
+          {heading ? (
+            <motion.header variants={fadeUp} className="legible mb-8 md:mb-12 short:md:mb-6">
+              <p className="label-spaced flex items-center gap-2 text-ink">
+                <Icon size={18} className="text-ink" />
+                <span className="tabular-nums">{pad(index + 1)}</span>
+                <span aria-hidden className="h-px w-6 bg-current opacity-50" />
+                {section.label}
+              </p>
+              <h2 id={titleId} className="title-spaced mt-4 text-3xl leading-tight text-ink sm:text-5xl short:mt-3 short:sm:text-4xl">
+                {section.title}
+              </h2>
+              {section.intro && <p className="mt-3 max-w-xl text-ink">{section.intro}</p>}
+            </motion.header>
+          ) : (
+            <h2 id={titleId} className="sr-only">
               {section.title}
             </h2>
-            {section.intro && <p className="mt-3 max-w-xl text-ink-soft">{section.intro}</p>}
-          </motion.header>
-        ) : (
-          <h2 id={titleId} className="sr-only">
-            {section.title}
-          </h2>
-        )}
-        {children}
-      </motion.div>
-    </section>
+          )}
+          {children}
+        </motion.div>
+      </div>
+    </motion.section>
   );
 }

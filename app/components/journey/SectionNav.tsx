@@ -27,7 +27,7 @@ export default function SectionNav() {
                 onClick={() => goTo(i)}
                 aria-current={current ? "location" : undefined}
                 aria-label={s.label}
-                className={`grid h-9 w-9 place-items-center rounded-full transition duration-500 ${
+                className={`grid size-10 place-items-center rounded-full md:size-9 transition duration-500 ${
                   current ? "bg-ink text-sky-top" : "text-ink-soft hover:text-ink"
                 }`}
               >
