@@ -80,8 +80,9 @@ export default function Parcours() {
               style={{ left: c.cols[0] * COL_W, width: (c.cols[1] - c.cols[0]) * COL_W + NODE_W }}
               aria-hidden
             >
+              <span className="size-1.5 shrink-0 rotate-45 bg-accent" />
               <span className="label-spaced legible whitespace-nowrap text-ink">{c.title}</span>
-              <span className="h-px flex-1 bg-ink/20" />
+              <span className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
             </motion.div>
           ))}
 
@@ -96,13 +97,21 @@ export default function Parcours() {
                   key={`${e.from}-${e.to}`}
                   d={edgePath(nodeBox(a), nodeBox(b))}
                   fill="none"
-                  stroke="var(--ink)"
-                  strokeOpacity={taken ? 0.55 : 0.3}
-                  strokeWidth={taken ? 1.6 : 1.2}
-                  strokeDasharray={taken ? undefined : "4 5"}
+                  stroke={taken ? "var(--accent)" : "var(--ink)"}
+                  strokeOpacity={taken ? 0.85 : 0.6}
+                  strokeWidth={taken ? 1.6 : 1.8}
+                  strokeLinecap="round"
+                  strokeDasharray={taken ? undefined : "0.1 5"}
                 />
               );
             })}
+            {/* Une étoile à chaque départ du chemin pris */}
+            {careerNodes
+              .filter((n) => isTaken(n.kind) && n.kind !== "choice" && careerEdges.some((e) => e.from === n.id))
+              .map((n) => {
+                const b = nodeBox(n);
+                return <circle key={n.id} cx={b.x + b.w} cy={b.y + b.h / 2} r="2.6" fill="var(--accent)" />;
+              })}
           </motion.svg>
 
           {/* Nœuds */}
@@ -123,7 +132,7 @@ export default function Parcours() {
                 }`}
                 style={{ left: box.x, top: box.y, width: box.w, height: box.h }}
               >
-                <span className={`flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-soft`}>
+                <span className="flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-soft">
                   <NodeGlyph node={node} size={13} className={muted ? "" : "text-ink"} />
                   {kindLabels[node.kind]}
                 </span>
@@ -153,7 +162,7 @@ export default function Parcours() {
       {/* Le panneau de verre apparaît lui-même (fadeUp) ; seul son contenu change d'une étape à l'autre */}
       <motion.div
         variants={fadeUp}
-        className="veil mx-auto mt-5 rounded-2xl p-5"
+        className="veil relative mx-auto mt-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
         style={{ maxWidth: Math.max(size.width, 0) || undefined }}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -163,7 +172,7 @@ export default function Parcours() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.35, ease: WASH }}
-            className="grid gap-3 sm:grid-cols-[1fr_1.4fr] sm:gap-6"
+            className="grid gap-3 sm:grid-cols-[1fr_auto_1.4fr] sm:gap-7"
             aria-live="polite"
           >
             <div>
@@ -172,15 +181,20 @@ export default function Parcours() {
                 {kindLabels[selected.kind]}
                 {selected.period && <span className="tabular-nums">· {selected.period}</span>}
               </p>
-              <h3 className="mt-2 text-lg font-semibold leading-snug text-ink">{selected.title}</h3>
-              {selected.place && <p className="text-sm text-ink-soft">{selected.place}</p>}
+              <h3 className="title-spaced mt-2.5 text-base leading-snug text-ink sm:text-lg">{selected.title}</h3>
+              {selected.place && <p className="mt-1 text-sm text-ink-soft">{selected.place}</p>}
             </div>
+            {/* Filet vertical et losange, comme une couture entre les deux colonnes */}
+            <span aria-hidden className="relative hidden w-px bg-ink/15 sm:block">
+              <span className="absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent" />
+            </span>
             <div>
               <p className="text-sm leading-relaxed text-ink">{selected.text}</p>
               {selected.tags && (
-                <ul className="mt-3 flex flex-wrap gap-1.5">
+                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
                   {selected.tags.map((t) => (
-                    <li key={t} className="rounded-full border border-ink/20 px-2 py-0.5 text-[11px] text-ink-soft">
+                    <li key={t} className="flex items-center gap-2 text-xs text-ink">
+                      <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
                       {t}
                     </li>
                   ))}
