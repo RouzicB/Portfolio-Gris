@@ -217,6 +217,15 @@ body {
 .project-loader { animation: loader-out 0.95s ease-in both; }
 .project-loader .emblem-draw { animation-duration: 0.6s; }
 
+/* Pendant un voyage entre sections, la palette change à chaque image : une transition de couleur
+   (classes `transition`) en démarrerait puis annulerait des milliers par image, et la couleur traînerait
+   derrière le décor. On ne garde que les transitions de forme et d'opacité. */
+html[data-travel] *,
+html[data-travel] *::before,
+html[data-travel] *::after {
+  transition-property: transform, translate, scale, rotate, opacity !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .animate-drift,

@@ -1,17 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { animate, useMotionValue, useReducedMotion, type AnimationPlaybackControls } from "framer-motion";
 import { sections } from "../../data/sections";
 import { palettes } from "../../data/palettes";
-import { mixPalette } from "../../lib/color";
-import { anchorId, canScrollWithin, clampIndex, gestureDirection, paletteToVars, segment } from "../../lib/journey";
+import { parseColor, type RGBA } from "../../lib/color";
+import { anchorId, canScrollWithin, clampIndex, cssVarName, gestureDirection, segment } from "../../lib/journey";
+import type { Palette } from "../../types";
 import { JourneyContext } from "./JourneyContext";
 import Landscape from "../background/Landscape";
 import SectionNav from "./SectionNav";
 
 const STAGES = sections.map((s) => s.stage);
 const SUNS = sections.map((s) => s.sun);
+/** Palettes lues une fois pour toutes : chaque image ne fait plus que des mélanges de nombres */
+const KEYS = Object.keys(palettes[STAGES[0]]) as (keyof Palette)[];
+const VARS = KEYS.map(cssVarName);
+const PARSED: RGBA[][] = STAGES.map((stage) => KEYS.map((k) => parseColor(palettes[stage][k])));
 /** Durée du voyage d'une section à l'autre (zoom), en secondes */
 const TRAVEL = 1.35;
 /** Courbe : départ franc, arrivée très douce */
@@ -38,15 +43,34 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       const target = clampIndex(index, sections.length);
       const forward = target >= activeRef.current;
       activeRef.current = target;
-      setActive(target);
       travel.current?.stop();
       const duration = instant ? 0 : reduce ? 0.45 : TRAVEL;
       busyUntil.current = performance.now() + duration * 1000;
-      // On arrive en haut de la section en avançant, en bas en reculant (sections plus hautes que l'écran)
+      // La section d'arrivée est rendue tout de suite (sans attendre React), et placée :
+      // en haut en avançant, en bas en reculant (sections plus hautes que l'écran)
       const el = stageRef.current?.querySelector<HTMLElement>(`[data-section-index="${target}"]`);
-      if (el) el.scrollTop = forward || instant ? 0 : el.scrollHeight;
-      if (instant) progress.set(target);
-      else travel.current = animate(progress, target, { duration, ease: EASE });
+      if (el) {
+        el.style.contentVisibility = "visible";
+        el.scrollTop = forward || instant ? 0 : el.scrollHeight;
+      }
+      if (instant) {
+        travel.current = null;
+        document.documentElement.removeAttribute("data-travel");
+        progress.set(target);
+      } else {
+        // Voyage en cours : transitions de couleur suspendues (globals.css)
+        const root = document.documentElement;
+        root.setAttribute("data-travel", "");
+        const run = animate(progress, target, { duration, ease: EASE });
+        travel.current = run;
+        run.then(() => {
+          if (travel.current === run) root.removeAttribute("data-travel");
+        });
+      }
+      // Le rendu React (section active, navigation, apparitions) passe en tâche de fond, interruptible :
+      // il ne bloque plus les premières images du voyage
+      if (instant) setActive(target);
+      else startTransition(() => setActive(target));
       const hash = `#${anchorId(sections[target].id)}`;
       if (window.location.hash !== hash) window.history.replaceState(null, "", target === 0 ? window.location.pathname : hash);
     },
@@ -84,14 +108,24 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
   // La palette suit la position, image par image
   useEffect(() => {
     const root = document.documentElement;
-    let last = "";
+    // Dernière valeur écrite par variable : seules celles qui changent sont réécrites
+    const last: string[] = [];
     const apply = (f: number) => {
       const { from, to, t } = segment(f, sections.length);
-      const vars = paletteToVars(mixPalette(palettes[sections[from].stage], palettes[sections[to].stage], t));
-      const key = Object.values(vars).join("|");
-      if (key === last) return;
-      last = key;
-      Object.entries(vars).forEach(([name, value]) => root.style.setProperty(name, value));
+      const a = PARSED[from];
+      const b = PARSED[to];
+      for (let i = 0; i < KEYS.length; i++) {
+        const ca = a[i];
+        const cb = b[i];
+        const r = Math.round(ca[0] + (cb[0] - ca[0]) * t);
+        const g = Math.round(ca[1] + (cb[1] - ca[1]) * t);
+        const bl = Math.round(ca[2] + (cb[2] - ca[2]) * t);
+        const al = Math.round((ca[3] + (cb[3] - ca[3]) * t) * 1000) / 1000;
+        const value = `rgba(${r}, ${g}, ${bl}, ${al})`;
+        if (last[i] === value) continue;
+        last[i] = value;
+        root.style.setProperty(VARS[i], value);
+      }
     };
     apply(progress.get());
     return progress.on("change", apply);

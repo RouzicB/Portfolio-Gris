@@ -46,14 +46,23 @@ export default function Landscape({
   const sunRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Dernier état écrit par scène : on ne touche au DOM que si quelque chose change
+    const shown: Partial<Record<StageId, boolean>> = {};
     const apply = (f: number) => {
       const weights = stageWeights(f, stages);
       used.forEach((id) => {
         const el = sceneRefs.current[id];
         if (!el) return;
         const w = weights[id] ?? 0;
+        const visible = w >= 0.004;
+        if (shown[id] !== visible) {
+          shown[id] = visible;
+          el.style.visibility = visible ? "visible" : "hidden";
+          // Scène invisible : ni styles, ni mise en page, ni peinture (le recalcul de la palette l'ignore)
+          el.style.contentVisibility = visible ? "visible" : "hidden";
+        }
+        if (!visible) return;
         el.style.opacity = String(w);
-        el.style.visibility = w < 0.004 ? "hidden" : "visible";
         // Zoom : on entre dans la scène qu'on quitte, la suivante arrive du fond
         el.style.transform = reduce ? "" : `scale(${zoomScale(f - stages.indexOf(id))})`;
       });
@@ -124,7 +133,11 @@ export default function Landscape({
               sceneRefs.current[id] = el;
             }}
             className="absolute inset-0 origin-[50%_58%] will-change-[opacity,transform]"
-            style={{ opacity: w, visibility: w < 0.004 ? "hidden" : "visible" }}
+            style={{
+              opacity: w,
+              visibility: w < 0.004 ? "hidden" : "visible",
+              contentVisibility: w < 0.004 ? "hidden" : "visible",
+            }}
           >
             <PointerProvider>
               <Art />

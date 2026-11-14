@@ -36,6 +36,8 @@ export default function SectionShell({
   // Sans animation demandée, le zoom est neutralisé en CSS (globals.css) : rendu identique côté serveur et client
   const scale = useTransform(progress, (f) => zoomScale(f - index, 0.35, 0.1));
   const visibility = useTransform(opacity, (o) => (o < 0.01 ? "hidden" : "visible"));
+  // Section effacée : ses styles ne sont plus recalculés pendant les transitions de palette
+  const contentVisibility = visibility;
 
   return (
     <motion.section
@@ -47,7 +49,11 @@ export default function SectionShell({
       // La section d'arrivée reste à opacité 1 : un parent en fondu couperait le verre dépoli (backdrop-filter)
       // de ses cartes pendant tout le trajet. Son contenu apparaît carte par carte (fadeUp) ; seule la section
       // qu'on quitte s'efface en bloc.
-      style={isActive ? { opacity: 1, scale, visibility: "visible" } : { opacity, scale, visibility }}
+      style={
+        isActive
+          ? { opacity: 1, scale, visibility: "visible", contentVisibility: "visible" }
+          : { opacity, scale, visibility, contentVisibility }
+      }
       className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >
       <div className="flex min-h-full items-center px-4 pb-28 pt-16 sm:px-8 md:pb-14 md:pr-24 short:pt-10 short:md:pb-8">
