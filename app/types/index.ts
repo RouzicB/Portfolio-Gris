@@ -151,7 +151,7 @@ export interface SkillProfile {
 export interface Book {
   title: string;
   /** Ce qu'on feuillette : les pages d'un document (par défaut) ou les écrans d'une interface */
-  unit?: "page" | "écran";
+  unit?: "page" | "écran" | "slide";
   /** Le document d'origine, à ouvrir en entier */
   pdf?: string;
   /** Chapitres : titre et numéro de leur première page (à partir de 1) ; peut être vide */
@@ -171,10 +171,22 @@ export interface Universe {
     glyphs?: { letter: string; meaning: string }[];
     glyphFont?: string;
     note?: string;
+    /** Logotype tout en largeur (titre sur plusieurs mots) : affiché plus grand */
+    wide?: boolean;
   };
   palette: { name: string; hex: string; role: string }[];
   /** `family` : la famille CSS chargée pour le spécimen */
   fonts: { name: string; family: string; role: string; use: string }[];
-  motif?: { src: string; alt: string; text: string };
-  photo?: { src: string; alt: string; text: string };
+  motif?: UniverseImage;
+  photo?: UniverseImage;
+}
+
+/** Image de l'univers (motif, photographie…) ; `label` remplace le libellé par défaut,
+ *  `background` affiche l'image en entier (sans recadrage) sur ce fond */
+export interface UniverseImage {
+  src: string;
+  alt: string;
+  text: string;
+  label?: string;
+  background?: string;
 }

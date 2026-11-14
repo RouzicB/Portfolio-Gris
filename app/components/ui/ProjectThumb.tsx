@@ -25,7 +25,7 @@ export default function ProjectThumb({
   // Projet réel : sa vignette (logo…) posée en entier sur sa teinte, ou à défaut son image de couverture
   if (project.thumb) {
     return (
-      <span className={`absolute inset-0 grid place-items-center ${arch ? "px-[24%] py-[17%]" : "px-[30%] py-[12%]"}`} style={{ background: a }}>
+      <span className={`absolute inset-0 grid place-items-center ${arch ? "px-[24%] pb-[13%] pt-[22%]" : "px-[30%] py-[12%]"}`} style={{ background: a }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP) */}
         <img src={project.thumb} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" />
       </span>

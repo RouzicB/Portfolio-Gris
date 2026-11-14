@@ -33,11 +33,13 @@ export default function BookReader({ book }: { book: Book }) {
   const strip = useRef<HTMLOListElement>(null);
   const touchX = useRef<number | null>(null);
   const page = book.pages[index];
-  // Les mots changent selon ce qu'on feuillette : les pages d'un document ou les écrans d'une interface
-  const screen = book.unit === "écran";
-  const words = screen
-    ? { unit: "Écran", prev: "Écran précédent", next: "Écran suivant", read: "Lire la description de l'écran", all: "Tous les écrans" }
-    : { unit: "Page", prev: "Page précédente", next: "Page suivante", read: "Lire le texte de la page", all: "Toutes les pages" };
+  // Les mots changent selon ce qu'on feuillette : les pages d'un document, les écrans d'une interface ou les slides d'une présentation
+  const words =
+    book.unit === "écran"
+      ? { unit: "Écran", prev: "Écran précédent", next: "Écran suivant", read: "Lire la description de l'écran", all: "Tous les écrans" }
+      : book.unit === "slide"
+        ? { unit: "Slide", prev: "Slide précédente", next: "Slide suivante", read: "Lire le texte de la slide", all: "Toutes les slides" }
+        : { unit: "Page", prev: "Page précédente", next: "Page suivante", read: "Lire le texte de la page", all: "Toutes les pages" };
 
   // Chapitre en cours : le dernier qui commence avant la page affichée (aucun pour la couverture et le sommaire)
   const chapter = book.chapters.reduce((cur, c, k) => (c.page <= index + 1 ? k : cur), -1);

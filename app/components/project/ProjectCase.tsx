@@ -7,7 +7,7 @@ import { adjacentProjects, projects } from "../../data/projects";
 import type { Project } from "../../types";
 import { pad } from "../../lib/journey";
 import PageScene from "../layouts/PageScene";
-import { ArrowRightIcon, ArrowUpRightIcon, ChevronIcon, ClockIcon, ConceptionIcon, FormationIcon, OutilsIcon, ProfilIcon, ProjetsIcon, RechercheIcon, type Icon } from "../icons/GrisIcons";
+import { ArrowRightIcon, ArrowUpRightIcon, ChevronIcon, ClockIcon, ConceptionIcon, FormationIcon, OutilsIcon, ProfilIcon, RechercheIcon, type Icon } from "../icons/GrisIcons";
 import { fadeUp, stagger } from "../journey/motion";
 import { Chapter, Hairline, ROMAN } from "../ui/Chapter";
 import ProjectThumb from "../ui/ProjectThumb";
@@ -43,10 +43,18 @@ export default function ProjectCase({ slug }: { slug: string }) {
       stage={project.stage}
       back={{ href: "/#section-projets", label: "Projets" }}
       aside={
-        <>
-          <ProjetsIcon size={18} className="text-ink" />
-          {pad(nav.index + 1)} / {pad(projects.length)}
-        </>
+        // Numéro d'étude : libellé espacé, puis « 03 ◆ 10 » le long d'un filet, comme les chapitres
+        <p className="flex items-center gap-3">
+          <span className="label-spaced hidden sm:inline">Étude</span>
+          <span className="flex items-center gap-2 font-display tabular-nums">
+            <span className="text-base font-semibold leading-none">{pad(nav.index + 1)}</span>
+            <span aria-hidden className="relative h-px w-7 bg-ink/35">
+              <span className="absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent" />
+            </span>
+            <span className="sr-only">sur</span>
+            <span className="text-sm leading-none">{pad(projects.length)}</span>
+          </span>
+        </p>
       }
     >
       <motion.main className="relative mx-auto max-w-[1100px] px-4 pb-24 pt-24 sm:px-8 sm:pt-28" variants={stagger} initial="hidden" animate="show">

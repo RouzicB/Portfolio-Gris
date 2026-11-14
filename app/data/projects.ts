@@ -1,5 +1,6 @@
 import type { Project } from "../types";
 import { charteSlift } from "./charte-slift";
+import { elyndorSlides, elyndorUniverse } from "./elyndor";
 import { sliftUniverse } from "./slift";
 import { vibesEcrans, vibesUniverse } from "./vibes";
 
@@ -80,6 +81,44 @@ const all: Project[] = [
     thumb: "/projets/slift/logo-blanc.webp",
     universe: sliftUniverse,
     book: charteSlift,
+  },
+  {
+    slug: "chronicles-of-elyndor",
+    title: "Elyndor",
+    context: "Projet d'école · design system",
+    year: 2026,
+    role: "UX/UI designer (projet à trois)",
+    duration: "Projet de cours",
+    summary: "Le design system d'un jeu de rôle, repensé pour les joueurs qui perçoivent les couleurs autrement.",
+    problem:
+      "L'application compagnon de Chronicles of Elyndor (inventaire, quêtes, personnage) disait presque tout en couleurs. La rareté d'un objet, l'onglet actif, une erreur : en deutéranopie, Rare et Épique devenaient deux bleus identiques, Peu commun et Unique deux bruns. Huit informations reposaient sur la couleur seule, et environ un joueur sur douze risquait d'équiper ou de démonter le mauvais objet.",
+    solution:
+      "Une v1.1 du design system bâtie sur une règle : la couleur confirme, elle n'informe jamais seule. Une forme par rareté (du cercle à l'hexagone) et un libellé sur chaque badge, des états à deux signaux (barre, coche, anneau), un sens par couleur (bleu pour l'interaction, or pour la récompense), des contrastes AA mesurés et des couleurs passées en variables.",
+    process: [
+      { title: "Audit", text: "Chaque composant passé au simulateur (protanopie, deutéranopie, tritanopie), en niveaux de gris, au contraste et à l'écart ΔE : 8 informations portées par la couleur seule." },
+      { title: "Priorités", text: "Classées par impact sur le jeu, fréquence et composants touchés : d'abord les raretés, puis les alertes et boutons, enfin la navigation et le niveau." },
+      { title: "Règles", text: "Six règles de système : double codage, contraste, écart mesuré, un sens par couleur, états à deux signaux, vérification avant livraison." },
+      { title: "Design system", text: "Variables à trois niveaux, badges de rareté, boutons à cinq états, navigation, grille d'inventaire et 46 icônes dessinées pour l'univers, dans un document de 24 pages." },
+      { title: "Vérification", text: "Les mêmes tests avant et après, et l'écran Inventaire refait comme écran de référence." },
+    ],
+    learnings: [
+      "L'accessibilité ne retire rien à l'ambiance : la fantasy sombre est restée, seule l'information a changé de canal.",
+      "Mesurer (ΔE, contrastes) transforme un ressenti en décision : on sait quand une paire de couleurs ne suffit plus.",
+      "Une règle simple, deux canaux sur trois, se vérifie sur chaque composant et survit aux mises à jour.",
+    ],
+    outcomes: [
+      { value: "ΔE 9 → 24", label: "écart minimal entre raretés" },
+      { value: "6", label: "règles d'accessibilité" },
+      { value: "46", label: "icônes dessinées pour l'univers" },
+    ],
+    tags: ["Design system", "Accessibilité", "Daltonisme", "UI design"],
+    tools: ["Figma", "Color Blind"],
+    hues: ["#16181D", "#D9A441"],
+    stage: "bleu",
+    cover: "/projets/elyndor/couverture.webp",
+    thumb: "/projets/elyndor/titre.webp",
+    universe: elyndorUniverse,
+    book: elyndorSlides,
   },
   {
     slug: "apres",

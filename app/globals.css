@@ -40,7 +40,9 @@
 html {
   /* L'accueil ne défile pas (voyage section par section, voir Journey.tsx) ; les autres pages défilent normalement */
   scroll-behavior: smooth;
-  background: var(--sky-bottom);
+  /* Même dégradé que le ciel du décor, fixé à la fenêtre : la gouttière de la barre de défilement
+     (que le décor ne couvre pas) prolonge le ciel au lieu de former une bande unie */
+  background: var(--sky-bottom) linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%) fixed;
 }
 
 body {
@@ -94,12 +96,10 @@ body {
 ::-webkit-scrollbar { width: 14px; height: 14px; }
 ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 ::-webkit-scrollbar-corner { background: transparent; }
-/* La piste : un fil d'encre au milieu, le reste transparent (le décor passe derrière) */
-::-webkit-scrollbar-track {
-  background: linear-gradient(90deg, transparent 6.5px, color-mix(in srgb, var(--ink) 22%, transparent) 6.5px 7.5px, transparent 7.5px);
-}
-::-webkit-scrollbar-track:horizontal {
-  background: linear-gradient(180deg, transparent 6.5px, color-mix(in srgb, var(--ink) 22%, transparent) 6.5px 7.5px, transparent 7.5px);
+/* Pas de piste : aucun fond derrière le curseur, le décor reste visible jusqu'au bord */
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece {
+  background: transparent;
 }
 /* Le curseur : une perle allongée, plus claire en son cœur, cernée d'un liseré clair pour se détacher du décor */
 ::-webkit-scrollbar-thumb {
@@ -119,13 +119,10 @@ body {
   border-width: 3px;
   background-color: var(--accent);
 }
-/* Bandes à défilement horizontal (parcours, miniatures) : une piste un peu plus présente.
+/* Bandes à défilement horizontal (parcours, miniatures) : même curseur, sans piste.
    Pas de scrollbar-color ici non plus, pour garder le style ci-dessus dans Chromium. */
 @utility scrollbar-gris {
   scrollbar-gutter: auto;
-  &::-webkit-scrollbar-track:horizontal {
-    background: linear-gradient(180deg, transparent 6px, color-mix(in srgb, var(--ink) 30%, transparent) 6px 8px, transparent 8px);
-  }
 }
 
 /* Texte posé à même le décor : un halo de la teinte du voile, invisible mais qui garantit la lisibilité
@@ -216,6 +213,10 @@ body {
 .page-loader .emblem-orbit-rev { animation-duration: 5s; }
 .page-loader .emblem-fade { animation-duration: 0.5s; animation-delay: 0.1s; }
 
+/* Petit chargement entre deux études de cas : plus court, l'anneau se trace une fois */
+.project-loader { animation: loader-out 0.95s ease-in both; }
+.project-loader .emblem-draw { animation-duration: 0.6s; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .animate-drift,
@@ -231,6 +232,7 @@ body {
   .emblem-orbit-rev,
   .emblem-fade { animation: none; }
   .page-loader { animation: loader-out 0.5s ease-in both; }
+  .project-loader { animation: loader-out 0.4s ease-in both; }
   /* Pas de zoom entre les sections : un simple fondu */
   [data-section-index] { transform: none !important; }
 }

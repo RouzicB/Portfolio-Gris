@@ -29,8 +29,8 @@ export const sliftUniverse: Universe = {
   ],
   motif: {
     src: "/projets/slift/motif.webp",
-    alt: "Motif : des triangles asymétriques rouges aux angles arrondis, dispersés sur fond blanc",
-    text: "Des triangles asymétriques dérivés du logo, en arrière-plan ou en rupture. Leur opacité peut baisser, jamais leur géométrie : le motif ne recompose rien librement.",
+    alt: "Motif : de grands triangles blancs aux angles arrondis qui découpent une photo en noir et blanc d'un mur d'escalade",
+    text: "Des triangles asymétriques dérivés du logo, posés en rupture sur la photo comme sur la couverture de la charte. Leur opacité peut baisser, jamais leur géométrie : le motif ne recompose rien librement.",
   },
   photo: {
     src: "/projets/slift/photo.webp",

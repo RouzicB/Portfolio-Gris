@@ -7,7 +7,7 @@ import type { StageId } from "../../types";
 import { palettes, stageSuns } from "../../data/palettes";
 import { paletteToVars } from "../../lib/journey";
 import Landscape from "../background/Landscape";
-import { ChevronIcon } from "../icons/GrisIcons";
+import { ArrowRightIcon } from "../icons/GrisIcons";
 
 /**
  * Gabarit des pages hors accueil (études de cas, crédits) :
@@ -42,15 +42,17 @@ export default function PageScene({
 
       {/* Pas de barre : une pastille de retour flottante, et un repère discret à droite */}
       <nav aria-label="Navigation de la page" className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-start justify-between p-4 sm:p-6">
+        {/* Retour : une pastille de verre, une flèche fine qui recule au survol, un filet, le libellé espacé des titres */}
         <Link
           href={back.href}
-          className="veil pointer-events-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-ink transition hover:-translate-x-0.5"
+          className="veil group pointer-events-auto inline-flex h-10 items-center gap-3 rounded-full pl-4 pr-5 text-ink transition hover:border-ink/25"
         >
-          <ChevronIcon size={16} className="rotate-180" />
-          {back.label}
+          <ArrowRightIcon size={16} className="rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
+          <span aria-hidden className="h-4 w-px bg-ink/25" />
+          <span className="label-spaced">{back.label}</span>
         </Link>
         {aside && (
-          <div className="veil pointer-events-auto inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs tabular-nums text-ink-soft">
+          <div className="veil pointer-events-auto inline-flex h-10 items-center gap-3 rounded-full px-5 text-ink">
             {aside}
           </div>
         )}
