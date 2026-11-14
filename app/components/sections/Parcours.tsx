@@ -1,16 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { careerChapters, careerEdges, careerNodes, defaultNodeId } from "../../data/career";
 import type { FlowNode } from "../../types";
-import { COL_W, NODE_W, canvasSize, edgePath, isTaken, kindLabels, nodeBox } from "../../lib/flowchart";
+import { flowLayout, isTaken, kindLabels, type Orientation } from "../../lib/flowchart";
 import { AptitudesIcon, ArrowRightIcon, ChoixIcon, FormationIcon, TravailIcon, VerrouIcon } from "../icons/GrisIcons";
 import { fadeIn, fadeUp, group, WASH } from "../journey/motion";
 import SectionShell from "./SectionShell";
 
 const byId = new Map(careerNodes.map((n) => [n.id, n]));
-const size = canvasSize(careerNodes);
+
+/** Téléphones : l'arborescence se lit de haut en bas (le temps descend) */
+const NARROW = "(max-width: 767px)";
+const subscribeNarrow = (cb: () => void) => {
+  const mq = window.matchMedia(NARROW);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+function useOrientation(): Orientation {
+  const narrow = useSyncExternalStore(
+    subscribeNarrow,
+    () => window.matchMedia(NARROW).matches,
+    () => false,
+  );
+  return narrow ? "vertical" : "horizontal";
+}
 
 /** Icône d'un nœud selon son type et son domaine */
 function NodeGlyph({ node, size, className }: { node: FlowNode; size: number; className?: string }) {
@@ -34,13 +49,19 @@ const kindClass: Record<FlowNode["kind"], string> = {
 };
 
 /**
- * 05 — Parcours : l'arborescence du portfolio principal, posée à l'horizontale.
+ * 05 — Parcours : l'arborescence du portfolio principal, posée à l'horizontale
+ * (sur téléphone, à la verticale : le temps descend et les couloirs deviennent des colonnes).
  * Le temps se lit de gauche à droite ; couloir du haut = formation, du milieu = expériences,
  * du bas = chemins non empruntés. Chaque étape se sélectionne pour afficher son détail.
  */
 export default function Parcours() {
   const [selectedId, setSelectedId] = useState(defaultNodeId);
   const selected = byId.get(selectedId)!;
+  const orientation = useOrientation();
+  const vertical = orientation === "vertical";
+  const layout = useMemo(() => flowLayout(careerNodes, careerChapters, orientation), [orientation]);
+  const { size } = layout;
+  const detailRef = useRef<HTMLDivElement>(null);
 
   // Le canevas défile à l'horizontale quand l'écran est plus étroit que lui : on le signale
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -52,11 +73,19 @@ export default function Parcours() {
     if (!el) return;
     const ro = new ResizeObserver(() => {
       const r = el.clientWidth / size.width;
+      // Vertical : l'arborescence tient toujours dans la largeur (au besoin un peu réduite), on ne défile pas de côté
+      if (vertical) return setFit({ overflowing: false, scale: Math.min(1, r) });
       setFit(r >= 1 ? { overflowing: false, scale: 1 } : r >= 0.9 ? { overflowing: false, scale: r } : { overflowing: true, scale: 1 });
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [vertical, size.width]);
+
+  const select = (id: string) => {
+    setSelectedId(id);
+    // Vertical : le détail est sous une longue arborescence, on l'amène à l'écran
+    if (vertical) requestAnimationFrame(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+  };
 
   return (
     <SectionShell index={4}>
@@ -70,24 +99,41 @@ export default function Parcours() {
         // sinon rien n'est rogné, même pendant l'apparition des cartes qui montent de quelques pixels
         className={overflowing ? "scrollbar-gris -mx-4 overflow-x-auto overflow-y-hidden px-4 pb-4 pt-1" : "pb-2"}
       >
-        <div className="relative mx-auto" style={{ width: size.width, height: size.height, zoom: scale === 1 ? undefined : scale }} role="group" aria-label="Arborescence du parcours">
+        <div
+          className="relative mx-auto"
+          style={{ width: size.width, height: size.height, zoom: scale === 1 ? undefined : scale }}
+          role="group"
+          aria-label="Arborescence du parcours"
+        >
           {/* Chapitres */}
-          {careerChapters.map((c) => (
-            <motion.div
-              key={c.id}
-              variants={fadeIn}
-              className="absolute top-0 flex items-center gap-2"
-              style={{ left: c.cols[0] * COL_W, width: (c.cols[1] - c.cols[0]) * COL_W + NODE_W }}
-              aria-hidden
-            >
-              <span className="size-1.5 shrink-0 rotate-45 bg-accent" />
-              <span className="label-spaced legible whitespace-nowrap text-ink">{c.title}</span>
-              <span className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
-            </motion.div>
-          ))}
+          {careerChapters.map((c) => {
+            const box = layout.chapterBox(c);
+            return (
+              <motion.div
+                key={c.id}
+                variants={fadeIn}
+                className={`absolute flex items-center gap-2 ${vertical ? "z-10" : ""}`}
+                style={{ left: box.x, top: box.y, width: box.w }}
+                aria-hidden
+              >
+                {/* Vertical : les liens traversent la ligne du chapitre, son titre se pose sur une pastille */}
+                <span className={`flex items-center gap-2 ${vertical ? "veil rounded-full px-3 py-1" : ""}`}>
+                  <span className="size-1.5 shrink-0 rotate-45 bg-accent" />
+                  <span className="label-spaced legible whitespace-nowrap text-ink">{c.title}</span>
+                </span>
+                <span className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
+              </motion.div>
+            );
+          })}
 
           {/* Liens */}
-          <motion.svg variants={fadeIn} className="pointer-events-none absolute inset-0 overflow-visible" width={size.width} height={size.height} aria-hidden>
+          <motion.svg
+            variants={fadeIn}
+            className="pointer-events-none absolute inset-0 overflow-visible"
+            width={size.width}
+            height={size.height}
+            aria-hidden
+          >
             {careerEdges.map((e) => {
               const a = byId.get(e.from)!;
               const b = byId.get(e.to)!;
@@ -95,7 +141,7 @@ export default function Parcours() {
               return (
                 <path
                   key={`${e.from}-${e.to}`}
-                  d={edgePath(nodeBox(a), nodeBox(b))}
+                  d={layout.edgePath(layout.nodeBox(a), layout.nodeBox(b))}
                   fill="none"
                   stroke={taken ? "var(--accent)" : "var(--ink)"}
                   strokeOpacity={taken ? 0.85 : 0.6}
@@ -109,14 +155,14 @@ export default function Parcours() {
             {careerNodes
               .filter((n) => isTaken(n.kind) && n.kind !== "choice" && careerEdges.some((e) => e.from === n.id))
               .map((n) => {
-                const b = nodeBox(n);
-                return <circle key={n.id} cx={b.x + b.w} cy={b.y + b.h / 2} r="2.6" fill="var(--accent)" />;
+                const p = layout.exit(layout.nodeBox(n));
+                return <circle key={n.id} cx={p.x} cy={p.y} r="2.6" fill="var(--accent)" />;
               })}
           </motion.svg>
 
           {/* Nœuds */}
           {careerNodes.map((node) => {
-            const box = nodeBox(node);
+            const box = layout.nodeBox(node);
             const isSelected = node.id === selectedId;
             const muted = node.kind === "locked" || node.kind === "future";
             return (
@@ -124,7 +170,7 @@ export default function Parcours() {
                 variants={fadeUp}
                 key={node.id}
                 type="button"
-                onClick={() => setSelectedId(node.id)}
+                onClick={() => select(node.id)}
                 aria-pressed={isSelected}
                 aria-label={`${kindLabels[node.kind]} : ${node.title}${node.period ? `, ${node.period}` : ""}`}
                 className={`absolute flex flex-col justify-between p-2.5 text-left transition duration-300 hover:-translate-y-0.5 ${kindClass[node.kind]} ${
@@ -139,7 +185,7 @@ export default function Parcours() {
                 {node.kind === "future" ? (
                   <span className="title-spaced text-center text-2xl text-ink-soft">?</span>
                 ) : (
-                  <span className={`line-clamp-2 text-[12px] font-semibold leading-tight ${muted ? "text-ink-soft" : "text-ink"}`}>
+                  <span className={`line-clamp-2 hyphens-auto text-[12px] font-semibold leading-tight ${muted ? "text-ink-soft" : "text-ink"}`}>
                     {node.short ?? node.title}
                   </span>
                 )}
@@ -161,9 +207,10 @@ export default function Parcours() {
       {/* Détail de l'étape sélectionnée */}
       {/* Le panneau de verre apparaît lui-même (fadeUp) ; seul son contenu change d'une étape à l'autre */}
       <motion.div
+        ref={detailRef}
         variants={fadeUp}
-        className="veil relative mx-auto mt-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
-        style={{ maxWidth: Math.max(size.width, 0) || undefined }}
+        className="veil relative mx-auto mt-6 scroll-mb-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
+        style={{ maxWidth: vertical ? undefined : size.width }}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.article
@@ -207,4 +254,3 @@ export default function Parcours() {
     </SectionShell>
   );
 }
-

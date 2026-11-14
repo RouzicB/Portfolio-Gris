@@ -4,7 +4,7 @@ import { motionValue } from "framer-motion";
 import Parcours from "@/app/components/sections/Parcours";
 import { JourneyContext } from "@/app/components/journey/JourneyContext";
 import { careerChapters, careerEdges, careerNodes } from "@/app/data/career";
-import { COL_W, canvasSize, edgePath, isTaken, nodeBox } from "@/app/lib/flowchart";
+import { COL_W, canvasSize, edgePath, flowLayout, isTaken, nodeBox } from "@/app/lib/flowchart";
 
 describe("Parcours (arborescence horizontale)", () => {
   it("relie uniquement des étapes existantes et avance de gauche à droite", () => {
@@ -42,6 +42,23 @@ describe("Parcours (arborescence horizontale)", () => {
     expect(canvasSize(careerNodes).width).toBeLessThanOrEqual(1200);
     expect(isTaken("locked")).toBe(false);
     expect(isTaken("current")).toBe(true);
+  });
+
+  it("se pose à la verticale sur téléphone : le temps descend, sans chevauchement", () => {
+    const v = flowLayout(careerNodes, careerChapters, "vertical");
+    expect(v.size.width).toBeLessThanOrEqual(360);
+    careerEdges.forEach((e) => {
+      const a = v.nodeBox(careerNodes.find((n) => n.id === e.from)!);
+      const b = v.nodeBox(careerNodes.find((n) => n.id === e.to)!);
+      expect(b.y).toBeGreaterThanOrEqual(a.y);
+    });
+    const boxes = careerNodes.map((n) => v.nodeBox(n));
+    boxes.forEach((p, i) =>
+      boxes.slice(i + 1).forEach((q) => {
+        const overlap = p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + q.h && q.y < p.y + p.h;
+        expect(overlap).toBe(false);
+      }),
+    );
   });
 
   it("affiche le détail de l'étape choisie", async () => {
