@@ -115,11 +115,12 @@ export default function Landscape({
   return (
     <div data-landscape className="fixed inset-0 -z-10 overflow-hidden" aria-hidden>
       <WatercolorDefs />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)" }} />
+      <div data-palette-live className="absolute inset-0" style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)" }} />
 
       {/* Soleil (ou lune), entouré d'anneaux fins */}
       <div
         ref={sunRef}
+        data-palette-live
         className="absolute -translate-x-1/2 -translate-y-1/2"
         style={{ left: `${sun0.x}%`, top: `${sun0.y}%`, width: sun0.size, height: sun0.size, opacity: Math.min(1, sun0.size / 70) }}
       >
@@ -149,6 +150,7 @@ export default function Landscape({
             ref={(el) => {
               sceneRefs.current[id] = el;
             }}
+            data-scene
             className="absolute inset-0 origin-[50%_58%] will-change-[opacity,transform]"
             style={{
               opacity: w,

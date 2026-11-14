@@ -105,12 +105,24 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     };
   }, [goTo]);
 
-  // La palette suit la position, image par image
+  // La palette suit la position, image par image.
+  // ⚠ Pas sur :root : Chrome recalculerait alors le style de tous les éléments affichés (~800) à chaque image.
+  // Elle n'est écrite que sur les quelques éléments qui la suivent en direct (ciel, astre, navigation, crédits :
+  // attribut data-palette-live) ; chaque section porte sa propre palette, fixe (SectionShell).
   useEffect(() => {
-    const root = document.documentElement;
+    let targets: HTMLElement[] = [];
+    const collect = () => {
+      targets = Array.from(document.querySelectorAll<HTMLElement>("[data-palette-live]"));
+      last.length = 0;
+    };
     // Dernière valeur écrite par variable : seules celles qui changent sont réécrites
     const last: string[] = [];
+    const write = (name: string, value: string) => {
+      for (const el of targets) el.style.setProperty(name, value);
+    };
     const apply = (f: number) => {
+      // Un élément suivi a pu être remplacé (navigation entre pages) : on relit la liste
+      if (targets.length === 0 || targets.some((el) => !el.isConnected)) collect();
       const { from, to, t } = segment(f, sections.length);
       const a = PARSED[from];
       const b = PARSED[to];
@@ -124,11 +136,17 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
         const value = `rgba(${r}, ${g}, ${bl}, ${al})`;
         if (last[i] === value) continue;
         last[i] = value;
-        root.style.setProperty(VARS[i], value);
+        write(VARS[i], value);
       }
     };
+    collect();
     apply(progress.get());
-    return progress.on("change", apply);
+    const off = progress.on("change", apply);
+    return () => {
+      off();
+      // Le lien Crédits survit à la page d'accueil : il reprend la palette de la page suivante
+      for (const el of targets) VARS.forEach((name) => el.style.removeProperty(name));
+    };
   }, [progress]);
 
   // Gestes : molette, glissé tactile, clavier
@@ -229,6 +247,7 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     <JourneyControlsContext.Provider value={controls}>
       <JourneyContext.Provider value={value}>
         <button
+          data-palette-live
           type="button"
           onClick={() => goTo(1)}
           className="label-spaced sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-veil focus:px-4 focus:py-2"

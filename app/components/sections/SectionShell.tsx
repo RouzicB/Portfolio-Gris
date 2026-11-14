@@ -1,12 +1,21 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { motion, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
-import { anchorId, contentOpacity, pad, zoomScale } from "../../lib/journey";
+import { palettes } from "../../data/palettes";
+import { anchorId, contentOpacity, pad, paletteToVars, zoomScale } from "../../lib/journey";
 import { icons } from "../icons/GrisIcons";
 import { useJourney } from "../journey/JourneyContext";
 import { fadeUp, stagger } from "../journey/motion";
+
+/**
+ * Palette propre à chaque section, posée sur la section elle-même : pendant un voyage, seul le ciel
+ * (et la navigation) se mélange image par image. Le contenu garde ses couleurs : celui qu'on quitte s'efface
+ * dans les siennes, celui qui arrive apparaît directement dans les siennes, et le navigateur n'a plus
+ * à recalculer le style de chaque texte et de chaque carte à chaque image.
+ */
+const SECTION_VARS = sections.map((s) => paletteToVars(palettes[s.stage]) as CSSProperties);
 
 /**
  * Gabarit d'une section : un écran plein, empilé avec les autres.
@@ -51,8 +60,8 @@ export default function SectionShell({
       // qu'on quitte s'efface en bloc.
       style={
         isActive
-          ? { opacity: 1, scale, visibility: "visible", contentVisibility: "visible" }
-          : { opacity, scale, visibility, contentVisibility }
+          ? { ...SECTION_VARS[index], opacity: 1, scale, visibility: "visible", contentVisibility: "visible" }
+          : { ...SECTION_VARS[index], opacity, scale, visibility, contentVisibility }
       }
       className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >

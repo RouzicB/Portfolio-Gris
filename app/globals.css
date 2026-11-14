@@ -206,9 +206,9 @@ body {
   0%, 70% { opacity: 1; visibility: visible; }
   100% { opacity: 0; visibility: hidden; }
 }
-.page-loader { animation: loader-out 1.5s ease-in both; }
+.page-loader { animation: loader-out 1.1s ease-in both; }
 /* Dans l'écran de chargement, l'emblème va plus vite */
-.page-loader .emblem-draw { animation-duration: 0.95s; }
+.page-loader .emblem-draw { animation-duration: 0.7s; }
 .page-loader .emblem-orbit { animation-duration: 3s; }
 .page-loader .emblem-orbit-rev { animation-duration: 5s; }
 .page-loader .emblem-fade { animation-duration: 0.5s; animation-delay: 0.1s; }
@@ -223,7 +223,23 @@ body {
 html[data-travel] *,
 html[data-travel] *::before,
 html[data-travel] *::after {
-  transition-property: transform, translate, scale, rotate, opacity !important;
+  transition-property: translate, scale, rotate, opacity !important;
+}
+
+/* Éléments animés par framer-motion (transform écrit à chaque image, en style en ligne) : une classe
+   `transition` relancerait une transition CSS de 300 ms à chaque image (apparitions saccadées et coûteuses).
+   On n'y laisse pas `transform` ; les survols de Tailwind passent par `translate` / `scale`, qui restent. */
+[style*="transform"] {
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, box-shadow,
+    opacity, translate, scale, rotate !important;
+}
+
+/* Scènes du décor : leurs couleurs sont écrites en dur, elles ne lisent pas la palette.
+   En y figeant les variables, le navigateur arrête là la propagation : quand la palette change
+   (à chaque image d'un voyage), les centaines de formes SVG ne sont plus recalculées. */
+[data-scene] {
+  --sky-top: #000; --sky-bottom: #000; --accent: #000; --ink: #000; --ink-soft: #000;
+  --veil: #000; --wash-near: #000; --wash-far: #000; --sun: #000;
 }
 
 /* Téléphones et tablettes : le processeur graphique est le goulot. On garde le rendu, on retire ce qui

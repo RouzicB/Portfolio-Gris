@@ -6,7 +6,7 @@ export const WASH: [number, number, number, number] = [0.22, 1, 0.36, 1];
 /** Conteneur : les enfants apparaissent en cascade quand la section entre à l'écran */
 export const stagger: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.25 } },
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } },
 };
 
 /**
@@ -17,8 +17,10 @@ export const stagger: Variants = {
  * jamais un conteneur qui les englobe : pour un groupe, utiliser `group` puis `fadeUp` sur chaque carte.
  */
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: WASH } },
+  // `transform` complet plutôt que `y` : framer-motion le confie alors au compositeur (Web Animations),
+  // l'apparition reste fluide même quand le fil principal est occupé (téléphones, changement de section)
+  hidden: { opacity: 0, transform: "translateY(22px)" },
+  show: { opacity: 1, transform: "translateY(0px)", transition: { duration: 0.7, ease: WASH } },
 };
 
 /** Groupe sans effet propre : transmet l'apparition en cascade à ses enfants (cartes en verre) */

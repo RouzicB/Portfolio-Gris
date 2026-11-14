@@ -21,6 +21,7 @@ export default function SectionNav() {
 
   return (
     <nav
+      data-palette-live
       aria-label="Sections"
       className="fixed bottom-3 left-1/2 z-40 -translate-x-1/2 md:bottom-auto md:left-auto md:right-4 md:top-1/2 md:translate-x-0 md:-translate-y-1/2"
     >

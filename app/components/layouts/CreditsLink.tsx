@@ -16,6 +16,7 @@ export default function CreditsLink() {
   if (pathname === "/credits") return null;
   return (
     <Link
+      data-palette-live
       href="/credits"
       aria-label={`Crédits — ${credits.short}`}
       className={`group fixed left-3 z-40 flex items-center gap-2.5 text-ink sm:left-5 ${
