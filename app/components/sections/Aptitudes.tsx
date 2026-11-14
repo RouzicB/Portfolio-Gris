@@ -73,11 +73,9 @@ function Profile({ profile, mirrored = false }: { profile: SkillProfile; mirrore
         {profile.tools.map((t) => (
           <li
             key={t.brand}
-            className="inline-flex items-center gap-2 rounded-full border border-ink/15 py-1 pl-1.5 pr-3 text-xs text-ink transition hover:border-ink/40"
+            className="inline-flex items-center gap-2 rounded-full border border-ink/15 py-1.5 pl-2.5 pr-3 text-xs text-ink transition hover:border-ink/40"
           >
-            <span className="grid size-6 place-items-center rounded-full bg-ink/[0.08]">
-              <BrandIcon name={t.brand} size={15} />
-            </span>
+            <BrandIcon name={t.brand} size={16} />
             {t.name}
           </li>
         ))}
