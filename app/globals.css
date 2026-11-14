@@ -80,20 +80,53 @@ body {
   border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
 }
 
-/* Barres de défilement : fines, arrondies, à la teinte du décor (jamais la barre grise du système) */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--ink) 28%, transparent) transparent;
+/* ─── Barres de défilement ───────────────────────────────────────────
+   Comme le fil de la navigation : un trait fin (la piste) sur lequel glisse une perle de lumière (le curseur),
+   aux couleurs du décor en cours, sans flèches ni fond gris du système.
+   Chromium et Safari : pseudo-éléments ::-webkit-scrollbar. Attention, dans Chromium, déclarer scrollbar-color
+   ou scrollbar-width désactive ces pseudo-éléments : ces deux propriétés sont donc réservées à Firefox. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent) 80%, var(--ink)) transparent;
+  }
 }
-/* Barre horizontale du canevas du parcours : un trait d'encre, un peu plus présent */
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+::-webkit-scrollbar-corner { background: transparent; }
+/* La piste : un fil d'encre au milieu, le reste transparent (le décor passe derrière) */
+::-webkit-scrollbar-track {
+  background: linear-gradient(90deg, transparent 6.5px, color-mix(in srgb, var(--ink) 22%, transparent) 6.5px 7.5px, transparent 7.5px);
+}
+::-webkit-scrollbar-track:horizontal {
+  background: linear-gradient(180deg, transparent 6.5px, color-mix(in srgb, var(--ink) 22%, transparent) 6.5px 7.5px, transparent 7.5px);
+}
+/* Le curseur : une perle allongée, plus claire en son cœur, cernée d'un liseré clair pour se détacher du décor */
+::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 75%, var(--ink)), color-mix(in srgb, var(--accent) 55%, var(--sky-top)) 50%, color-mix(in srgb, var(--accent) 75%, var(--ink))) padding-box;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sky-top) 35%, transparent);
+}
+::-webkit-scrollbar-thumb:horizontal {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 75%, var(--ink)), color-mix(in srgb, var(--accent) 55%, var(--sky-top)) 50%, color-mix(in srgb, var(--accent) 75%, var(--ink))) padding-box;
+}
+/* Au survol ou en glissant, la perle s'élargit et s'allume */
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  border-width: 3px;
+  background-color: var(--accent);
+}
+/* Bandes à défilement horizontal (parcours, miniatures) : une piste un peu plus présente.
+   Pas de scrollbar-color ici non plus, pour garder le style ci-dessus dans Chromium. */
 @utility scrollbar-gris {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--accent) 70%, transparent) color-mix(in srgb, var(--ink) 10%, transparent);
+  scrollbar-gutter: auto;
+  &::-webkit-scrollbar-track:horizontal {
+    background: linear-gradient(180deg, transparent 6px, color-mix(in srgb, var(--ink) 30%, transparent) 6px 8px, transparent 8px);
+  }
 }
-/* Navigateurs sans scrollbar-color (Safari) */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--ink) 28%, transparent); border-radius: 999px; }
 
 /* Texte posé à même le décor : un halo de la teinte du voile, invisible mais qui garantit la lisibilité
    quand un rocher, une liane ou un nuage passe derrière (contraste WCAG AA vérifié sur chaque section). */

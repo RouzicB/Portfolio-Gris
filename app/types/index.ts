@@ -167,8 +167,9 @@ export interface Universe {
     alt: string;
     /** Fond sur lequel le logo est posé (celui de la marque) */
     background: string;
-    /** Sens de chaque lettre du logotype */
+    /** Les éléments du logotype et leur sens (une lettre, un mot…), écrits dans `glyphFont` */
     glyphs?: { letter: string; meaning: string }[];
+    glyphFont?: string;
     note?: string;
   };
   palette: { name: string; hex: string; role: string }[];

@@ -7,6 +7,9 @@ import "@fontsource/major-mono-display/latin-400.css";
 import "@fontsource/play/latin-400.css";
 import "@fontsource/play/latin-700.css";
 import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/righteous/latin-400.css";
+import "@fontsource/kumbh-sans/latin-400.css";
+import "@fontsource/kumbh-sans/latin-700.css";
 import type { Universe as UniverseData } from "../../types";
 import { fadeUp } from "../journey/motion";
 
@@ -37,13 +40,13 @@ export default function Universe({ universe }: { universe: UniverseData }) {
             {/* eslint-disable-next-line @next/next/no-img-element -- logo vectoriel (SVG) */}
             <img src={logo.src} alt={logo.alt} className="mx-auto h-auto w-full max-w-md" />
             {logo.glyphs && (
-              <ol className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-white/15 pt-8 sm:grid-cols-5">
+              <ol className={`mt-10 grid gap-x-6 gap-y-6 border-t border-white/15 pt-8 ${logo.glyphs.length > 3 ? "grid-cols-2 sm:grid-cols-5" : "sm:grid-cols-3"}`}>
                 {logo.glyphs.map((g) => (
                   <li key={g.letter} className="flex flex-col items-center text-center">
-                    <span aria-hidden className="text-4xl leading-none" style={{ fontFamily: "'Major Mono Display', monospace" }}>
-                      {g.letter.toLowerCase()}
+                    <span aria-hidden className={`leading-none ${g.letter.length > 2 ? "text-2xl uppercase tracking-wide" : "text-4xl"}`} style={{ fontFamily: logo.glyphFont }}>
+                      {g.letter}
                     </span>
-                    <span className="mt-3 text-xs leading-relaxed text-white/80" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+                    <span className="mt-3 text-sm leading-relaxed text-white">
                       <span className="sr-only">{g.letter} : </span>
                       {g.meaning}
                     </span>
@@ -52,7 +55,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
               </ol>
             )}
             {logo.note && (
-              <figcaption className="mt-8 text-center text-xs text-white/80" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+              <figcaption className="mt-8 text-center text-sm text-white">
                 {logo.note}
               </figcaption>
             )}

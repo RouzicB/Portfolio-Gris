@@ -1,5 +1,6 @@
 import type { Project } from "../types";
 import { charteSlift } from "./charte-slift";
+import { sliftUniverse } from "./slift";
 import { vibesEcrans, vibesUniverse } from "./vibes";
 
 // ⚠ Études de cas d'exemple — remplacez-les par vos projets (chiffres compris), dans n'importe quel ordre.
@@ -77,6 +78,7 @@ const all: Project[] = [
     stage: "rouge",
     cover: "/projets/slift/mockups.webp",
     thumb: "/projets/slift/logo-blanc.webp",
+    universe: sliftUniverse,
     book: charteSlift,
   },
   {
