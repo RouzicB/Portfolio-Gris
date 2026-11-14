@@ -1,3 +1,4 @@
+import type { BrandName } from "../components/icons/BrandIcons";
 /** Ambiance du décor : chaque section en emprunte une, le scroll les mélange */
 export type StageId = "gris" | "rouge" | "vert" | "bleu" | "jaune" | "ciel" | "lune";
 
@@ -124,8 +125,14 @@ export interface Project {
   link?: string;
 }
 
-export interface SkillGroup {
+/** Un des deux profils (designer, développeur web) : savoir-faire décrits par ce qu’on livre, sans niveau chiffré */
+export interface SkillProfile {
+  id: "design" | "dev";
+  /** Petit libellé au-dessus du nom (« Côté dessin ») */
+  side: string;
   name: string;
   icon: IconName;
-  skills: { name: string; level: number }[];
+  pitch: string;
+  skills: { name: string; detail: string }[];
+  tools: { name: string; brand: BrandName }[];
 }

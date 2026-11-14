@@ -1,37 +1,59 @@
-import type { SkillGroup } from "../types";
+import type { SkillProfile } from "../types";
 
-// ⚠ Niveaux d'exemple (1 à 5) — à ajuster honnêtement.
-export const skillGroups: SkillGroup[] = [
+/**
+ * Deux profils qui se répondent. Pas de niveau chiffré (toujours arbitraire) :
+ * chaque savoir-faire est décrit par ce qu'il produit concrètement.
+ */
+export const profiles: SkillProfile[] = [
   {
-    name: "Recherche",
-    icon: "recherche",
-    skills: [
-      { name: "Entretiens utilisateurs", level: 5 },
-      { name: "Tests d'utilisabilité", level: 4 },
-      { name: "Ateliers de co-conception", level: 4 },
-      { name: "Synthèse & insights", level: 3 },
-    ],
-  },
-  {
-    name: "Conception",
+    id: "design",
+    side: "Côté dessin",
+    name: "Designer",
     icon: "conception",
+    pitch: "UX/UI et création graphique : comprendre les gens, puis dessiner des interfaces claires et une identité qui tient.",
     skills: [
-      { name: "Architecture de l'information", level: 4 },
-      { name: "Wireframes & parcours", level: 5 },
-      { name: "Accessibilité (RGAA)", level: 4 },
-      { name: "Stratégie produit", level: 3 },
+      { name: "Recherche utilisateur", detail: "entretiens, tests, synthèse" },
+      { name: "Architecture & parcours", detail: "arborescence, wireframes, flows" },
+      { name: "UI design", detail: "maquettes, composants, prototypes" },
+      { name: "Création graphique", detail: "identité, illustration, édition" },
+      { name: "Motion & vidéo", detail: "micro-interactions, montage" },
+    ],
+    tools: [
+      { name: "Figma", brand: "figma" },
+      { name: "Illustrator", brand: "illustrator" },
+      { name: "Photoshop", brand: "photoshop" },
+      { name: "InDesign", brand: "indesign" },
+      { name: "After Effects", brand: "aftereffects" },
+      { name: "Premiere Pro", brand: "premiere" },
     ],
   },
   {
-    name: "Interface",
+    id: "dev",
+    side: "Côté code",
+    name: "Développeur web",
     icon: "interface",
+    pitch: "Front-end : construire ce que je dessine, fidèle à la maquette, accessible et rapide.",
     skills: [
-      { name: "UI design", level: 5 },
-      { name: "Design system", level: 4 },
-      { name: "Motion design", level: 3 },
-      { name: "HTML · CSS · React", level: 3 },
+      { name: "Intégration", detail: "HTML, CSS, Tailwind, responsive" },
+      { name: "Interfaces React", detail: "composants, état, animation" },
+      { name: "Sites Next.js", detail: "rendu statique, routage, SEO" },
+      { name: "Qualité", detail: "TypeScript, tests, accessibilité" },
+      { name: "Mise en ligne", detail: "Git, Docker, Vercel" },
+    ],
+    tools: [
+      { name: "VS Code", brand: "vscode" },
+      { name: "React", brand: "react" },
+      { name: "Next.js", brand: "nextjs" },
+      { name: "TypeScript", brand: "typescript" },
+      { name: "Tailwind CSS", brand: "tailwind" },
+      { name: "Node.js", brand: "node" },
+      { name: "Jest", brand: "jest" },
+      { name: "Git", brand: "git" },
+      { name: "Docker", brand: "docker" },
+      { name: "Vercel", brand: "vercel" },
     ],
   },
 ];
 
-export const tools = ["Figma", "FigJam", "ProtoPie", "Maze", "Notion", "After Effects", "Illustrator", "VS Code"] as const;
+/** Ce qui relie les deux profils */
+export const bridge = ["Design system", "Accessibilité", "Prototypage", "Motion"] as const;

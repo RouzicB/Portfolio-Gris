@@ -8,7 +8,7 @@ export const site = {
   role: "Étudiant UX/UI Designer · 5e année",
   tagline: "Je conçois des interfaces calmes et lisibles : la structure d'abord, l'émotion ensuite.",
   // à compléter
-  bio: "En dernière année de master, je relie la recherche utilisateur, l'architecture de l'information et l'interface. J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.",
+  bio: "En 5e année de Mastère UX/UI, spécialité création graphique, je relie la recherche utilisateur, l'architecture de l'information et l'interface. J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.",
   description:
     "Portfolio de Baptiste Rouzic, étudiant UX/UI en 5e année : profil, méthode, aptitudes, parcours, projets et contact.",
   status: "Recherche une alternance ou un premier poste UX/UI pour 2027",
@@ -28,17 +28,10 @@ export const site = {
 /** Fiche du profil — à compléter */
 export const specs: { icon: IconName; label: string; value: string }[] = [
   { icon: "lieu", label: "Localisation", value: "France · mobile" },
-  { icon: "formation", label: "Formation", value: "Master Design d'expérience (5e année)" },
+  { icon: "formation", label: "Formation", value: "Mastère UX/UI · 5e année" },
   { icon: "langue", label: "Langues", value: "Français · Anglais (C1)" },
-  { icon: "conception", label: "Spécialité", value: "UX research & UI design" },
+  { icon: "conception", label: "Spécialité", value: "Création graphique · UX/UI" },
   { icon: "statut", label: "Statut", value: "Disponible à partir de 2027" },
-];
-
-/** Ce qui me fait avancer (scène Profil) */
-export const values = [
-  { title: "Écouter avant de dessiner", text: "Les meilleures idées viennent des personnes qui utilisent le produit." },
-  { title: "Retirer plutôt qu'ajouter", text: "Une interface calme laisse la place à ce qui compte." },
-  { title: "Tester tôt, tester souvent", text: "Un prototype imparfait vaut mieux qu'une certitude." },
 ];
 
 /** Crédits de la direction artistique */
@@ -57,5 +50,6 @@ export const credits = {
     { name: "Quicksand", detail: "Andrew Paglinawan — SIL Open Font License", specimen: "sans", role: "Texte" },
     { name: "Next.js, React, Tailwind CSS, Framer Motion", detail: "Licence MIT" },
     { name: "Décors et icônes", detail: "Dessinés en SVG pour ce portfolio" },
+    { name: "Logos des outils", detail: "Simple Icons (CC0) ; les marques appartiennent à leurs détenteurs" },
   ],
 } as const;

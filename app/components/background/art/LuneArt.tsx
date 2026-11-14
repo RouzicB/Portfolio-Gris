@@ -4,7 +4,7 @@ import { Frame, GeoTree, archPath, moundPath, seeded } from "./shared";
 /**
  * Contact & crédits — le jardin de nuit, en prune et rose :
  * étoiles et constellations, sommets triangulaires à deux faces, un lac qui scintille,
- * une porte en arche drapée de lianes entre deux arbres géométriques,
+ * une porte en arche drapée de lianes près d'un grand arbre géométrique, un second arbre côté pyramides,
  * et au premier plan une terrasse à balustres couverte de fleurs.
  */
 export default function LuneArt() {
@@ -97,7 +97,7 @@ export default function LuneArt() {
             <path fillRule="evenodd" fill="url(#lune-stone)" d={archPath(1150, 520, 200, 300, 110, 0.32)} />
             <rect x="1138" y="506" width="224" height="16" fill="#7a3a6c" />
             <path d="M1138 506 L1250 470 L1362 506Z" fill="#8a4479" />
-            <GeoTree x={1020} y={820} height={380} depth={3} seed={3} leafSize={36} />
+            <GeoTree x={250} y={820} height={380} depth={3} seed={3} leafSize={36} />
             <GeoTree x={1460} y={820} height={600} depth={3} seed={8} leafSize={46} leaves={["#c2416b", "#e0608a", "#8d2f5c"]} />
           </g>
           {/* Lianes et feuilles carrées qui retombent de l'arche */}

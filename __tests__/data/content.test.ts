@@ -2,7 +2,7 @@ import { sections } from "@/app/data/sections";
 import { palettes } from "@/app/data/palettes";
 import { careerNodes } from "@/app/data/career";
 import { projects } from "@/app/data/projects";
-import { skillGroups } from "@/app/data/skills";
+import { profiles } from "@/app/data/skills";
 import { specs } from "@/app/data/site";
 import { icons } from "@/app/components/icons/GrisIcons";
 import { parseColor } from "@/app/lib/color";
@@ -38,15 +38,16 @@ describe("contenu", () => {
   });
 
   it("référence uniquement des icônes existantes", () => {
-    [...sections, ...specs, ...skillGroups].forEach((item) => expect(icons[item.icon]).toBeDefined());
+    [...sections, ...specs, ...profiles].forEach((item) => expect(icons[item.icon]).toBeDefined());
   });
 
-  it("a une seule étape en cours, des projets uniques et des niveaux de 1 à 5", () => {
+  it("a une seule étape en cours, des projets uniques et deux profils outillés", () => {
     expect(careerNodes.filter((n) => n.kind === "current")).toHaveLength(1);
     expect(new Set(projects.map((p) => p.slug)).size).toBe(projects.length);
-    skillGroups.flatMap((g) => g.skills).forEach((s) => {
-      expect(s.level).toBeGreaterThanOrEqual(1);
-      expect(s.level).toBeLessThanOrEqual(5);
+    expect(profiles.map((p) => p.id)).toEqual(["design", "dev"]);
+    profiles.forEach((p) => {
+      expect(p.skills.length).toBeGreaterThan(0);
+      expect(new Set(p.tools.map((t) => t.brand)).size).toBe(p.tools.length);
     });
   });
 });
