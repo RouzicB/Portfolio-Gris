@@ -98,7 +98,7 @@ export const stageSuns: Record<StageId, Sun> = {
   gris: { x: 50, y: 30, size: 150 },
   rouge: { x: 74, y: 14, size: 90 },
   vert: { x: 22, y: 20, size: 110 },
-  bleu: { x: 67, y: 6, size: 200 },
+  bleu: { x: 67, y: 6, size: 0 }, // grotte : pas d'astre, la lumière vient de l'arbre
   jaune: { x: 84, y: 10, size: 200 },
   ciel: { x: 74, y: 18, size: 120 },
   lune: { x: 72, y: 40, size: 340 },

@@ -40,7 +40,7 @@ export const sections: Section[] = [
     intro: "Un état des lieux honnête, après cinq ans d'études et de terrain.",
     icon: "aptitudes",
     stage: "bleu",
-    sun: { x: 67, y: 6, size: 200 },
+    sun: { x: 67, y: 6, size: 0 },
   },
   {
     id: "parcours",

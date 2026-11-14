@@ -71,9 +71,12 @@ export default function Landscape({
         const y = a.y + (b.y - a.y) * t;
         sun.style.left = `${corner ? (x >= 50 ? 96 : 4) : x}%`;
         sun.style.top = `${corner ? 2 : y}%`;
-        const size = (a.size + (b.size - a.size) * t) * k;
+        const base = a.size + (b.size - a.size) * t;
+        const size = base * k;
         sun.style.width = `${size}px`;
         sun.style.height = `${size}px`;
+        // Sans astre (grotte bleue) : le halo s'efface avec la taille, sinon il resterait visible à taille nulle
+        sun.style.opacity = String(Math.min(1, base / 70));
       }
     };
     apply(progress.get());
@@ -98,7 +101,7 @@ export default function Landscape({
       <div
         ref={sunRef}
         className="absolute -translate-x-1/2 -translate-y-1/2"
-        style={{ left: `${sun0.x}%`, top: `${sun0.y}%`, width: sun0.size, height: sun0.size }}
+        style={{ left: `${sun0.x}%`, top: `${sun0.y}%`, width: sun0.size, height: sun0.size, opacity: Math.min(1, sun0.size / 70) }}
       >
         <div
           className="absolute inset-0 rounded-full"
