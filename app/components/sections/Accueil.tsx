@@ -3,14 +3,14 @@
 import { motion } from "framer-motion";
 import { site } from "../../data/site";
 import { ArrowRightIcon, ContactIcon, ScrollIcon } from "../icons/GrisIcons";
-import { useJourney } from "../journey/JourneyContext";
+import { useJourneyControls } from "../journey/JourneyContext";
 import { fadeIn, fadeUp, group } from "../journey/motion";
 import Emblem from "../ui/Emblem";
 import SectionShell from "./SectionShell";
 
 /** 01 — Accueil (identification) : le nom, le rôle, l'accroche. */
 export default function Accueil() {
-  const { goTo } = useJourney();
+  const { goTo } = useJourneyControls();
   const [first, ...rest] = site.name.split(" ");
   return (
     <SectionShell index={0} heading={false}>

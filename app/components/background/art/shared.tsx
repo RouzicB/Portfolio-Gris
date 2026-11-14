@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, useState, type ReactNode } from "react";
 
 /**
  * Outils de dessin partagés par toutes les scènes (déclarés une seule fois dans la page).
@@ -12,6 +14,41 @@ import type { ReactNode } from "react";
  * - hatch / hatch-light : hachures pour les ombres des monticules
  */
 export function WatercolorDefs() {
+  // Téléphones et tablettes : mêmes filtres, moins d'octaves de bruit et sans grain fin.
+  // Le rendu reste aquarelle, mais chaque scène se dessine plusieurs fois plus vite à haute densité de pixels.
+  const [lite, setLite] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse), (max-width: 767px)");
+    const update = () => setLite(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  if (lite) {
+    return (
+      <svg width="0" height="0" className="absolute" aria-hidden focusable="false">
+        <defs>
+          <filter id="wc-paint" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="1" seed="9" result="warp" />
+            <feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="wc-edge" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="1" seed="7" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="wc-cloud" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="50" xChannelSelector="R" yChannelSelector="G" result="d" />
+            <feGaussianBlur in="d" stdDeviation="8" />
+          </filter>
+          <filter id="wc-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="6" />
+          </filter>
+          <Patterns />
+        </defs>
+      </svg>
+    );
+  }
   return (
     <svg width="0" height="0" className="absolute" aria-hidden focusable="false">
       <defs>
@@ -38,14 +75,23 @@ export function WatercolorDefs() {
         <filter id="wc-glow" x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur stdDeviation="6" />
         </filter>
-        <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
-          <path d="M0 3.5h7" stroke="#000" strokeOpacity="0.22" strokeWidth="1.1" />
-        </pattern>
-        <pattern id="hatch-light" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-          <path d="M0 4.5h9" stroke="#fff" strokeOpacity="0.28" strokeWidth="1" />
-        </pattern>
+        <Patterns />
       </defs>
     </svg>
+  );
+}
+
+/** Hachures pour les ombres des monticules */
+function Patterns() {
+  return (
+    <>
+      <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+        <path d="M0 3.5h7" stroke="#000" strokeOpacity="0.22" strokeWidth="1.1" />
+      </pattern>
+      <pattern id="hatch-light" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+        <path d="M0 4.5h9" stroke="#fff" strokeOpacity="0.28" strokeWidth="1" />
+      </pattern>
+    </>
   );
 }
 

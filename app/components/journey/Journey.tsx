@@ -7,7 +7,7 @@ import { palettes } from "../../data/palettes";
 import { parseColor, type RGBA } from "../../lib/color";
 import { anchorId, canScrollWithin, clampIndex, cssVarName, gestureDirection, segment } from "../../lib/journey";
 import type { Palette } from "../../types";
-import { JourneyContext } from "./JourneyContext";
+import { JourneyContext, JourneyControlsContext } from "./JourneyContext";
 import Landscape from "../background/Landscape";
 import SectionNav from "./SectionNav";
 
@@ -222,23 +222,26 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     };
   }, [goTo]);
 
+  const controls = useMemo(() => ({ progress, goTo }), [progress, goTo]);
   const value = useMemo(() => ({ active, progress, goTo }), [active, progress, goTo]);
 
   return (
-    <JourneyContext.Provider value={value}>
-      <button
-        type="button"
-        onClick={() => goTo(1)}
-        className="label-spaced sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-veil focus:px-4 focus:py-2"
-      >
-        Aller au contenu
-      </button>
-      <Landscape progress={progress} stages={STAGES} suns={SUNS} />
-      <SectionNav />
-      {/* Scène : les sections sont empilées, une seule est visible et active */}
-      <main ref={stageRef} className="fixed inset-0 overflow-hidden">
-        {children}
-      </main>
-    </JourneyContext.Provider>
+    <JourneyControlsContext.Provider value={controls}>
+      <JourneyContext.Provider value={value}>
+        <button
+          type="button"
+          onClick={() => goTo(1)}
+          className="label-spaced sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-veil focus:px-4 focus:py-2"
+        >
+          Aller au contenu
+        </button>
+        <Landscape progress={progress} stages={STAGES} suns={SUNS} />
+        <SectionNav />
+        {/* Scène : les sections sont empilées, une seule est visible et active */}
+        <main ref={stageRef} className="fixed inset-0 overflow-hidden">
+          {children}
+        </main>
+      </JourneyContext.Provider>
+    </JourneyControlsContext.Provider>
   );
 }

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { sections } from "../../data/sections";
 import { site } from "../../data/site";
 import { ArrowUpRightIcon, CheckIcon, CopyIcon, DownloadIcon } from "../icons/GrisIcons";
-import { useJourney } from "../journey/JourneyContext";
+import { useJourneyControls } from "../journey/JourneyContext";
 import { fadeIn, fadeUp } from "../journey/motion";
 import Emblem from "../ui/Emblem";
 import SectionShell from "./SectionShell";
@@ -19,7 +19,7 @@ const SECTION = sections[6];
  * et le retour au début. Tout est centré, sans panneau.
  */
 export default function Contact() {
-  const { goTo } = useJourney();
+  const { goTo } = useJourneyControls();
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {

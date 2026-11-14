@@ -46,25 +46,36 @@ export default function Landscape({
   const sunRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (quasi transparentes),
+    // pour qu'un voyage n'ait pas à peindre d'un coup une scène aquarelle à haute densité de pixels.
+    // (Sur ordinateur, inutile : et leurs nuages animés se redessineraient en continu.)
+    const prewarm = window.matchMedia("(pointer: coarse), (max-width: 767px)").matches;
     // Dernier état écrit par scène : on ne touche au DOM que si quelque chose change
-    const shown: Partial<Record<StageId, boolean>> = {};
+    const state: Partial<Record<StageId, "off" | "warm" | "on">> = {};
     const apply = (f: number) => {
       const weights = stageWeights(f, stages);
+      const lo = Math.floor(f) - 1;
+      const hi = Math.ceil(f) + 1;
       used.forEach((id) => {
         const el = sceneRefs.current[id];
         if (!el) return;
         const w = weights[id] ?? 0;
-        const visible = w >= 0.004;
-        if (shown[id] !== visible) {
-          shown[id] = visible;
-          el.style.visibility = visible ? "visible" : "hidden";
-          // Scène invisible : ni styles, ni mise en page, ni peinture (le recalcul de la palette l'ignore)
-          el.style.contentVisibility = visible ? "visible" : "hidden";
+        // Étape de cette scène la plus proche de la position courante
+        let idx = stages.indexOf(id);
+        stages.forEach((s, i) => {
+          if (s === id && Math.abs(i - f) < Math.abs(idx - f)) idx = i;
+        });
+        const next = w >= 0.004 ? "on" : prewarm && idx >= lo && idx <= hi ? "warm" : "off";
+        if (state[id] !== next) {
+          state[id] = next;
+          el.style.visibility = next === "off" ? "hidden" : "visible";
+          // Scène écartée : ni styles, ni mise en page, ni peinture (le recalcul de la palette l'ignore)
+          el.style.contentVisibility = next === "off" ? "hidden" : "visible";
         }
-        if (!visible) return;
-        el.style.opacity = String(w);
+        if (next === "off") return;
+        el.style.opacity = next === "warm" ? "0.002" : String(w);
         // Zoom : on entre dans la scène qu'on quitte, la suivante arrive du fond
-        el.style.transform = reduce ? "" : `scale(${zoomScale(f - stages.indexOf(id))})`;
+        el.style.transform = reduce ? "" : `scale(${zoomScale(f - idx)})`;
       });
       const { from, to, t } = segment(f, suns.length);
       const a = suns[from];
@@ -102,7 +113,7 @@ export default function Landscape({
   const sun0 = suns[0];
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+    <div data-landscape className="fixed inset-0 -z-10 overflow-hidden" aria-hidden>
       <WatercolorDefs />
       <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)" }} />
 
@@ -112,12 +123,18 @@ export default function Landscape({
         className="absolute -translate-x-1/2 -translate-y-1/2"
         style={{ left: `${sun0.x}%`, top: `${sun0.y}%`, width: sun0.size, height: sun0.size, opacity: Math.min(1, sun0.size / 70) }}
       >
+        {/* Halo : un dégradé plutôt qu'une ombre floue de 140 px, bien moins coûteuse à redessiner
+            à chaque image pendant les voyages (la couleur de l'astre change en continu) */}
+        <div
+          className="absolute inset-[-170px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle closest-side, color-mix(in srgb, var(--sun) 45%, transparent) 25%, color-mix(in srgb, var(--sun) 18%, transparent) 60%, transparent 100%)",
+          }}
+        />
         <div
           className="absolute inset-0 rounded-full"
-          style={{
-            background: "radial-gradient(circle, var(--sun) 0%, var(--sun) 52%, transparent 71%)",
-            boxShadow: "0 0 140px 30px color-mix(in srgb, var(--sun) 45%, transparent)",
-          }}
+          style={{ background: "radial-gradient(circle, var(--sun) 0%, var(--sun) 52%, transparent 71%)" }}
         />
         <div className="absolute inset-[-30%] rounded-full border opacity-25" style={{ borderColor: "var(--sun)" }} />
         <div className="absolute inset-[-60%] rounded-full border opacity-15" style={{ borderColor: "var(--sun)" }} />
@@ -148,7 +165,7 @@ export default function Landscape({
 
       {/* Grain du papier et léger vignettage */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.22] mix-blend-multiply"
+        className="paper-grain pointer-events-none absolute inset-0 opacity-[0.22] mix-blend-multiply"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.45 0 0 0 0 0.4 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",

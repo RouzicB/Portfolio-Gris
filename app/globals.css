@@ -226,6 +226,34 @@ html[data-travel] *::after {
   transition-property: transform, translate, scale, rotate, opacity !important;
 }
 
+/* Téléphones et tablettes : le processeur graphique est le goulot. On garde le rendu, on retire ce qui
+   se recalcule à chaque image :
+   - le verre dépoli (backdrop-filter) devient un voile plus couvrant, sans flou ;
+   - le grain du papier n'est plus fusionné (multiply) avec le décor qui bouge ;
+   - les nuages et brumes du décor ne dérivent plus : chaque scène, passée dans des filtres aquarelle,
+     se dessine une fois puis n'est plus que déplacée et zoomée par le compositeur ;
+   - le fond fixe de la page (iOS, Android) ne force plus de redessin au défilement. */
+@media (pointer: coarse), (max-width: 767px) {
+  html { background-attachment: scroll; }
+  .veil {
+    backdrop-filter: none;
+    background: color-mix(in srgb, var(--veil) 65%, var(--sky-top));
+  }
+  [class*="backdrop-blur"] {
+    backdrop-filter: none;
+    background-color: color-mix(in srgb, var(--veil) 65%, var(--sky-top));
+  }
+  /* Halo de lisibilité : une seule ombre courte (les ombres larges se redessinent à chaque changement de palette) */
+  .legible,
+  .max-md\:legible { text-shadow: 0 0 1px var(--veil), 0 0 10px var(--veil); }
+  .paper-grain { mix-blend-mode: normal; opacity: 0.1; }
+  [data-landscape] .animate-drift,
+  [data-landscape] .animate-drift-slow,
+  [data-landscape] .animate-float,
+  [data-landscape] .animate-twinkle,
+  [data-landscape] .animate-rise { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .animate-drift,

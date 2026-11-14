@@ -19,3 +19,16 @@ export const JourneyContext = createContext<JourneyState>({
 });
 
 export const useJourney = () => useContext(JourneyContext);
+
+/** Commandes seules (stables) : un composant qui ne fait que naviguer ne se re-rend pas à chaque changement de section */
+export interface JourneyControls {
+  progress: MotionValue<number>;
+  goTo: (index: number, instant?: boolean) => void;
+}
+
+export const JourneyControlsContext = createContext<JourneyControls>({
+  progress: motionValue(0),
+  goTo: () => {},
+});
+
+export const useJourneyControls = () => useContext(JourneyControlsContext);

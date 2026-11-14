@@ -19,7 +19,8 @@ export function PointerProvider({ children }: Readonly<{ children: ReactNode }>)
   const y = useSpring(rawY, { stiffness: 30, damping: 20, mass: 1.2 });
 
   useEffect(() => {
-    if (reduce) return;
+    // Écran tactile : pas de souris à suivre, et un glissé ne doit pas animer sept décors à chaque image
+    if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
     const onMove = (e: PointerEvent) => {
       rawX.set((e.clientX / window.innerWidth) * 2 - 1);
       rawY.set((e.clientY / window.innerHeight) * 2 - 1);
