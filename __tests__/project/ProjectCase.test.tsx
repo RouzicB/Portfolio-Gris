@@ -24,7 +24,7 @@ describe("Pages projet", () => {
     render(<ProjectCase slug={p.slug} />);
     expect(screen.getByRole("heading", { level: 1, name: p.title })).toBeInTheDocument();
     expect(screen.getByText(p.problem)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Démarche" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Démarche/ })).toBeInTheDocument();
     p.process.forEach((s) => expect(screen.getByText(s.title)).toBeInTheDocument());
     expect(screen.getByRole("link", { name: /Projets/ })).toHaveAttribute("href", "/#section-projets");
     expect(screen.getByRole("link", { name: /Projet suivant/ })).toHaveAttribute("href", `/projets/${projects[2].slug}`);

@@ -46,7 +46,8 @@ export default function CreditsLink() {
         </span>
       </span>
 
-      <span className="legible hidden items-center gap-2.5 sm:flex">
+      {/* Le libellé sur une pastille de verre : lisible sur tous les décors (rochers rouges, falaises sombres…) */}
+      <span className="veil hidden items-center gap-2.5 rounded-full py-1.5 pl-3 pr-4 sm:flex">
         <span aria-hidden className="h-px w-4 bg-current opacity-50 transition-all duration-500 group-hover:w-8" />
         <span className="label-spaced">Crédits</span>
         <span className="hidden max-w-0 overflow-hidden whitespace-nowrap text-xs text-ink transition-all duration-700 group-hover:max-w-96 lg:inline">

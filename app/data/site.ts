@@ -13,7 +13,7 @@ export const site = {
     "Portfolio de Baptiste Rouzic, étudiant UX/UI en 5e année : profil, méthode, aptitudes, parcours, projets et contact.",
   status: "Recherche une alternance ou un premier poste UX/UI pour 2027",
   // à compléter
-  email: "contact@example.com",
+  email: "rouzicb.pro@gmail.com",
   /** Déposez le PDF dans /public */
   cv: "/cv-baptiste-rouzic.pdf",
   /** Portrait (chemin dans /public) ; null = monogramme peint */

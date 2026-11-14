@@ -1,12 +1,12 @@
 "use client";
 
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { credits, site } from "../../data/site";
 import { ArrowUpRightIcon, ChevronIcon, CreditsIcon, iconGallery } from "../icons/GrisIcons";
 import { fadeIn, fadeUp, group, stagger } from "../journey/motion";
 import PageScene from "../layouts/PageScene";
+import { Chapter, Hairline } from "../ui/Chapter";
 import Emblem from "../ui/Emblem";
 
 const MotionLink = motion.create(Link);
@@ -55,7 +55,7 @@ export default function CreditsPage() {
               ].map(([n, label, id]) => (
                 <li key={id}>
                   <a href={`#${id}`} className="label-spaced inline-flex items-baseline gap-2 text-ink underline-offset-8 transition hover:underline">
-                    <span className="font-display text-sm tracking-[0.04em] text-accent">{n}</span>
+                    <span className="font-display text-sm tracking-[0.04em] text-[color-mix(in_srgb,var(--accent)_70%,var(--ink))]">{n}</span>
                     {label}
                   </a>
                 </li>
@@ -202,41 +202,3 @@ export default function CreditsPage() {
   );
 }
 
-/** Chapitre : chiffre romain, trait fin et titre espacé ; son contenu apparaît en entrant dans l'écran */
-function Chapter({ numeral, title, id, children }: { numeral: string; title: string; id: string; children: ReactNode }) {
-  return (
-    <motion.section
-      id={id}
-      aria-labelledby={`${id}-titre`}
-      className="mt-20 scroll-mt-24 sm:mt-24"
-      variants={group}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
-    >
-      <motion.header variants={fadeUp} className="legible mb-8 flex items-center justify-center gap-4">
-        <span aria-hidden className="h-px max-w-40 flex-1 bg-ink/25" />
-        <h2 id={`${id}-titre`} className="flex items-baseline gap-3 text-ink">
-          <span className="font-display text-3xl font-light leading-none tracking-[0.04em] text-accent sm:text-4xl" aria-hidden>
-            {numeral}
-          </span>
-          <span className="sr-only">Chapitre {numeral} : </span>
-          <span className="label-spaced">{title}</span>
-        </h2>
-        <span aria-hidden className="h-px max-w-40 flex-1 bg-ink/25" />
-      </motion.header>
-      {children}
-    </motion.section>
-  );
-}
-
-/** Séparateur : trait, losange, trait */
-function Hairline() {
-  return (
-    <span aria-hidden className="my-7 flex items-center justify-center gap-3 text-ink-soft">
-      <span className="h-px w-10 bg-current opacity-40" />
-      <span className="size-1.5 rotate-45 bg-accent" />
-      <span className="h-px w-10 bg-current opacity-40" />
-    </span>
-  );
-}

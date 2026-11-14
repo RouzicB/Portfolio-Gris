@@ -22,6 +22,27 @@ export default function ProjectThumb({
 }) {
   const arch = frame === "arch";
   const [a, b] = project.hues;
+  // Projet réel : sa vignette (logo…) posée en entier sur sa teinte, ou à défaut son image de couverture
+  if (project.thumb) {
+    return (
+      <span className={`absolute inset-0 grid place-items-center ${arch ? "px-[24%] py-[17%]" : "px-[30%] py-[12%]"}`} style={{ background: a }}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP) */}
+        <img src={project.thumb} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" />
+      </span>
+    );
+  }
+  if (project.cover) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP)
+      <img
+        src={project.cover}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className={`absolute inset-0 h-full w-full object-cover ${arch ? "object-[12%_50%]" : "object-left"}`}
+      />
+    );
+  }
   const id = `thumb-${project.slug}`;
   const flip = !arch && index % 2 === 1;
   const motif = index % 4;

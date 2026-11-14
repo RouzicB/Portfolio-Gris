@@ -1,7 +1,84 @@
 import type { Project } from "../types";
+import { charteSlift } from "./charte-slift";
+import { vibesEcrans, vibesUniverse } from "./vibes";
 
 // ⚠ Études de cas d'exemple — remplacez-les par vos projets (chiffres compris), dans n'importe quel ordre.
 const all: Project[] = [
+  {
+    slug: "vibes",
+    title: "Vibes",
+    context: "Projet de fin de M1 · UX/UI & Webflow",
+    year: 2026,
+    role: "UX/UI designer & développeur Webflow (solo)",
+    duration: "Projet de fin d'année",
+    summary: "Une plateforme qui réunit billetterie de concerts et merch éco-responsable, dans l'esthétique de la nuit.",
+    problem:
+      "Billetterie d'un côté, boutiques de merch de l'autre : l'expérience des fans est éclatée et froide, l'écologie absente, et les salles prélèvent jusqu'à 25 % sur le merch des artistes. Les marques « vertes », elles, parlent une langue pastel qui n'a rien à voir avec la culture club.",
+    solution:
+      "VIBES réunit billets et merch imprimé à la demande dans un panier unifié, et donne à chaque artiste sa page à sa couleur. Son identité assume « l'éco-responsabilité version Dark Mode » : la nuit, des néons bleus et violets, des typographies de code pour dire la transparence.",
+    process: [
+      { title: "Recherche", text: "Marché du live, benchmark (Merchbar, Chez Simone, Twitch), deux personas (Chloé, fan ; Marcus, manager de label) et trois hypothèses." },
+      { title: "Identité", text: "Logotype dessiné lettre à lettre, palette nocturne, trois typos, motifs en W et M, direction photo, éco-conception graphique." },
+      { title: "Prototype", text: "Maquettes Figma en Atomic Design, thème par artiste, parcours d'achat aligné sur les 10 heuristiques de Nielsen." },
+      { title: "Tests", text: "5 testeurs en think aloud : 3 points de friction (taille oubliée, prix et CO₂ confondus, XP incomprise), corrigés dans la maquette." },
+      { title: "Intégration", text: "Webflow en composants, interactions natives sans JavaScript lourd, images WebP en lazy loading, sémantique et contrastes vérifiés." },
+    ],
+    learnings: [
+      "Une identité peut porter un engagement : ici, le noir dit l'écologie mieux que le vert.",
+      "Cinq tests ont suffi à révéler trois frictions invisibles en maquette.",
+      "Concevoir en composants dès Figma rend l'intégration Webflow presque naturelle.",
+    ],
+    outcomes: [
+      { value: "5", label: "testeurs en think aloud" },
+      { value: "3", label: "frictions corrigées" },
+      { value: "1", label: "site en ligne sur Webflow" },
+    ],
+    tags: ["UX research", "UI design", "Identité de marque", "Webflow"],
+    tools: ["Figma", "Webflow", "Notion"],
+    hues: ["#121212", "#735AA2"],
+    stage: "lune",
+    cover: "/projets/vibes/couverture.webp",
+    thumb: "/projets/vibes/logo.svg",
+    link: "https://vibes-c892c4.webflow.io/",
+    linkLabel: "Voir le site en ligne",
+    universe: vibesUniverse,
+    book: vibesEcrans,
+  },
+  {
+    slug: "slift",
+    title: "Slift",
+    context: "Projet d'école · identité de marque",
+    year: 2026,
+    role: "Designer graphique (solo)",
+    duration: "Projet de cours",
+    summary: "Une charte graphique complète, de A à Z, pour une salle d'escalade tournée vers la performance.",
+    problem:
+      "Les salles d'escalade se ressemblent : codes ludiques, ton familial, couleurs vives. SLIFT vise un autre public (grimpeurs confirmés, coachs, fédérations, marques d'équipement) qui attend une image sérieuse et professionnelle.",
+    solution:
+      "Une identité bâtie sur la précision : un pictogramme montagneux et une typographie anguleuse inscrits dans un triangle asymétrique, une base neutre où le rouge ne dépasse jamais 10 à 15 % de la surface, deux typographies et un motif de triangles dérivé du logo.",
+    process: [
+      { title: "Plateforme de marque", text: "Mission, vision, valeurs (rigueur, sobriété, engagement), positionnement et public cible." },
+      { title: "Logotype", text: "Logo principal, version horizontale, favicon, zones de protection, tailles minimales et usages interdits." },
+      { title: "Couleurs & typographies", text: "Trame noir, gris, blanc et un rouge d'accent rare ; Righteous pour les titres, Kumbh Sans pour le texte, hiérarchie complète." },
+      { title: "Iconographie & mockups", text: "Photo noir et blanc contrastée, motif de triangles, plan de salle, pictogrammes sur grille de 32 px, applications textiles." },
+    ],
+    learnings: [
+      "Une charte vaut autant par ses règles que par ses visuels : proportions, contrastes, interdits.",
+      "La sobriété demande plus de décisions que l'abondance : le rouge ne fonctionne que parce qu'il est rare.",
+    ],
+    outcomes: [
+      { value: "35", label: "pages de charte" },
+      { value: "4", label: "déclinaisons du logo" },
+      { value: "10–15 %", label: "de rouge, pas plus" },
+    ],
+    tags: ["Identité visuelle", "Charte graphique", "Création graphique"],
+    tools: ["Figma", "Illustrator", "Photoshop"],
+    hues: ["#c14443", "#dfdfdf"],
+    stage: "rouge",
+    cover: "/projets/slift/mockups.webp",
+    thumb: "/projets/slift/logo-blanc.webp",
+    book: charteSlift,
+  },
   {
     slug: "apres",
     title: "Après",

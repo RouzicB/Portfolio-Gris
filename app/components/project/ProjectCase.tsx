@@ -4,31 +4,39 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { adjacentProjects, projects } from "../../data/projects";
+import type { Project } from "../../types";
 import { pad } from "../../lib/journey";
 import PageScene from "../layouts/PageScene";
-import {
-  ChevronIcon,
-  ClockIcon,
-  ConceptionIcon,
-  FormationIcon,
-  MethodeIcon,
-  OutilsIcon,
-  ProfilIcon,
-  ProjetsIcon,
-  RechercheIcon,
-  AptitudesIcon,
-  type Icon,
-} from "../icons/GrisIcons";
-import { fadeUp, group, stagger } from "../journey/motion";
+import { ArrowRightIcon, ArrowUpRightIcon, ChevronIcon, ClockIcon, ConceptionIcon, FormationIcon, OutilsIcon, ProfilIcon, ProjetsIcon, RechercheIcon, type Icon } from "../icons/GrisIcons";
+import { fadeUp, stagger } from "../journey/motion";
+import { Chapter, Hairline, ROMAN } from "../ui/Chapter";
 import ProjectThumb from "../ui/ProjectThumb";
+import BookReader from "./BookReader";
+import Universe from "./Universe";
+
+/** Panneau en feuille ; « mirrored » inverse les coins, pour deux panneaux qui se font face */
+const leaf = (mirrored = false) => (mirrored ? "rounded-[0.75rem_2.5rem_0.75rem_2.5rem]" : "rounded-[2.5rem_0.75rem_2.5rem_0.75rem]");
 
 /**
- * Étude de cas sur sa propre page.
- * Le décor reprend l'ambiance du projet, immobile ; le contenu se lit de haut en bas.
+ * Étude de cas sur sa propre page, lue comme un petit livre :
+ * une ouverture (titre, fiche, image dans un cadre à clé de voûte), puis des chapitres en chiffres romains —
+ * le problème et la réponse face à face, la démarche sur un fil, le document à feuilleter s'il existe,
+ * les résultats, ce que j'en retiens — et le passage aux études voisines.
  */
 export default function ProjectCase({ slug }: { slug: string }) {
   const nav = adjacentProjects(slug)!;
   const project = projects[nav.index];
+
+  // Chapitres présents (le document à feuilleter est facultatif)
+  const chapters = [
+    { id: "enjeu", title: "L'enjeu" },
+    { id: "demarche", title: "Démarche" },
+    ...(project.universe ? [{ id: "univers", title: "L'univers graphique" }] : []),
+    ...(project.book ? [{ id: "document", title: project.book.title }] : []),
+    { id: "resultats", title: "Résultats" },
+    { id: "retenu", title: "Ce que j'en retiens" },
+  ].map((c, i) => ({ ...c, numeral: ROMAN[i] }));
+  const chapter = Object.fromEntries(chapters.map((c) => [c.id, c]));
 
   return (
     <PageScene
@@ -41,104 +49,154 @@ export default function ProjectCase({ slug }: { slug: string }) {
         </>
       }
     >
+      <motion.main className="relative mx-auto max-w-[1100px] px-4 pb-24 pt-24 sm:px-8 sm:pt-28" variants={stagger} initial="hidden" animate="show">
+        {/* Ouverture */}
+        <header className="legible">
+          <motion.p variants={fadeUp} className="label-spaced flex items-center gap-2.5 text-ink">
+            <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
+            Étude de cas · {project.context}
+          </motion.p>
+          <motion.h1 variants={fadeUp} className="title-spaced mt-4 text-[clamp(1.75rem,7vw,3.75rem)] leading-tight text-ink [overflow-wrap:anywhere]">
+            {project.title}
+          </motion.h1>
+          <motion.p variants={fadeUp} className="mt-4 max-w-2xl text-pretty text-lg text-ink sm:text-xl">
+            {project.summary}
+          </motion.p>
+          {project.link && (
+            <motion.p variants={fadeUp} className="mt-6">
+              <ExternalLink href={project.link} label={project.linkLabel} />
+            </motion.p>
+          )}
+        </header>
 
-      <motion.main
-        className="relative mx-auto max-w-[1100px] px-4 pb-24 pt-24 sm:px-8 sm:pt-28"
-        variants={stagger}
-        initial="hidden"
-        animate="show"
-      >
-        {/* En-tête */}
-        <motion.p variants={fadeUp} className="label-spaced legible flex items-center gap-2 text-ink">
-          <ProjetsIcon size={18} className="text-ink" />
-          Étude de cas · {project.context}
-        </motion.p>
-        <motion.h1 variants={fadeUp} className="title-spaced legible mt-4 text-[clamp(1.75rem,7vw,3.75rem)] leading-tight [overflow-wrap:anywhere]">
-          {project.title}
-        </motion.h1>
-        <motion.p variants={fadeUp} className="legible mt-4 max-w-2xl text-lg sm:text-xl">
-          {project.summary}
-        </motion.p>
-
-        <motion.dl variants={fadeUp} className="veil mt-8 grid grid-cols-2 gap-5 rounded-2xl p-5 text-sm sm:grid-cols-4">
+        {/* Fiche : quatre repères séparés par des filets */}
+        <motion.dl variants={fadeUp} className={`veil mt-8 grid grid-cols-2 gap-y-5 px-5 py-5 text-sm sm:px-7 lg:grid-cols-4 lg:divide-x lg:divide-ink/15 ${leaf()}`}>
           {[
             { Icon: ProfilIcon, label: "Rôle", value: project.role },
             { Icon: ClockIcon, label: "Durée", value: project.duration },
             { Icon: FormationIcon, label: "Année", value: String(project.year) },
             { Icon: OutilsIcon, label: "Outils", value: project.tools.join(" · ") },
           ].map(({ Icon, label, value }) => (
-            <div key={label} className="flex items-start gap-2.5">
-              <Icon size={20} className="mt-0.5 shrink-0" />
+            <div key={label} className="flex items-start gap-3 pr-3 lg:px-5 lg:first:pl-0">
+              <span className="grid size-9 shrink-0 place-items-center rounded-full border border-ink/20 text-ink">
+                <Icon size={18} />
+              </span>
               <div>
                 <dt className="label-spaced text-ink-soft">{label}</dt>
-                <dd className="mt-1">{value}</dd>
+                <dd className="mt-1 text-ink">{value}</dd>
               </div>
             </div>
           ))}
         </motion.dl>
 
-        <motion.div variants={fadeUp} className="relative mt-6 aspect-[16/7] overflow-hidden rounded-3xl shadow-xl shadow-ink/10">
-          <ProjectThumb project={project} index={nav.index} />
-        </motion.div>
-
-        {/* Problème / réponse */}
-        <Block>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card icon={RechercheIcon} title="Le problème">
-              {project.problem}
-            </Card>
-            <Card icon={ConceptionIcon} title="La réponse">
-              {project.solution}
-            </Card>
+        {/* L'image du projet, dans un cadre de verre à clé de voûte */}
+        <motion.figure variants={fadeUp} className={`veil relative mt-6 p-1.5 sm:p-2 ${leaf()}`}>
+          <span aria-hidden className="absolute -top-[5px] left-1/2 z-10 size-2.5 -translate-x-1/2 rotate-45 bg-accent" />
+          <div className={`relative overflow-hidden rounded-[2.1rem_0.5rem_2.1rem_0.5rem] ${project.cover ? "aspect-video" : "aspect-[16/7]"}`}>
+            {project.cover ? (
+              // eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP)
+              <img src={project.cover} alt={`Couverture du projet ${project.title}`} className="absolute inset-0 size-full object-cover" />
+            ) : (
+              <ProjectThumb project={project} index={nav.index} />
+            )}
           </div>
-        </Block>
+        </motion.figure>
 
-        {/* Démarche */}
-        <Block icon={MethodeIcon} title="Démarche">
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {project.process.map((step, i) => (
-              <motion.li key={step.title} variants={fadeUp} className="veil rounded-2xl p-5">
-                <span className="font-display text-2xl font-light tracking-wider text-accent">{pad(i + 1)}</span>
-                <h3 className="mt-2 font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.text}</p>
-              </motion.li>
+        {/* Sommaire */}
+        <motion.nav variants={fadeUp} aria-label="Chapitres de l'étude de cas" className="mt-8 flex justify-center">
+          <ol className="veil inline-flex flex-wrap justify-center gap-1 rounded-[1.5rem] p-1.5">
+            {chapters.map((c) => (
+              <li key={c.id}>
+                <a href={`#${c.id}`} className="label-spaced inline-flex items-baseline gap-2 rounded-full px-3 py-1.5 text-ink transition hover:bg-ink/10">
+                  <span className="font-display text-sm tracking-[0.04em] text-[color-mix(in_srgb,var(--accent)_70%,var(--ink))]">{c.numeral}</span>
+                  {c.title}
+                </a>
+              </li>
             ))}
           </ol>
-        </Block>
+        </motion.nav>
 
-        {/* Résultats */}
-        <Block icon={AptitudesIcon} title="Résultats">
-          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {/* L'enjeu : le problème et la réponse se font face */}
+        <Chapter {...chapter.enjeu}>
+          <div className="grid gap-5 lg:grid-cols-[1fr_5.5rem_1fr] lg:gap-0">
+            <Face icon={RechercheIcon} title="Le problème">
+              {project.problem}
+            </Face>
+            <motion.div variants={fadeUp} aria-hidden className="flex items-center justify-center lg:flex-col">
+              <span className="hidden w-px flex-1 bg-gradient-to-b from-transparent to-ink/25 lg:block" />
+              <Ring className="my-1 lg:my-3">
+                <ArrowRightIcon size={18} className="rotate-90 lg:rotate-0" />
+              </Ring>
+              <span className="hidden w-px flex-1 bg-gradient-to-t from-transparent to-ink/25 lg:block" />
+            </motion.div>
+            <Face icon={ConceptionIcon} title="La réponse" mirrored>
+              {project.solution}
+            </Face>
+          </div>
+        </Chapter>
+
+        {/* Démarche : les étapes posées sur un fil */}
+        <Chapter {...chapter.demarche}>
+          <Steps steps={project.process} />
+        </Chapter>
+
+        {/* L'univers graphique de la marque */}
+        {project.universe && (
+          <Chapter {...chapter.univers}>
+            <Universe universe={project.universe} />
+          </Chapter>
+        )}
+
+        {/* Le document (ou les écrans), feuilletable sans quitter le site */}
+        {project.book && (
+          <Chapter {...chapter.document}>
+            <BookReader book={project.book} />
+            {project.link && (
+              <motion.p variants={fadeUp} className="mt-8 flex justify-center">
+                <ExternalLink href={project.link} label={project.linkLabel} />
+              </motion.p>
+            )}
+          </Chapter>
+        )}
+
+        {/* Résultats : de grands chiffres sur une seule plaque */}
+        <Chapter {...chapter.resultats}>
+          <motion.ul
+            variants={fadeUp}
+            className={`veil grid gap-y-6 px-6 py-7 sm:grid-cols-3 sm:divide-x sm:divide-ink/15 sm:px-4 ${leaf()}`}
+          >
             {project.outcomes.map((o) => (
-              <motion.li key={o.label} variants={fadeUp} className="veil rounded-2xl p-5">
-                <p className="font-display text-3xl font-light tracking-wide text-accent">{o.value}</p>
-                <p className="mt-1 text-sm text-ink-soft">{o.label}</p>
-              </motion.li>
-            ))}
-          </ul>
-        </Block>
-
-        {/* Enseignements */}
-        <Block icon={ProfilIcon} title="Ce que j'en retiens">
-          <motion.ul variants={fadeUp} className="veil space-y-3 rounded-2xl p-6">
-            {project.learnings.map((l) => (
-              <li key={l} className="flex gap-3 leading-relaxed">
-                <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                {l}
+              <li key={o.label} className="flex flex-col items-center text-center sm:px-4">
+                <span className="font-display text-[clamp(2rem,5vw,3rem)] font-light leading-none tracking-wide text-ink">{o.value}</span>
+                <span aria-hidden className="my-3 size-1.5 rotate-45 bg-accent" />
+                <span className="text-sm text-ink">{o.label}</span>
               </li>
             ))}
           </motion.ul>
-          <motion.ul variants={fadeUp} className="mt-4 flex flex-wrap gap-1.5">
-            {project.tags.map((t) => (
-              <li key={t} className="rounded-full border border-ink/20 px-2.5 py-0.5 text-xs text-ink-soft">
-                {t}
-              </li>
-            ))}
-          </motion.ul>
-        </Block>
+        </Chapter>
 
-        {/* Navigation entre études de cas */}
-        <nav aria-label="Autres études de cas" className="mt-20 grid gap-4 sm:grid-cols-2">
+        {/* Ce que j'en retiens : des phrases, pas des cartes */}
+        <Chapter {...chapter.retenu}>
+          <motion.div variants={fadeUp} className={`veil mx-auto max-w-3xl px-6 py-8 text-center sm:px-10 sm:py-10 ${leaf()}`}>
+            {project.learnings.map((l, i) => (
+              <div key={l}>
+                {i > 0 && <Hairline />}
+                <p className="text-balance text-lg leading-relaxed text-ink sm:text-xl">{l}</p>
+              </div>
+            ))}
+            <ul className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 border-t border-ink/15 pt-6" aria-label="Mots-clés">
+              {project.tags.map((t) => (
+                <li key={t} className="flex items-center gap-2 text-sm text-ink">
+                  <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </Chapter>
+
+        {/* Études voisines : deux feuilles qui se font face */}
+        <nav aria-label="Autres études de cas" className="mt-24 grid gap-4 sm:grid-cols-2">
           {[
             { p: nav.prev, label: "Projet précédent", dir: "prev" as const },
             { p: nav.next, label: "Projet suivant", dir: "next" as const },
@@ -146,10 +204,10 @@ export default function ProjectCase({ slug }: { slug: string }) {
             <Link
               key={dir}
               href={`/projets/${p.slug}`}
-              className={`veil group flex items-center gap-4 rounded-2xl p-4 transition hover:-translate-y-0.5 ${dir === "next" ? "sm:flex-row-reverse sm:text-right" : ""}`}
+              className={`veil group flex items-center gap-4 p-3 transition hover:-translate-y-0.5 ${leaf(dir === "next")} ${dir === "next" ? "sm:flex-row-reverse sm:text-right" : ""}`}
             >
-              <span className="relative h-16 w-24 shrink-0 overflow-hidden rounded-xl">
-                <ProjectThumb project={p} index={projects.indexOf(p)} />
+              <span className="relative h-16 w-24 shrink-0 overflow-hidden rounded-t-[999px] rounded-b-lg">
+                <ProjectThumb project={p} index={projects.indexOf(p)} frame="arch" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className={`label-spaced flex items-center gap-1 text-ink-soft ${dir === "next" ? "sm:justify-end" : ""}`}>
@@ -157,7 +215,7 @@ export default function ProjectCase({ slug }: { slug: string }) {
                   {label}
                   {dir === "next" && <ChevronIcon size={14} />}
                 </span>
-                <span className="title-spaced mt-1 block text-lg">{p.title}</span>
+                <span className="title-spaced mt-1 block text-lg text-ink">{p.title}</span>
               </span>
             </Link>
           ))}
@@ -167,34 +225,74 @@ export default function ProjectCase({ slug }: { slug: string }) {
   );
 }
 
-function Block({ icon: IconCmp, title, children }: { icon?: Icon; title?: string; children: ReactNode }) {
+/** Lien vers le projet en ligne : pastille d'encre, la plus visible de la page */
+function ExternalLink({ href, label = "Voir le projet" }: { href: string; label?: string }) {
   return (
-    <motion.section
-      className="mt-16"
-      variants={group}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="group inline-flex items-center gap-3 rounded-full bg-ink py-2.5 pl-5 pr-3 text-sm font-semibold text-sky-top shadow-lg shadow-ink/15 transition [text-shadow:none] hover:-translate-y-0.5"
     >
-      {title && (
-        <motion.h2 variants={fadeUp} className="label-spaced legible mb-5 flex items-center gap-2 text-ink">
-          {IconCmp && <IconCmp size={18} className="text-ink" />}
-          {title}
-        </motion.h2>
-      )}
-      {children}
-    </motion.section>
+      {label}
+      <span className="grid size-7 place-items-center rounded-full bg-sky-top/15 transition group-hover:rotate-45">
+        <ArrowUpRightIcon size={14} />
+      </span>
+      <span className="sr-only">(nouvel onglet)</span>
+    </a>
   );
 }
 
-function Card({ icon: IconCmp, title, children }: { icon: Icon; title: string; children: ReactNode }) {
+/** Un des deux panneaux de l'enjeu */
+function Face({ icon: IconCmp, title, mirrored = false, children }: { icon: Icon; title: string; mirrored?: boolean; children: ReactNode }) {
   return (
-    <motion.article variants={fadeUp} className="veil rounded-2xl p-6">
-      <h2 className="label-spaced flex items-center gap-2 text-ink-soft">
-        <IconCmp size={18} className="text-ink" />
-        {title}
-      </h2>
-      <p className="mt-3 leading-relaxed">{children}</p>
+    <motion.article variants={fadeUp} className={`veil p-6 sm:p-8 ${leaf(mirrored)}`}>
+      <h3 className={`flex items-center gap-3 ${mirrored ? "lg:flex-row-reverse lg:text-right" : ""}`}>
+        <span className="grid size-10 shrink-0 place-items-center rounded-full border border-ink/20 text-ink">
+          <IconCmp size={20} />
+        </span>
+        <span className="title-spaced text-lg text-ink">{title}</span>
+      </h3>
+      <p className="mt-4 text-pretty leading-relaxed text-ink">{children}</p>
     </motion.article>
+  );
+}
+
+/** Anneau ouvert (comme l'emblème), avec sa clé de voûte */
+function Ring({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`relative grid size-12 shrink-0 place-items-center text-ink ${className}`}>
+      <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible" aria-hidden>
+        <g className="emblem-spin-slow" style={{ transformOrigin: "24px 24px" }}>
+          <circle cx="24" cy="24" r="23" fill="none" stroke="currentColor" strokeWidth="0.9" pathLength={100} strokeDasharray="86 14" opacity="0.7" />
+          <path d="M24 -1 L26.2 1.6 L24 4.2 L21.8 1.6Z" fill="var(--accent)" />
+        </g>
+      </svg>
+      {children}
+    </span>
+  );
+}
+
+/** La démarche : un fil horizontal (vertical sur mobile), une perle numérotée par étape */
+function Steps({ steps }: { steps: Project["process"] }) {
+  return (
+    <motion.div variants={fadeUp} className={`veil relative px-6 py-8 sm:px-8 lg:px-6 lg:py-9 ${leaf()}`}>
+      {/* Le fil : vertical sur mobile, horizontal sur grand écran (du centre de la première perle à la dernière) */}
+      <span aria-hidden className="absolute bottom-14 left-12 top-14 w-px sm:left-14 bg-gradient-to-b from-ink/30 via-accent/70 to-ink/30 lg:hidden" />
+      <span aria-hidden className="absolute top-[3.75rem] hidden h-px bg-gradient-to-r from-ink/30 via-accent/70 to-ink/30 lg:block" style={{ left: `calc(1.5rem + (100% - 3rem) * ${1 / (2 * steps.length)})`, right: `calc(1.5rem + (100% - 3rem) * ${1 / (2 * steps.length)})` }} />
+      <ol className="relative grid gap-8 lg:auto-cols-fr lg:grid-flow-col lg:gap-6">
+        {steps.map((s, i) => (
+          <li key={s.title} className="grid grid-cols-[3rem_1fr] gap-4 lg:grid-cols-1 lg:justify-items-center lg:text-center">
+            <Ring>
+              <span className="grid size-9 place-items-center rounded-full bg-ink font-display text-sky-top text-sm tabular-nums">{pad(i + 1)}</span>
+            </Ring>
+            <div className="pt-1 lg:pt-3">
+              <h3 className="title-spaced text-base text-ink">{s.title}</h3>
+              <p className="mt-2 text-pretty text-sm leading-relaxed text-ink">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </motion.div>
   );
 }

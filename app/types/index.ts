@@ -123,6 +123,16 @@ export interface Project {
   /** Ambiance du décor de la page projet */
   stage: StageId;
   link?: string;
+  /** Image réelle du projet : remplace la vignette peinte (cartes, en-tête de l'étude de cas) */
+  cover?: string;
+  /** Vignette des cartes (logo détouré, pictogramme…) : centrée en entier sur la première teinte du projet */
+  thumb?: string;
+  /** Document du projet (charte, rapport…) feuilletable page par page dans l'étude de cas */
+  book?: Book;
+  /** Univers graphique (projets de marque) : logotype, couleurs, typographies, motif, photographie */
+  universe?: Universe;
+  /** Libellé du lien externe (par défaut « Voir le projet ») */
+  linkLabel?: string;
 }
 
 /** Un des deux profils (designer, développeur web) : savoir-faire décrits par ce qu’on livre, sans niveau chiffré */
@@ -135,4 +145,35 @@ export interface SkillProfile {
   pitch: string;
   skills: { name: string; detail: string }[];
   tools: { name: string; brand: BrandName }[];
+}
+
+/** Document feuilletable : une image par page, chapitres pour s'y rendre, texte de chaque page pour les lecteurs d'écran */
+export interface Book {
+  title: string;
+  /** Ce qu'on feuillette : les pages d'un document (par défaut) ou les écrans d'une interface */
+  unit?: "page" | "écran";
+  /** Le document d'origine, à ouvrir en entier */
+  pdf?: string;
+  /** Chapitres : titre et numéro de leur première page (à partir de 1) ; peut être vide */
+  chapters: { title: string; page: number }[];
+  pages: { src: string; mini: string; title: string; text?: string }[];
+}
+
+/** Univers graphique d'une marque, présenté dans son étude de cas */
+export interface Universe {
+  intro: string;
+  logo?: {
+    src: string;
+    alt: string;
+    /** Fond sur lequel le logo est posé (celui de la marque) */
+    background: string;
+    /** Sens de chaque lettre du logotype */
+    glyphs?: { letter: string; meaning: string }[];
+    note?: string;
+  };
+  palette: { name: string; hex: string; role: string }[];
+  /** `family` : la famille CSS chargée pour le spécimen */
+  fonts: { name: string; family: string; role: string; use: string }[];
+  motif?: { src: string; alt: string; text: string };
+  photo?: { src: string; alt: string; text: string };
 }
