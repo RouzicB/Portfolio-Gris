@@ -17,7 +17,7 @@ export const site = {
   /** Déposez le PDF dans /public */
   cv: "/cv-baptiste-rouzic.pdf",
   /** Portrait (chemin dans /public) ; null = monogramme peint */
-  portrait: null as string | null,
+  portrait: "/portrait.webp" as string | null,
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
     { label: "Behance", href: "https://www.behance.net/" },
@@ -51,5 +51,6 @@ export const credits = {
     { name: "Next.js, React, Tailwind CSS, Framer Motion", detail: "Licence MIT" },
     { name: "Décors et icônes", detail: "Dessinés en SVG pour ce portfolio" },
     { name: "Logos des outils", detail: "Simple Icons (CC0) ; les marques appartiennent à leurs détenteurs" },
+    { name: "Mockups du projet Delta", detail: "Affiche et flyer mis en scène sur des mockups Vecteezy (vecteezy.com)" },
   ],
 } as const;

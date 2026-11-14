@@ -22,12 +22,20 @@ export default function ProjectThumb({
 }) {
   const arch = frame === "arch";
   const [a, b] = project.hues;
-  // Projet réel : sa vignette (logo…) posée en entier sur sa teinte, ou à défaut son image de couverture
+  // Projet réel : sa vignette (logo…) posée en entier sur sa teinte, ou à défaut son image de couverture.
+  // Le logo tient dans une boîte fixe (object-contain) : qu'il soit large (Vibes) ou haut (Slift), son centre
+  // tombe au même point. Dans l'arche, ce point est un peu sous le milieu, au centre visuel de la fenêtre.
   if (project.thumb) {
     return (
-      <span className={`absolute inset-0 grid place-items-center ${arch ? "px-[24%] pb-[13%] pt-[22%]" : "px-[30%] py-[12%]"}`} style={{ background: a }}>
+      <span className="absolute inset-0" style={{ background: a }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP) */}
-        <img src={project.thumb} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" />
+        <img
+          src={project.thumb}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className={`absolute object-contain ${arch ? "left-[22%] top-[30%] h-[52%] w-[56%]" : "left-[26%] top-[20%] h-[60%] w-[48%]"}`}
+        />
       </span>
     );
   }

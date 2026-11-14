@@ -1,5 +1,6 @@
 import type { Project } from "../types";
 import { charteSlift } from "./charte-slift";
+import { deltaSlides, deltaUniverse } from "./delta";
 import { elyndorSlides, elyndorUniverse } from "./elyndor";
 import { sliftUniverse } from "./slift";
 import { vibesEcrans, vibesUniverse } from "./vibes";
@@ -119,6 +120,44 @@ const all: Project[] = [
     thumb: "/projets/elyndor/titre.webp",
     universe: elyndorUniverse,
     book: elyndorSlides,
+  },
+  {
+    slug: "delta",
+    title: "Delta",
+    context: "Projet d'école · éco-design",
+    year: 2025,
+    role: "Designer graphique",
+    duration: "Projet de cours",
+    summary: "L'identité d'un festival de musique marseillais, redessinée pour imprimer deux fois moins d'encre.",
+    problem:
+      "L'identité d'origine du festival (refonte d'école, non officielle) multiplie les couleurs, les dégradés et les illustrations : son affiche couvre 86 % de la feuille d'encre. Imprimée en grande série, distribuée puis jetée, chaque pièce de communication pèse sur l'empreinte d'un festival posé sur une plage.",
+    solution:
+      "Une refonte guidée par les règles de l'éco-design : deux tons seulement, le blanc du papier comme troisième couleur, la silhouette de Marseille en aplats plutôt qu'une profusion d'illustrations. L'affiche descend à 43 % d'encrage, le flyer à 14 %, sur papier ensemencé ; les goodies deviennent utiles et durables.",
+    process: [
+      { title: "Diagnostic", text: "Taux d'encrage mesuré sur l'affiche originale (86 %), trop de couleurs, trop d'éléments ; objectif fixé entre 30 et 40 %." },
+      { title: "Logo", text: "Le script d'origine gardé pour son geste, réduit à un contour ; les mains et le néon remplacés par un triangle, le delta." },
+      { title: "Affiche", text: "Notre-Dame-de-la-Garde, un soleil et des palmiers en bichromie ; impression offset et éco-encre." },
+      { title: "Flyer", text: "La programmation au trait, sur papier ensemencé fabriqué à Marseille, chez un imprimeur certifié ISO 14001." },
+      { title: "Goodies", text: "Bouchons d'oreilles en plastique océanique et lunettes en coquillages, logo sérigraphié en une couleur." },
+    ],
+    learnings: [
+      "En éco-design, la contrainte se mesure : un taux d'encrage tranche un débat d'esthétique.",
+      "Le papier non imprimé est une couleur à part entière ; le laisser respirer allège autant l'affiche que l'empreinte.",
+      "Un goodie éco-conçu commence par une question : servira-t-il encore après le festival ?",
+    ],
+    outcomes: [
+      { value: "86 → 43 %", label: "d'encre sur l'affiche" },
+      { value: "14 %", label: "d'encre sur le flyer" },
+      { value: "2", label: "encres, en bichromie offset" },
+    ],
+    tags: ["Éco-design", "Identité visuelle", "Print", "Affiche"],
+    tools: ["Illustrator", "Photoshop", "Canva"],
+    hues: ["#F6EFE6", "#F3997B"],
+    stage: "jaune",
+    cover: "/projets/delta/couverture.webp",
+    thumb: "/projets/delta/logo.svg",
+    universe: deltaUniverse,
+    book: deltaSlides,
   },
   {
     slug: "apres",

@@ -57,8 +57,8 @@ export default function Universe({ universe }: { universe: UniverseData }) {
                         {/* Repère : la lettre dans la typo du logo, ou le numéro de l'élément */}
                         <span
                           aria-hidden
-                          className="grid size-11 place-items-center rounded-[0.9rem_0.3rem_0.9rem_0.3rem] text-white"
-                          style={{ background: logo.background, fontFamily: g.letter.length > 2 ? undefined : logo.glyphFont }}
+                          className="grid size-11 place-items-center rounded-[0.9rem_0.3rem_0.9rem_0.3rem]"
+                          style={{ background: logo.background, color: logo.foreground ?? "#ffffff", fontFamily: g.letter.length > 2 ? undefined : logo.glyphFont }}
                         >
                           <span className={g.letter.length > 2 ? "font-display text-sm font-semibold tabular-nums" : "text-2xl leading-none"}>
                             {g.letter.length > 2 ? String(i + 1).padStart(2, "0") : g.letter}
@@ -88,7 +88,12 @@ export default function Universe({ universe }: { universe: UniverseData }) {
       {/* Les couleurs, chacune dans une petite arche */}
       <Sub title="Couleurs">
         {/* Autant de colonnes que de couleurs sur grand écran : la rangée est toujours pleine */}
-        <ul className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${palette.length === 5 ? "lg:grid-cols-5" : palette.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-6"}`}>
+        {/* Peu de couleurs : la rangée se resserre au centre plutôt que d'agrandir les arches */}
+        <ul
+          className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${
+            palette.length <= 3 ? "mx-auto max-w-2xl sm:grid-cols-3" : palette.length === 4 ? "mx-auto max-w-4xl lg:grid-cols-4" : palette.length === 5 ? "lg:grid-cols-5" : "lg:grid-cols-6"
+          }`}
+        >
           {palette.map((c) => (
             <motion.li key={c.hex} variants={fadeUp} className="veil flex flex-col rounded-b-2xl rounded-t-[999px] p-1.5 pb-4">
               <span aria-hidden className="block aspect-[4/5] w-full rounded-b-lg rounded-t-[999px] ring-1 ring-inset ring-ink/15" style={{ background: c.hex }} />
@@ -102,7 +107,8 @@ export default function Universe({ universe }: { universe: UniverseData }) {
         </ul>
       </Sub>
 
-      {/* Les typographies, en spécimen */}
+      {/* Les typographies, en spécimen (seulement si leurs fichiers sont hébergés avec le site) */}
+      {fonts.length > 0 && (
       <Sub title="Typographies">
         <motion.ul variants={fadeUp} className={`veil divide-y divide-ink/15 px-6 sm:px-8 ${leaf(true)}`}>
           {fonts.map((f) => (
@@ -122,6 +128,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
           ))}
         </motion.ul>
       </Sub>
+      )}
 
       {/* Le motif et la photographie, face à face */}
       {(motif || photo) && (

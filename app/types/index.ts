@@ -173,6 +173,8 @@ export interface Universe {
     note?: string;
     /** Logotype tout en largeur (titre sur plusieurs mots) : affiché plus grand */
     wide?: boolean;
+    /** Couleur des repères posés sur `background` (blanc par défaut ; à foncer sur un fond clair) */
+    foreground?: string;
   };
   palette: { name: string; hex: string; role: string }[];
   /** `family` : la famille CSS chargée pour le spécimen */
