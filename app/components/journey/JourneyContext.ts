@@ -24,11 +24,20 @@ export const useJourney = () => useContext(JourneyContext);
 export interface JourneyControls {
   progress: MotionValue<number>;
   goTo: (index: number, instant?: boolean) => void;
+  /** Section visée, connue dès le geste (avant que React n'ait re-rendu la page) */
+  getActive: () => number;
+  /**
+   * Prévient immédiatement, au geste, quand la section visée change : l'apparition du contenu et la navigation
+   * réagissent sans attendre le rendu React (différé, il peut prendre une seconde sur un téléphone en mode dev).
+   */
+  onActivate: (listener: (index: number) => void) => () => void;
 }
 
 export const JourneyControlsContext = createContext<JourneyControls>({
   progress: motionValue(0),
   goTo: () => {},
+  getActive: () => 0,
+  onActivate: () => () => {},
 });
 
 export const useJourneyControls = () => useContext(JourneyControlsContext);

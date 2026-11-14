@@ -2,14 +2,22 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { motionValue } from "framer-motion";
 import SectionNav from "@/app/components/journey/SectionNav";
-import { JourneyContext } from "@/app/components/journey/JourneyContext";
+import { JourneyControlsContext } from "@/app/components/journey/JourneyContext";
+
+/** La navigation lit la section visée sur les commandes du voyage (connue dès le geste) */
+const controls = (active: number, goTo: jest.Mock = jest.fn()) => ({
+  progress: motionValue(active),
+  goTo,
+  getActive: () => active,
+  onActivate: () => () => {},
+});
 
 describe("SectionNav", () => {
   it("marque la section courante", () => {
     render(
-      <JourneyContext.Provider value={{ active: 2, progress: motionValue(2), goTo: jest.fn() }}>
+      <JourneyControlsContext.Provider value={controls(2)}>
         <SectionNav />
-      </JourneyContext.Provider>,
+      </JourneyControlsContext.Provider>,
     );
     // 7 sections + flèches monter / descendre
     expect(screen.getAllByRole("button")).toHaveLength(9);
@@ -20,9 +28,9 @@ describe("SectionNav", () => {
   it("navigue vers la section demandée", async () => {
     const goTo = jest.fn();
     render(
-      <JourneyContext.Provider value={{ active: 0, progress: motionValue(0), goTo }}>
+      <JourneyControlsContext.Provider value={controls(0, goTo)}>
         <SectionNav />
-      </JourneyContext.Provider>,
+      </JourneyControlsContext.Provider>,
     );
     await userEvent.click(screen.getByRole("button", { name: "Contact" }));
     expect(goTo).toHaveBeenCalledWith(6);
@@ -31,9 +39,9 @@ describe("SectionNav", () => {
   it("monte et descend d'une section avec les flèches, désactivées aux extrémités", async () => {
     const goTo = jest.fn();
     const { rerender } = render(
-      <JourneyContext.Provider value={{ active: 3, progress: motionValue(3), goTo }}>
+      <JourneyControlsContext.Provider value={controls(3, goTo)}>
         <SectionNav />
-      </JourneyContext.Provider>,
+      </JourneyControlsContext.Provider>,
     );
     await userEvent.click(screen.getByRole("button", { name: "Section précédente" }));
     expect(goTo).toHaveBeenLastCalledWith(2);
@@ -41,15 +49,15 @@ describe("SectionNav", () => {
     expect(goTo).toHaveBeenLastCalledWith(4);
 
     rerender(
-      <JourneyContext.Provider value={{ active: 0, progress: motionValue(0), goTo }}>
+      <JourneyControlsContext.Provider value={controls(0, goTo)}>
         <SectionNav />
-      </JourneyContext.Provider>,
+      </JourneyControlsContext.Provider>,
     );
     expect(screen.getByRole("button", { name: "Section précédente" })).toBeDisabled();
     rerender(
-      <JourneyContext.Provider value={{ active: 6, progress: motionValue(6), goTo }}>
+      <JourneyControlsContext.Provider value={controls(6, goTo)}>
         <SectionNav />
-      </JourneyContext.Provider>,
+      </JourneyControlsContext.Provider>,
     );
     expect(screen.getByRole("button", { name: "Section suivante" })).toBeDisabled();
   });

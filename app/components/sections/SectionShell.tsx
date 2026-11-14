@@ -1,12 +1,12 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
-import { motion, useTransform } from "framer-motion";
+import { useEffect, type CSSProperties, type ReactNode } from "react";
+import { motion, useAnimationControls, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
 import { palettes } from "../../data/palettes";
 import { anchorId, contentOpacity, pad, paletteToVars, zoomScale } from "../../lib/journey";
 import { icons } from "../icons/GrisIcons";
-import { useJourney } from "../journey/JourneyContext";
+import { useJourney, useJourneyControls } from "../journey/JourneyContext";
 import { fadeUp, stagger } from "../journey/motion";
 
 /**
@@ -40,6 +40,24 @@ export default function SectionShell({
   const titleId = `${anchorId(section.id)}-titre`;
   const Icon = icons[section.icon];
   const isActive = active === index;
+  const { getActive, onActivate } = useJourneyControls();
+
+  // Apparition pilotée au geste (pas au rendu React, qui est différé) : le contenu de la section visée
+  // commence à apparaître dès le clic ou le glissé, celui qu'on quitte s'efface aussitôt.
+  const reveal = useAnimationControls();
+  useEffect(() => {
+    let shown = getActive() === index;
+    if (shown) reveal.start("show");
+    return onActivate((target) => {
+      if (target === index) {
+        shown = true;
+        reveal.start("show");
+      } else if (shown) {
+        shown = false;
+        reveal.start("hidden");
+      }
+    });
+  }, [index, getActive, onActivate, reveal]);
 
   const opacity = useTransform(progress, (f) => contentOpacity(f - index));
   // Sans animation demandée, le zoom est neutralisé en CSS (globals.css) : rendu identique côté serveur et client
@@ -70,7 +88,7 @@ export default function SectionShell({
           className="mx-auto w-full max-w-[1200px] max-md:legible"
           variants={stagger}
           initial="hidden"
-          animate={isActive ? "show" : "hidden"}
+          animate={reveal}
         >
           {heading ? (
             <motion.header variants={fadeUp} className="legible mb-8 md:mb-12 short:md:mb-6">

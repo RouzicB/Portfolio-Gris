@@ -37,11 +37,13 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
   const activeRef = useRef(0);
   const travel = useRef<AnimationPlaybackControls | null>(null);
   const busyUntil = useRef(0);
+  const listeners = useRef(new Set<(index: number) => void>());
 
   const goTo = useCallback(
     (index: number, instant = false) => {
       const target = clampIndex(index, sections.length);
       const forward = target >= activeRef.current;
+      const changed = target !== activeRef.current;
       activeRef.current = target;
       travel.current?.stop();
       const duration = instant ? 0 : reduce ? 0.45 : TRAVEL;
@@ -67,7 +69,9 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
           if (travel.current === run) root.removeAttribute("data-travel");
         });
       }
-      // Le rendu React (section active, navigation, apparitions) passe en tâche de fond, interruptible :
+      // Apparition du contenu et navigation : tout de suite, sans React
+      if (changed) listeners.current.forEach((fn) => fn(target));
+      // Le rendu React (accessibilité, interactivité de la section active) passe en tâche de fond, interruptible :
       // il ne bloque plus les premières images du voyage
       if (instant) setActive(target);
       else startTransition(() => setActive(target));
@@ -240,7 +244,20 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     };
   }, [goTo]);
 
-  const controls = useMemo(() => ({ progress, goTo }), [progress, goTo]);
+  const controls = useMemo(
+    () => ({
+      progress,
+      goTo,
+      getActive: () => activeRef.current,
+      onActivate: (fn: (index: number) => void) => {
+        listeners.current.add(fn);
+        return () => {
+          listeners.current.delete(fn);
+        };
+      },
+    }),
+    [progress, goTo],
+  );
   const value = useMemo(() => ({ active, progress, goTo }), [active, progress, goTo]);
 
   return (

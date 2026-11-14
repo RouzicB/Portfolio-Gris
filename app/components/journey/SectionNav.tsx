@@ -1,9 +1,10 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { motion, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
 import { ChevronIcon, icons } from "../icons/GrisIcons";
-import { useJourney } from "./JourneyContext";
+import { useJourneyControls } from "./JourneyContext";
 
 const LAST = sections.length - 1;
 
@@ -15,7 +16,10 @@ const LAST = sections.length - 1;
  * Verticale à droite sur grand écran (libellé au survol), horizontale en bas sur mobile.
  */
 export default function SectionNav() {
-  const { active, goTo, progress } = useJourney();
+  const { goTo, progress, getActive, onActivate } = useJourneyControls();
+  // Section active suivie au geste, en rendu immédiat (la navigation est légère) : pas d'attente du rendu
+  // différé de la page pour voir le bouton s'allumer
+  const active = useSyncExternalStore(onActivate, getActive, () => 0);
   // Part du fil déjà parcourue (0 → 1), lue en CSS par le trait de remplissage
   const filled = useTransform(progress, (f) => Math.min(1, Math.max(0, f / LAST)));
 
