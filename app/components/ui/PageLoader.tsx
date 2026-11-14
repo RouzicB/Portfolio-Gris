@@ -1,23 +1,143 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { site } from "../../data/site";
+import { TOUCH_QUERY, bakedScene } from "../../lib/decor";
+import type { StageId } from "../../types";
 import Emblem from "./Emblem";
 
+/** Durée minimale (l'emblème a le temps de se tracer) et maximale (on ne bloque jamais la page) */
+const MIN_MS = 450;
+const MAX_MS = 9000;
+
+const frame = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
+
+/** Télécharge et décode une image : affichée ensuite, elle sort du cache sans attente */
+function preload(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+    const done = () => resolve();
+    if (typeof img.decode === "function") img.decode().then(done, done);
+    else {
+      img.onload = done;
+      img.onerror = done;
+    }
+  });
+}
+
 /**
- * Écran de chargement entre les pages : le monde redevient gris le temps d'un battement,
- * l'emblème se trace et tourne, puis tout s'efface et la page apparaît avec ses couleurs.
- * Rendu par app/template.tsx (recréé à chaque navigation) ; la disparition est en CSS pur,
- * donc l'écran ne peut jamais rester bloqué, même sans JavaScript.
+ * Prépare une fois chaque section et chaque scène cachées (styles, mise en page, polices) :
+ * elles sont rendues un instant, quasi transparentes, sous l'écran de chargement, puis remises en l'état.
+ * Leur première apparition n'a plus rien à calculer.
+ */
+async function warmUp() {
+  // Par une classe (globals.css) et non en touchant aux styles des éléments : le voyage (arrivée par une ancre…)
+  // peut les modifier pendant ce temps, et rien ne doit être écrasé en les « restaurant »
+  const root = document.documentElement;
+  if (!document.querySelector("[data-section-index], [data-scene]")) return;
+  root.classList.add("warming");
+  await frame();
+  await frame();
+  root.classList.remove("warming");
+}
+
+/**
+ * Écran de chargement : le monde redevient gris le temps de tout préparer, l'emblème se trace et tourne,
+ * puis tout s'efface et la page apparaît avec ses couleurs, prête.
+ * Il attend réellement la page : polices, images (portrait, vignettes), décors pré-rendus (écrans tactiles),
+ * et une première mise en page de chaque section. Ensuite, les autres pages sont préchargées en arrière-plan.
+ * Rendu par app/template.tsx (recréé à chaque navigation : une page déjà en cache passe en un battement).
+ * Sans JavaScript, une animation CSS de secours l'efface de toute façon (globals.css).
  */
 export default function PageLoader() {
+  const router = useRouter();
+  const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const start = performance.now();
+
+    const run = async () => {
+      // Images de la page : celles chargées d'emblée, et toutes celles des sections de l'accueil
+      const urls = new Set<string>();
+      document.querySelectorAll("img").forEach((img) => {
+        if (img.closest(".scene-baked")) return;
+        if (img.loading === "lazy" && !img.closest("[data-section-index]")) return;
+        const src = img.currentSrc || img.getAttribute("src");
+        if (src) urls.add(src);
+      });
+      // Décors pré-rendus, au cadrage que l'écran affichera
+      if (window.matchMedia(TOUCH_QUERY).matches) {
+        const format = window.matchMedia("(min-aspect-ratio: 1/1)").matches ? "wide" : "portrait";
+        document.querySelectorAll<HTMLElement>("[data-scene]").forEach((s) => urls.add(bakedScene(s.dataset.scene as StageId, format)));
+      }
+
+      const total = urls.size + 2;
+      let count = 0;
+      const tick = () => {
+        count += 1;
+        if (!cancelled) setProgress(Math.min(1, count / total));
+      };
+
+      await warmUp();
+      tick();
+      await Promise.all([...Array.from(urls, (u) => preload(u).then(tick)), (document.fonts?.ready ?? Promise.resolve()).then(tick)]);
+    };
+
+    const finish = () => {
+      if (cancelled) return;
+      setProgress(1);
+      setDone(true);
+      // Les autres pages (études de cas, crédits…) se préchargent pendant qu'on lit
+      const prefetch = () =>
+        new Set(Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]'), (a) => a.getAttribute("href")!.split("#")[0])).forEach(
+          // Pages seulement (pas les fichiers : CV en PDF…)
+          (href) => href && href !== window.location.pathname && !/\.[a-z0-9]+$/i.test(href) && router.prefetch(href),
+        );
+      if ("requestIdleCallback" in window) window.requestIdleCallback(prefetch, { timeout: 3000 });
+      else setTimeout(prefetch, 1200);
+    };
+
+    const timeout = new Promise<void>((r) => setTimeout(r, MAX_MS));
+    Promise.race([run(), timeout]).then(() => {
+      const wait = Math.max(0, MIN_MS - (performance.now() - start));
+      setTimeout(finish, wait);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
+
+  const percent = Math.round(progress * 100);
+
   return (
     <div
       role="status"
       aria-label="Chargement"
-      className="page-loader pointer-events-none fixed inset-0 z-[60] grid place-items-center"
+      aria-busy={!done}
+      className={`page-loader pointer-events-none fixed inset-0 z-[60] grid place-items-center ${done ? "is-done" : ""}`}
       style={{ background: "linear-gradient(180deg, #eeedeb 0%, #d3d1ce 100%)", color: "#2f2e2d" }}
     >
-      <div className="relative grid h-56 w-56 place-items-center sm:h-64 sm:w-64" style={{ ["--emblem-bg" as string]: "#e6e4e1" }}>
-        <Emblem className="absolute inset-0 h-full w-full" />
-        <span className="title-spaced pl-[0.32em] text-sm sm:text-base">{site.logo}</span>
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative grid h-56 w-56 place-items-center sm:h-64 sm:w-64" style={{ ["--emblem-bg" as string]: "#e6e4e1" }}>
+          <Emblem className="absolute inset-0 h-full w-full" />
+          <span className="title-spaced pl-[0.32em] text-sm sm:text-base">{site.logo}</span>
+        </div>
+        {/* Avancement : un trait fin qui se remplit, et le pourcentage */}
+        <div aria-hidden className="flex items-center gap-3">
+          <span className="relative h-px w-28 bg-[#2f2e2d]/20">
+            <span
+              className="absolute inset-y-0 left-0 bg-[#2f2e2d] transition-[width] duration-300 ease-out"
+              style={{ width: `${percent}%` }}
+            />
+          </span>
+          <span className="label-spaced w-10 text-right tabular-nums text-[11px]">{percent}%</span>
+        </div>
       </div>
     </div>
   );

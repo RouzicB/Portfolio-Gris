@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, type ComponentType } from "react";
 import { useReducedMotion, type MotionValue } from "framer-motion";
 import type { StageId, Sun } from "../../types";
 import { segment, stageWeights, zoomScale } from "../../lib/journey";
+import { TOUCH_QUERY, bakedScene } from "../../lib/decor";
 import { PointerProvider } from "./Parallax";
 import { WatercolorDefs } from "./art/shared";
 import GrisArt from "./art/GrisArt";
@@ -49,7 +50,7 @@ export default function Landscape({
     // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (quasi transparentes),
     // pour qu'un voyage n'ait pas à peindre d'un coup une scène aquarelle à haute densité de pixels.
     // (Sur ordinateur, inutile : et leurs nuages animés se redessineraient en continu.)
-    const prewarm = window.matchMedia("(pointer: coarse), (max-width: 767px)").matches;
+    const prewarm = window.matchMedia(TOUCH_QUERY).matches;
     // Dernier état écrit par scène : on ne touche au DOM que si quelque chose change
     const state: Partial<Record<StageId, "off" | "warm" | "on">> = {};
     const apply = (f: number) => {
@@ -150,7 +151,7 @@ export default function Landscape({
             ref={(el) => {
               sceneRefs.current[id] = el;
             }}
-            data-scene
+            data-scene={id}
             className="absolute inset-0 origin-[50%_58%] will-change-[opacity,transform]"
             style={{
               opacity: w,
@@ -158,9 +159,25 @@ export default function Landscape({
               contentVisibility: w < 0.004 ? "hidden" : "visible",
             }}
           >
-            <PointerProvider>
-              <Art />
-            </PointerProvider>
+            {/* Ordinateur : la scène vivante (SVG, filtres aquarelle, parallaxe, nuages qui dérivent) */}
+            <div className="scene-live absolute inset-0">
+              <PointerProvider>
+                <Art />
+              </PointerProvider>
+            </div>
+            {/* Écrans tactiles : la même scène, pré-rendue en image (globals.css choisit l'une ou l'autre).
+                Les filtres aquarelle se calculent pixel par pixel sur le processeur : à densité ×3, une seule
+                scène pouvait demander plusieurs secondes de dessin à sa première apparition. */}
+            <picture className="scene-baked absolute inset-[-3%]">
+              <source media="(min-aspect-ratio: 1/1)" srcSet={bakedScene(id, "wide")} />
+              <img
+                src={bakedScene(id, "portrait")}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover object-bottom"
+              />
+            </picture>
           </div>
         );
       })}
