@@ -41,6 +41,7 @@ export default function ProjectCase({ slug }: { slug: string }) {
   return (
     <PageScene
       stage={project.stage}
+      theme={project.theme}
       back={{ href: "/#section-projets", label: "Projets" }}
       aside={
         // Numéro d'étude : libellé espacé, puis « 03 ◆ 10 » le long d'un filet, comme les chapitres

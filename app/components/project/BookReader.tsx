@@ -163,6 +163,26 @@ export default function BookReader({ book }: { book: Book }) {
               <ChevronIcon size={18} className={b.rot} />
             </button>
           ))}
+
+          {/* En plein écran, la légende n'est plus visible : repère et bouton pour sortir, posés sur l'image */}
+          {full && (
+            <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-3 sm:inset-x-4 sm:top-4">
+              <p className="veil rounded-full px-4 py-2 font-display text-sm tabular-nums tracking-[0.12em] text-ink">
+                <span className="text-[color-mix(in_srgb,var(--accent)_70%,var(--ink))]">{pad(index + 1)}</span> / {pad(total)}
+              </p>
+              <button
+                type="button"
+                onClick={toggleFull}
+                className="veil inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-ink shadow-lg shadow-ink/10 transition hover:scale-105"
+              >
+                <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+                Quitter le plein écran
+                <kbd className="hidden rounded border border-ink/25 px-1.5 text-[0.65rem] sm:inline">Échap</kbd>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -171,7 +191,7 @@ export default function BookReader({ book }: { book: Book }) {
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
         <p className="flex items-baseline gap-3 text-ink">
           <span className="font-display text-sm tabular-nums tracking-[0.12em]">
-            <span className="text-accent">{pad(index + 1)}</span>
+            <span className="text-[color-mix(in_srgb,var(--accent)_70%,var(--ink))]">{pad(index + 1)}</span>
             <span className="text-ink"> / {pad(total)}</span>
           </span>
           <span aria-hidden className="size-1.5 -translate-y-0.5 rotate-45 bg-accent" />

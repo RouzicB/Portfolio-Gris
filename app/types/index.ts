@@ -133,6 +133,19 @@ export interface Project {
   universe?: Universe;
   /** Libellé du lien externe (par défaut « Voir le projet ») */
   linkLabel?: string;
+  /** Ambiance de la page aux couleurs du projet : remplace les couleurs du décor `stage` */
+  theme?: SceneTheme;
+}
+
+/**
+ * Couleurs d'une page à part : `palette` remplace tout ou partie de l'ambiance (ciel, encre, voile, accent…) ;
+ * `tint` reteinte les dessins du décor (mode de fusion « color » : la teinte change, les valeurs restent).
+ */
+export interface SceneTheme {
+  palette?: Partial<Palette>;
+  tint?: string;
+  /** Force de la reteinte, de 0 à 1 (0,5 par défaut) */
+  tintOpacity?: number;
 }
 
 /** Un des deux profils (designer, développeur web) : savoir-faire décrits par ce qu’on livre, sans niveau chiffré */

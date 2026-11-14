@@ -16,9 +16,10 @@ export function Chapter({ numeral, title, id, children }: { numeral: string; tit
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
     >
-      <motion.header variants={fadeUp} className="legible mb-8 flex items-center justify-center gap-4">
+      <motion.header variants={fadeUp} className="mb-8 flex items-center justify-center gap-4">
         <span aria-hidden className="h-px max-w-40 flex-1 bg-ink/25" />
-        <h2 id={`${id}-titre`} className="flex items-baseline gap-3 text-ink">
+        {/* Sur une pastille de verre : le titre reste lisible quand une liane ou un rocher du décor passe derrière */}
+        <h2 id={`${id}-titre`} className="veil flex items-baseline gap-3 rounded-full px-5 py-2 text-ink">
           <span className="font-display text-3xl font-light leading-none tracking-[0.04em] text-accent sm:text-4xl" aria-hidden>
             {numeral}
           </span>

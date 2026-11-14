@@ -52,5 +52,6 @@ export const credits = {
     { name: "Décors et icônes", detail: "Dessinés en SVG pour ce portfolio" },
     { name: "Logos des outils", detail: "Simple Icons (CC0) ; les marques appartiennent à leurs détenteurs" },
     { name: "Mockups du projet Delta", detail: "Affiche et flyer mis en scène sur des mockups Vecteezy (vecteezy.com)" },
+    { name: "Site d'origine des Pluies de Juillet", detail: "Capture d'archive (Internet Archive, Wayback Machine), présentée pour comparaison" },
   ],
 } as const;

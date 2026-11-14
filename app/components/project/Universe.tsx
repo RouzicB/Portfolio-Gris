@@ -13,6 +13,8 @@ import "@fontsource/kumbh-sans/latin-700.css";
 import "@fontsource/metamorphous/latin-400.css";
 import "@fontsource/mukta/latin-400.css";
 import "@fontsource/mukta/latin-600.css";
+import "@fontsource/ostrich-sans-rounded/latin-500.css";
+import "@fontsource/apfel-grotezk/latin-400.css";
 import type { Universe as UniverseData } from "../../types";
 import { fadeUp } from "../journey/motion";
 
@@ -171,9 +173,12 @@ export default function Universe({ universe }: { universe: UniverseData }) {
 function Sub({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <motion.h3 variants={fadeUp} className="legible mb-5 flex items-center gap-3 text-ink">
-        <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
-        <span className="label-spaced">{title}</span>
+      {/* Le libellé sur une pastille de verre : lisible quel que soit le décor qui passe derrière */}
+      <motion.h3 variants={fadeUp} className="mb-5 flex items-center gap-3 text-ink">
+        <span className="veil inline-flex items-center gap-2.5 rounded-full py-1.5 pl-3 pr-4">
+          <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
+          <span className="label-spaced">{title}</span>
+        </span>
         <span aria-hidden className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
       </motion.h3>
       {children}

@@ -25,7 +25,8 @@ describe("Pages projet", () => {
     expect(screen.getByRole("heading", { level: 1, name: p.title })).toBeInTheDocument();
     expect(screen.getByText(p.problem)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Démarche/ })).toBeInTheDocument();
-    p.process.forEach((s) => expect(screen.getByText(s.title)).toBeInTheDocument());
+    // Un intitulé d'étape peut aussi nommer une partie de l'univers graphique (« Logotype »…)
+    p.process.forEach((s) => expect(screen.getAllByText(s.title).length).toBeGreaterThan(0));
     expect(screen.getByRole("link", { name: /Projets/ })).toHaveAttribute("href", "/#section-projets");
     expect(screen.getByRole("link", { name: /Projet suivant/ })).toHaveAttribute("href", `/projets/${projects[2].slug}`);
   });

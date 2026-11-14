@@ -3,7 +3,7 @@
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import { useMotionValue } from "framer-motion";
-import type { StageId } from "../../types";
+import type { SceneTheme, StageId } from "../../types";
 import { palettes, stageSuns } from "../../data/palettes";
 import { paletteToVars } from "../../lib/journey";
 import Landscape from "../background/Landscape";
@@ -17,14 +17,17 @@ export default function PageScene({
   stage,
   back,
   aside,
+  theme,
   children,
 }: {
   stage: StageId;
   back: { href: string; label: string };
   aside?: ReactNode;
+  /** Couleurs propres à la page (étude de cas) : remplacent celles de l'ambiance */
+  theme?: SceneTheme;
   children: ReactNode;
 }) {
-  const vars = useMemo(() => paletteToVars(palettes[stage]), [stage]);
+  const vars = useMemo(() => paletteToVars({ ...palettes[stage], ...theme?.palette }), [stage, theme]);
   const still = useMotionValue(0);
   const stages = useMemo(() => [stage], [stage]);
   // Page qui défile : le texte passe partout, l'astre se range donc dans le coin haut, plus petit
@@ -39,6 +42,14 @@ export default function PageScene({
   return (
     <div style={vars as CSSProperties} className="relative min-h-svh text-ink">
       <Landscape progress={still} stages={stages} suns={suns} />
+      {/* Reteinte du décor aux couleurs du projet : même plan que le décor, peinte par-dessus */}
+      {theme?.tint && (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 -z-10"
+          style={{ background: theme.tint, mixBlendMode: "color", opacity: theme.tintOpacity ?? 0.5 }}
+        />
+      )}
 
       {/* Pas de barre : une pastille de retour flottante, et un repère discret à droite */}
       <nav aria-label="Navigation de la page" className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-start justify-between p-4 sm:p-6">
