@@ -100,11 +100,14 @@ export default function Projets() {
           else if (e.key === "ArrowLeft") go(current - 1);
         }}
       >
-        <div ref={viewRef} className="-mx-3 overflow-hidden px-3 pb-6 pt-2 short:pb-3">
+        {/* Marge haute assez grande pour la pierre de clé et le soulèvement au survol (sinon rognés par le cadre),
+            reprise par une marge négative : la mise en page ne bouge pas */}
+        <div ref={viewRef} className="-mx-3 -mt-6 overflow-hidden px-3 pb-6 pt-8 short:pb-3">
+          {/* `translate` et non `transform` : seule la première est animée (globals.css réserve `transform` à Framer) */}
           <ul
-            className="flex transition-transform duration-700"
+            className="flex transition-[translate] duration-700 motion-reduce:transition-none"
             style={{
-              transform: `translateX(calc(${-current * 100}% - ${current} * var(--gap)))`,
+              translate: `calc(${-current * 100}% - ${current} * var(--gap)) 0`,
               transitionTimingFunction: `cubic-bezier(${WASH.join(",")})`,
               ["--gap" as string]: "1.25rem",
               gap: "var(--gap)",
@@ -115,8 +118,15 @@ export default function Projets() {
               return (
                 <li
                   key={p.slug}
-                  className="shrink-0"
-                  style={{ width: `calc((100% - ${perPage - 1} * var(--gap)) / ${perPage})` }}
+                  // Changement de page : les arches qui partent s'effacent, celles qui arrivent montent l'une après l'autre
+                  className="shrink-0 transition-[opacity,translate] ease-out motion-reduce:transition-none"
+                  style={{
+                    width: `calc((100% - ${perPage - 1} * var(--gap)) / ${perPage})`,
+                    opacity: visible ? 1 : 0,
+                    translate: visible ? "0 0" : "0 14px",
+                    transitionDuration: visible ? "650ms" : "300ms",
+                    transitionDelay: visible ? `${120 + (i - first) * 90}ms` : "0ms",
+                  }}
                   inert={!visible}
                   aria-hidden={!visible}
                 >
