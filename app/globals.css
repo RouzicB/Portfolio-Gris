@@ -309,3 +309,8 @@ html[data-travel] *::after {
   /* Pas de zoom entre les sections : un simple fondu */
   [data-section-index] { transform: none !important; }
 }
+
+/* Texte rogné à la hauteur des capitales (titres de chapitre) : centrage optique exact entre des tailles différentes */
+.cap-box {
+  text-box: trim-both cap alphabetic;
+}
