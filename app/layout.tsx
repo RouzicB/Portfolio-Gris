@@ -8,13 +8,8 @@ import CreditsLink from "./components/layouts/CreditsLink";
 import { palettes } from "./data/palettes";
 import { site } from "./data/site";
 import { paletteToVars } from "./lib/journey";
-
-/** Adresse publique : fournie par Vercel en production (domaine principal), sinon locale */
-const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+import { siteUrl } from "./lib/site-url";
+import { profiles } from "./data/skills";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -23,6 +18,25 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description: site.description,
+  applicationName: `${site.name} — Portfolio`,
+  authors: [{ name: site.name, url: "/" }],
+  creator: site.name,
+  keywords: [
+    site.name,
+    "portfolio",
+    "UX/UI designer",
+    "UX designer",
+    "UI designer",
+    "alternance UX/UI",
+    "développeur front-end",
+    ...profiles.flatMap((p) => p.skills.map((s) => s.name)),
+  ],
+  alternates: {
+    canonical: "/",
+    // Le portfolio entier en texte, pour les assistants et agents IA
+    types: { "text/markdown": [{ url: "/llms.txt", title: "Portfolio en texte (llms.txt)" }] },
+  },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" } },
   openGraph: {
     type: "website",
     locale: "fr_FR",

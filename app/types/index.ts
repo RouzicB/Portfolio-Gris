@@ -164,7 +164,7 @@ export interface SkillProfile {
 export interface Book {
   title: string;
   /** Ce qu'on feuillette : les pages d'un document (par défaut) ou les écrans d'une interface */
-  unit?: "page" | "écran" | "slide";
+  unit?: "page" | "double-page" | "écran" | "slide" | "détail";
   /** Le document d'origine, à ouvrir en entier */
   pdf?: string;
   /** Chapitres : titre et numéro de leur première page (à partir de 1) ; peut être vide */

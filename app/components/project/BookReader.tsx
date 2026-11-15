@@ -39,7 +39,11 @@ export default function BookReader({ book }: { book: Book }) {
       ? { unit: "Écran", prev: "Écran précédent", next: "Écran suivant", read: "Lire la description de l'écran", all: "Tous les écrans" }
       : book.unit === "slide"
         ? { unit: "Slide", prev: "Slide précédente", next: "Slide suivante", read: "Lire le texte de la slide", all: "Toutes les slides" }
-        : { unit: "Page", prev: "Page précédente", next: "Page suivante", read: "Lire le texte de la page", all: "Toutes les pages" };
+        : book.unit === "double-page"
+          ? { unit: "Double page", prev: "Double page précédente", next: "Double page suivante", read: "Lire le texte de la double page", all: "Toutes les doubles pages" }
+          : book.unit === "détail"
+            ? { unit: "Détail", prev: "Détail précédent", next: "Détail suivant", read: "Lire le texte du détail", all: "Tous les détails" }
+            : { unit: "Page", prev: "Page précédente", next: "Page suivante", read: "Lire le texte de la page", all: "Toutes les pages" };
 
   // Chapitre en cours : le dernier qui commence avant la page affichée (aucun pour la couverture et le sommaire)
   const chapter = book.chapters.reduce((cur, c, k) => (c.page <= index + 1 ? k : cur), -1);

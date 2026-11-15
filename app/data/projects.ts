@@ -1,7 +1,10 @@
 import type { Project } from "../types";
+import { afficheIaDetails, afficheIaUniverse } from "./affiche-ia";
+import { bambouLivret, bambouUniverse } from "./bambou";
 import { charteSlift } from "./charte-slift";
 import { deltaSlides, deltaUniverse } from "./delta";
 import { elyndorSlides, elyndorUniverse } from "./elyndor";
+import { holographSlides, holographUniverse } from "./holograph";
 import { pluiesEcrans, pluiesUniverse } from "./pluies-de-juillet";
 import { sliftUniverse } from "./slift";
 import { vibesEcrans, vibesUniverse } from "./vibes";
@@ -171,6 +174,61 @@ const all: Project[] = [
     book: elyndorSlides,
   },
   {
+    slug: "ia-robotique-industrielle",
+    title: "IA & Robotique",
+    context: "Projet d'école · affiche",
+    year: 2026,
+    role: "Designer graphique",
+    duration: "Projet de cours",
+    summary: "Une affiche sur ce que l'IA apporte à la robotique et à l'industrie, construite comme un circuit imprimé.",
+    problem:
+      "Le sujet : représenter les avantages de l'IA dans la robotique et la production industrielle. Un thème technique, chargé de chiffres et de jargon (fabrication additive, maintenance prédictive, vision artificielle) qui, sur une affiche, risque de devenir un mur de texte que personne ne lit.",
+    solution:
+      "Une affiche pensée comme un circuit imprimé : des pistes bleues relient des blocs repérés comme des composants (A1, B1, C1…) et guident l'œil du titre aux chiffres clés, de l'impression 3D aux secteurs puis aux avantages. Les chiffres passent en grand, chaque explication tient sur une ligne, et un seul bleu hiérarchise tout sur un fond clair quadrillé.",
+    process: [
+      { title: "Recherche", text: "Les apports de l'IA dans l'industrie, rassemblés en chiffres : productivité, rebut, précision, défauts détectés, maintenance prédictive." },
+      { title: "Hiérarchie", text: "Six chiffres clés, trois volets d'impression 3D, quatre secteurs, trois avantages : chaque niveau d'information a son bloc." },
+      { title: "Grille", text: "Un fond quadrillé, des pistes coudées et des repères de composants (A1 à E1) : l'affiche se lit comme une carte électronique." },
+      { title: "Images", text: "Un bras robotisé en pleine soudure et une impression 3D métal, en teintes froides relevées par l'orange du métal chauffé." },
+      { title: "Impression", text: "Un fichier prêt pour l'imprimeur : fonds perdus, traits de coupe et gamme de contrôle des couleurs." },
+    ],
+    // ⚠ Propositions à ajuster : ce que tu en as retenu
+    learnings: [
+      "Sur une affiche, un chiffre bien placé remplace un paragraphe.",
+      "Une métaphore graphique, ici le circuit, peut porter toute la structure de lecture.",
+      "Une seule couleur d'accent suffit à hiérarchiser un contenu très dense.",
+    ],
+    outcomes: [
+      { value: "6", label: "chiffres clés mis en avant" },
+      { value: "4", label: "secteurs industriels" },
+      { value: "1", label: "affiche prête à imprimer" },
+    ],
+    tags: ["Affiche", "Infographie", "Print", "Hiérarchie de l'information"],
+    tools: ["Illustrator"],
+    hues: ["#F7F8FA", "#2698D4"],
+    stage: "gris",
+    // IA & ROBOTIQUE : le blanc quadrillé de l'affiche, le bleu des pistes
+    theme: {
+      palette: {
+        skyTop: "#F7F8FA",
+        skyBottom: "#C9DFEE",
+        accent: "#1F7DB0",
+        ink: "#2C2E35",
+        inkSoft: "#454852",
+        veil: "rgba(250, 250, 250, 0.82)",
+        washNear: "#2698D4",
+        washFar: "#C2DCEC",
+        sun: "#FFFFFF",
+      },
+      tint: "#2698D4",
+      tintOpacity: 0.4,
+    },
+    cover: "/projets/affiche-ia/couverture.webp",
+    thumb: "/projets/affiche-ia/vignette.webp",
+    universe: afficheIaUniverse,
+    book: afficheIaDetails,
+  },
+  {
     slug: "delta",
     title: "Delta",
     context: "Projet d'école · éco-design",
@@ -277,6 +335,116 @@ const all: Project[] = [
     thumb: "/projets/pluies-de-juillet/logo.webp",
     universe: pluiesUniverse,
     book: pluiesEcrans,
+  },
+  {
+    slug: "bambou",
+    title: "Bambou",
+    context: "Projet d'école · documentation",
+    year: 2025,
+    role: "Designer graphique",
+    duration: "Projet de cours",
+    summary: "Un guide d'entretien en livret A5 pour prendre soin de son bambou, raconté en images plus qu'en mots.",
+    problem:
+      "Le sujet : créer la documentation d'un objet précis. Une petite plante d'intérieur se perd vite sans mode d'emploi (quel contenant, quelle eau, combien de lumière, quand tailler ?), et une notice dense ou technique décourage avant même la première étape.",
+    solution:
+      "Un livret A5 de 12 pages qui montre avant d'expliquer : la liste des essentiels, quatre étapes illustrées où le même bambou se construit page après page, un geste d'entretien et des photos de résultats. Chaque étape annonce ce qu'elle demande (1× billes d'argile, 1× eau…), et une frise de bambous indique où l'on en est.",
+    process: [
+      { title: "Contenu", text: "Ce qu'il faut savoir, réduit à l'essentiel : le matériel, quatre gestes, un entretien." },
+      { title: "Identité", text: "Un logo en pastille, un titre en lettres rondes découpées dans des photos, un vert profond et un papier clair." },
+      { title: "Illustration", text: "Des pictogrammes au trait et un bambou en aplats qui grandit d'étape en étape, avec ses billes, son eau et sa lumière." },
+      { title: "Mise en page", text: "Des étapes numérotées en grand, des compteurs « 1× » pour le matériel et une frise de progression en pied de page." },
+      { title: "Livret", text: "Le format A5 pensé en doubles pages, puis exporté en imposition livret pour l'impression." },
+    ],
+    // ⚠ Propositions à ajuster : ce que tu en as retenu
+    learnings: [
+      "Une notice se lit d'abord en images : le texte ne vient qu'en appui.",
+      "Répéter la même illustration d'étape en étape rend le progrès visible.",
+      "Un livret se pense en doubles pages, pas en pages isolées.",
+    ],
+    outcomes: [
+      { value: "12", label: "pages au format A5" },
+      { value: "4", label: "étapes illustrées" },
+      { value: "5", label: "essentiels listés" },
+    ],
+    tags: ["Documentation", "Print", "Illustration", "Mise en page"],
+    tools: ["Illustrator"],
+    hues: ["#112D23", "#F5F6F5"],
+    stage: "vert",
+    // BAMBOU : le papier clair du livret, le vert profond de la marque
+    theme: {
+      palette: {
+        skyTop: "#F5F6F5",
+        skyBottom: "#C9D9CE",
+        accent: "#2F7A8F",
+        ink: "#112D23",
+        inkSoft: "#2C4A3F",
+        veil: "rgba(245, 246, 245, 0.82)",
+        washNear: "#112D23",
+        washFar: "#A9C4B4",
+        sun: "#F3DC8A",
+      },
+      tint: "#112D23",
+      tintOpacity: 0.35,
+    },
+    cover: "/projets/bambou/couverture.webp",
+    thumb: "/projets/bambou/logo.svg",
+    universe: bambouUniverse,
+    book: bambouLivret,
+  },
+  {
+    slug: "holograph",
+    title: "Holograph'",
+    context: "Projet de début de M1 · anti-design",
+    year: 2025,
+    role: "UX/UI designer",
+    duration: "Projet de début d'année",
+    summary: "Le site d'une marque de vêtements holographiques, pensé en anti-design pour provoquer un choc visuel.",
+    problem:
+      "Holograph' habille de vestes et de pantalons holographiques et métalliques celles et ceux qui veulent sortir des normes. Un site e-commerce sage, aligné sur les conventions, aurait trahi la marque : en ligne, le visiteur devait ressentir le même choc que face à quelqu'un habillé en Holograph'.",
+    solution:
+      "Un site pensé selon les principes de l'anti-design : typographies gothiques et condensées qui se chevauchent, mots posés à la verticale, formes chromées liquides, étoiles et nébuleuses, photos de mode cadrées en biais. La lisibilité cède là où l'impact compte ; la navigation (boutique, marque, contact, compte, panier) reste nette pour qu'on puisse acheter.",
+    process: [
+      { title: "Positionnement", text: "La marque, ses pièces et sa devise : « Ose briller. Sors des normes. Sois Holograph'. »" },
+      { title: "Moodboard", text: "Mode holographique, néons de ville, nébuleuses, un astronaute : une palette de cinq teintes, du rose au pêche, sur fond noir." },
+      { title: "Typographies", text: "Une gothique pour la voix de la marque, une condensée pour le rythme, des titres qui se heurtent." },
+      { title: "Maquette", text: "La page d'accueil sur Figma : l'accroche « Now / Future clothes », la marque, puis quatre collections (Quantum, Cybernetics, Hologram, Virtuality)." },
+      { title: "Note d'intention", text: "Une présentation qui défend le parti pris : où et pourquoi le site enfreint les règles." },
+    ],
+    // ⚠ Propositions à ajuster : ce que tu en as retenu
+    learnings: [
+      "L'anti-design n'est pas l'absence de règles : chaque rupture doit servir l'identité de la marque.",
+      "Garder la navigation et l'achat lisibles permet d'oser tout le reste.",
+      "Un moodboard solide évite que le chaos visuel ne devienne du bruit.",
+    ],
+    outcomes: [
+      { value: "4", label: "collections mises en scène" },
+      { value: "5", label: "teintes au moodboard" },
+      { value: "1", label: "maquette Figma de l'accueil" },
+    ],
+    tags: ["Anti-design", "UI design", "Direction artistique", "Moodboard"],
+    tools: ["Figma"],
+    hues: ["#161616", "#FFA9FF"],
+    stage: "lune",
+    // HOLOGRAPH' : le noir spatial, le rose holographique et le violet des nébuleuses
+    theme: {
+      palette: {
+        skyTop: "#161616",
+        skyBottom: "#2E1B3D",
+        accent: "#FFA9FF",
+        ink: "#F7F3FA",
+        inkSoft: "#E3D6EC",
+        veil: "rgba(22, 22, 22, 0.74)",
+        washNear: "#3A214E",
+        washFar: "#703383",
+        sun: "#F2C3AA",
+      },
+      tint: "#703383",
+      tintOpacity: 0.6,
+    },
+    cover: "/projets/holograph/couverture.webp",
+    thumb: "/projets/holograph/logo.webp",
+    universe: holographUniverse,
+    book: holographSlides,
   },
 ];
 
