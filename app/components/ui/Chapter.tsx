@@ -1,13 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { fadeUp, group } from "../journey/motion";
 
 /** Chapitre des pages longues (crédits, études de cas) : chiffre romain, titre espacé, entre deux filets */
 export function Chapter({ numeral, title, id, children }: { numeral: string; title: string; id: string; children: ReactNode }) {
   return (
-    <motion.section
+    <m.section
       id={id}
       aria-labelledby={`${id}-titre`}
       className="mt-20 scroll-mt-24 sm:mt-24"
@@ -16,7 +16,7 @@ export function Chapter({ numeral, title, id, children }: { numeral: string; tit
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
     >
-      <motion.header variants={fadeUp} className="mb-8 flex items-center justify-center gap-4">
+      <m.header variants={fadeUp} className="mb-8 flex items-center justify-center gap-4">
         <span aria-hidden className="h-px max-w-40 flex-1 bg-ink/25" />
         {/* Sur une pastille de verre : le titre reste lisible quand une liane ou un rocher du décor passe derrière */}
         <h2 id={`${id}-titre`} className="veil flex items-center gap-3 rounded-full px-5 py-3.5 text-ink">
@@ -28,9 +28,9 @@ export function Chapter({ numeral, title, id, children }: { numeral: string; tit
           <span className="cap-box label-spaced">{title}</span>
         </h2>
         <span aria-hidden className="h-px max-w-40 flex-1 bg-ink/25" />
-      </motion.header>
+      </m.header>
       {children}
-    </motion.section>
+    </m.section>
   );
 }
 

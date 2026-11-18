@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, type ReactNode } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { m, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "framer-motion";
 
 interface Pointer {
   x: MotionValue<number>;
@@ -42,8 +42,8 @@ export function Layer({ depth = 0, className = "", children }: { depth?: number;
   const px = useTransform(pointer?.x ?? fallback, (v) => v * depth * -24);
   const py = useTransform(pointer?.y ?? fallback, (v) => v * depth * -10);
   return (
-    <motion.div className={`absolute inset-[-3%] ${className}`} style={{ x: px, y: py }}>
+    <m.div className={`absolute inset-[-3%] ${className}`} style={{ x: px, y: py }}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }

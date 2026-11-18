@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, type CSSProperties, type ReactNode } from "react";
-import { motion, useAnimationControls, useTransform } from "framer-motion";
+import { m, useAnimationControls, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
 import { palettes } from "../../data/palettes";
 import { anchorId, contentOpacity, pad, paletteToVars, zoomScale } from "../../lib/journey";
@@ -67,7 +67,7 @@ export default function SectionShell({
   const contentVisibility = visibility;
 
   return (
-    <motion.section
+    <m.section
       id={anchorId(section.id)}
       data-section-index={index}
       aria-labelledby={titleId}
@@ -84,14 +84,14 @@ export default function SectionShell({
       className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >
       <div className="flex min-h-full items-center px-4 pb-28 pt-16 sm:px-8 md:pb-14 md:pr-24 short:pt-10 short:md:pb-8">
-        <motion.div
+        <m.div
           className="mx-auto w-full max-w-[1200px] max-md:legible"
           variants={stagger}
           initial="hidden"
           animate={reveal}
         >
           {heading ? (
-            <motion.header variants={fadeUp} className="legible mb-8 md:mb-12 short:md:mb-6">
+            <m.header variants={fadeUp} className="legible mb-8 md:mb-12 short:md:mb-6">
               <p className="label-spaced flex items-center gap-2 text-ink">
                 <Icon size={18} className="text-ink" />
                 <span className="tabular-nums">{pad(index + 1)}</span>
@@ -102,15 +102,15 @@ export default function SectionShell({
                 {section.title}
               </h2>
               {section.intro && <p className="mt-3 max-w-xl text-ink">{section.intro}</p>}
-            </motion.header>
+            </m.header>
           ) : (
             <h2 id={titleId} className="sr-only">
               {section.title}
             </h2>
           )}
           {children}
-        </motion.div>
+        </m.div>
       </div>
-    </motion.section>
+    </m.section>
   );
 }

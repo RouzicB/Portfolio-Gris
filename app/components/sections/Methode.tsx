@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, type KeyboardEvent } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { process } from "../../data/process";
 import { pad } from "../../lib/journey";
 import { ChevronIcon } from "../icons/GrisIcons";
@@ -37,7 +37,7 @@ export default function Methode() {
   return (
     <SectionShell index={2}>
       {/* La tige et ses nœuds */}
-      <motion.div variants={fadeUp} className="legible relative mx-auto aspect-[1000/140] w-full max-w-5xl">
+      <m.div variants={fadeUp} className="legible relative mx-auto aspect-[1000/140] w-full max-w-5xl">
         <svg viewBox="0 0 1000 140" className="absolute inset-0 size-full overflow-visible" aria-hidden focusable="false">
           <path d={STEM} fill="none" stroke="var(--ink)" strokeOpacity="0.22" strokeWidth="2" strokeLinecap="round" />
           <path
@@ -110,10 +110,10 @@ export default function Methode() {
             );
           })}
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Le détail, dans un panneau en forme de feuille */}
-      <motion.div
+      <m.div
         variants={fadeUp}
         id={`${uid}-panel`}
         role="tabpanel"
@@ -121,7 +121,7 @@ export default function Methode() {
         className="veil relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[3rem_0.75rem_3rem_0.75rem] md:mt-16 short:md:mt-12"
       >
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div
+          <m.div
             key={active}
             initial={{ opacity: 0, x: 24 }}
             animate={{ opacity: 1, x: 0 }}
@@ -150,7 +150,7 @@ export default function Methode() {
                 ))}
               </ul>
             </div>
-          </motion.div>
+          </m.div>
         </AnimatePresence>
 
         {/* Étape précédente / suivante */}
@@ -170,7 +170,7 @@ export default function Methode() {
             </button>
           ))}
         </div>
-      </motion.div>
+      </m.div>
     </SectionShell>
   );
 }

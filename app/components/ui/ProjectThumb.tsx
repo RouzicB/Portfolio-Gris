@@ -1,4 +1,4 @@
-import type { Project } from "../../types";
+import type { ProjectCard } from "../../types";
 import { archPath, moundPath } from "../background/art/shared";
 
 
@@ -15,7 +15,7 @@ export default function ProjectThumb({
   index,
   frame = "rect",
 }: {
-  project: Project;
+  project: ProjectCard;
   index: number;
   /** "arch" : composition centrée pour une fenêtre en arche (astre au sommet de la voûte, motif recentré) */
   frame?: "rect" | "arch";

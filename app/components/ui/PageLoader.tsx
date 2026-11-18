@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { site } from "../../data/site";
-import { TOUCH_QUERY, bakedScene } from "../../lib/decor";
+import { TOUCH_QUERY, WIDE_QUERY, bakedScene, supportsAvif } from "../../lib/decor";
 import type { StageId } from "../../types";
 import Emblem from "./Emblem";
 
@@ -60,6 +60,8 @@ export default function PageLoader() {
   useEffect(() => {
     let cancelled = false;
     const start = performance.now();
+    // Décors des autres ambiances : chargés en arrière-plan une fois la page affichée
+    const later: string[] = [];
 
     const run = async () => {
       // Images de la page : celles chargées d'emblée, et toutes celles des sections de l'accueil
@@ -70,10 +72,16 @@ export default function PageLoader() {
         const src = img.currentSrc || img.getAttribute("src");
         if (src) urls.add(src);
       });
-      // Décors pré-rendus, au cadrage que l'écran affichera
+      // Décors pré-rendus, au cadrage et au format que l'écran affichera. On n'attend que la scène visible
+      // et ses voisines (déjà dessinées d'avance) : les autres arrivent en arrière-plan, bien avant qu'on y voyage.
       if (window.matchMedia(TOUCH_QUERY).matches) {
-        const format = window.matchMedia("(min-aspect-ratio: 1/1)").matches ? "wide" : "portrait";
-        document.querySelectorAll<HTMLElement>("[data-scene]").forEach((s) => urls.add(bakedScene(s.dataset.scene as StageId, format)));
+        const format = window.matchMedia(WIDE_QUERY).matches ? "wide" : "portrait";
+        const ext = (await supportsAvif()) ? "avif" : "webp";
+        document.querySelectorAll<HTMLElement>("[data-scene]").forEach((s) => {
+          const url = bakedScene(s.dataset.scene as StageId, format, ext);
+          if (s.style.visibility === "hidden") later.push(url);
+          else urls.add(url);
+        });
       }
 
       const total = urls.size + 2;
@@ -94,12 +102,23 @@ export default function PageLoader() {
       setDone(true);
       // Les autres pages (études de cas, crédits…) se préchargent pendant qu'on lit
       const prefetch = () =>
-        new Set(Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]'), (a) => a.getAttribute("href")!.split("#")[0])).forEach(
+        new Set(
+          Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]'), (a) => a.getAttribute("href")!.split("#")[0]),
+        ).forEach(
           // Pages seulement (pas les fichiers : CV en PDF…)
           (href) => href && href !== window.location.pathname && !/\.[a-z0-9]+$/i.test(href) && router.prefetch(href),
         );
-      if ("requestIdleCallback" in window) window.requestIdleCallback(prefetch, { timeout: 3000 });
-      else setTimeout(prefetch, 1200);
+      // Puis, l'un après l'autre (sans concurrencer ce qui s'affiche), les décors des autres ambiances
+      const rest = async () => {
+        for (const url of later) {
+          if (cancelled) return;
+          await preload(url);
+        }
+      };
+      const idle = (fn: () => void, ms: number) =>
+        "requestIdleCallback" in window ? window.requestIdleCallback(fn, { timeout: ms }) : setTimeout(fn, ms / 2);
+      idle(prefetch, 3000);
+      idle(() => void rest(), 1500);
     };
 
     const timeout = new Promise<void>((r) => setTimeout(r, MAX_MS));

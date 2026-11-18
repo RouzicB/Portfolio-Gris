@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProjectCase from "../../components/project/ProjectCase";
-import { adjacentProjects, projects } from "../../data/projects";
+import { adjacentProjects, projects, toCard } from "../../data/projects";
 import JsonLd from "../../components/JsonLd";
 import { projectJsonLd } from "../../lib/machine-readable";
 
@@ -35,7 +35,16 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <>
       <JsonLd data={projectJsonLd(project)} />
-      <ProjectCase slug={slug} />
+      {/* Le navigateur ne reçoit que ce projet et deux cartes : pas le contenu des autres études */}
+      <ProjectCase
+        project={project}
+        nav={{
+          index: nav.index,
+          total: projects.length,
+          prev: { ...toCard(nav.prev), index: projects.indexOf(nav.prev) },
+          next: { ...toCard(nav.next), index: projects.indexOf(nav.next) },
+        }}
+      />
     </>
   );
 }

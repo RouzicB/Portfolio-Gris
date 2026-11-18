@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { bridge, profiles } from "../../data/skills";
 import type { SkillProfile } from "../../types";
 import BrandIcon from "../icons/BrandIcons";
@@ -31,7 +31,7 @@ function Profile({ profile, mirrored = false }: { profile: SkillProfile; mirrore
   const Icon = icons[profile.icon];
   const id = `apt-${profile.id}`;
   return (
-    <motion.section
+    <m.section
       variants={fadeUp}
       aria-labelledby={id}
       className={`veil flex flex-col px-6 py-6 sm:px-8 short:py-4 ${
@@ -80,14 +80,14 @@ function Profile({ profile, mirrored = false }: { profile: SkillProfile; mirrore
           </li>
         ))}
       </ul>
-    </motion.section>
+    </m.section>
   );
 }
 
 /** Le lien entre les deux : un fil vertical (en ligne sur petit écran), l'anneau « & » et ce qui est partagé */
 function Bridge() {
   return (
-    <motion.div
+    <m.div
       variants={fadeUp}
       className="legible order-last flex flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:order-none lg:flex-col lg:flex-nowrap lg:justify-center lg:gap-3 lg:px-2"
     >
@@ -111,6 +111,6 @@ function Bridge() {
         ))}
       </ul>
       <span aria-hidden className="hidden w-px flex-1 bg-gradient-to-t from-transparent to-ink/25 lg:block" />
-    </motion.div>
+    </m.div>
   );
 }

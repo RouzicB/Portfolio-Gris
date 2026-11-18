@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type ComponentType } from "react";
+import { useEffect, useMemo, useRef, useSyncExternalStore, type ComponentType } from "react";
 import { useReducedMotion, type MotionValue } from "framer-motion";
 import type { StageId, Sun } from "../../types";
 import { segment, stageWeights, zoomScale } from "../../lib/journey";
-import { TOUCH_QUERY, bakedScene } from "../../lib/decor";
+import { TOUCH_QUERY, WIDE_QUERY, bakedScene } from "../../lib/decor";
 import { PointerProvider } from "./Parallax";
 import { WatercolorDefs } from "./art/shared";
 import GrisArt from "./art/GrisArt";
@@ -14,6 +14,23 @@ import BleuArt from "./art/BleuArt";
 import JauneArt from "./art/JauneArt";
 import CielArt from "./art/CielArt";
 import LuneArt from "./art/LuneArt";
+
+/**
+ * Scènes vivantes (SVG) seulement sur les écrans à souris : ailleurs, les images pré-rendues les remplacent.
+ * Côté serveur, aucune : le HTML ne transporte plus ~2 000 éléments SVG que les téléphones masquaient sans les afficher.
+ * Sur ordinateur, elles se montent juste après l'hydratation, sous l'écran de chargement.
+ */
+const subscribeTouch = (cb: () => void) => {
+  const mq = window.matchMedia(TOUCH_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+const useLiveScenes = () =>
+  useSyncExternalStore(
+    subscribeTouch,
+    () => !window.matchMedia(TOUCH_QUERY).matches,
+    () => false,
+  );
 
 const ART: Record<StageId, ComponentType> = {
   gris: GrisArt,
@@ -32,19 +49,12 @@ const ART: Record<StageId, ComponentType> = {
  * les styles sont écrits directement à chaque changement de `progress` (aucun rendu React par frame).
  * Une page projet passe une seule étape : le décor est alors immobile.
  */
-export default function Landscape({
-  progress,
-  stages,
-  suns,
-}: {
-  progress: MotionValue<number>;
-  stages: StageId[];
-  suns: Sun[];
-}) {
+export default function Landscape({ progress, stages, suns }: { progress: MotionValue<number>; stages: StageId[]; suns: Sun[] }) {
   const used = useMemo(() => Array.from(new Set(stages)), [stages]);
   const reduce = useReducedMotion();
   const sceneRefs = useRef<Partial<Record<StageId, HTMLDivElement | null>>>({});
   const sunRef = useRef<HTMLDivElement>(null);
+  const live = useLiveScenes();
 
   useEffect(() => {
     // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (quasi transparentes),
@@ -116,7 +126,11 @@ export default function Landscape({
   return (
     <div data-landscape className="fixed inset-0 -z-10 overflow-hidden" aria-hidden>
       <WatercolorDefs />
-      <div data-palette-live className="absolute inset-0" style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)" }} />
+      <div
+        data-palette-live
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)" }}
+      />
 
       {/* Soleil (ou lune), entouré d'anneaux fins */}
       <div
@@ -160,16 +174,21 @@ export default function Landscape({
             }}
           >
             {/* Ordinateur : la scène vivante (SVG, filtres aquarelle, parallaxe, nuages qui dérivent) */}
-            <div className="scene-live absolute inset-0">
-              <PointerProvider>
-                <Art />
-              </PointerProvider>
-            </div>
+            {live && (
+              <div className="scene-live absolute inset-0">
+                <PointerProvider>
+                  <Art />
+                </PointerProvider>
+              </div>
+            )}
             {/* Écrans tactiles : la même scène, pré-rendue en image (globals.css choisit l'une ou l'autre).
                 Les filtres aquarelle se calculent pixel par pixel sur le processeur : à densité ×3, une seule
                 scène pouvait demander plusieurs secondes de dessin à sa première apparition. */}
             <picture className="scene-baked absolute inset-[-3%]">
-              <source media="(min-aspect-ratio: 1/1)" srcSet={bakedScene(id, "wide")} />
+              {/* AVIF d'abord (bien plus léger), WebP sinon ; cadrage large sur un écran plus large que haut */}
+              <source media={WIDE_QUERY} type="image/avif" srcSet={bakedScene(id, "wide", "avif")} />
+              <source media={WIDE_QUERY} srcSet={bakedScene(id, "wide")} />
+              <source type="image/avif" srcSet={bakedScene(id, "portrait", "avif")} />
               <img
                 src={bakedScene(id, "portrait")}
                 alt=""

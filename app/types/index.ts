@@ -141,6 +141,9 @@ export interface Project {
  * Couleurs d'une page à part : `palette` remplace tout ou partie de l'ambiance (ciel, encre, voile, accent…) ;
  * `tint` reteinte les dessins du décor (mode de fusion « color » : la teinte change, les valeurs restent).
  */
+/** Ce qu'une carte de projet affiche (galerie, études voisines) : le reste de l'étude de cas ne quitte pas le serveur */
+export type ProjectCard = Pick<Project, "slug" | "title" | "context" | "year" | "summary" | "hues" | "thumb" | "cover">;
+
 export interface SceneTheme {
   palette?: Partial<Palette>;
   tint?: string;

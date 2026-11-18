@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { site, specs } from "../../data/site";
 import { icons } from "../icons/GrisIcons";
 import { fadeUp, group } from "../journey/motion";
@@ -14,18 +14,18 @@ export default function Profil() {
   return (
     <SectionShell index={1}>
       <div className="grid items-center gap-8 md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1.2fr_1fr] lg:gap-12">
-        <motion.div variants={fadeUp} className="mx-auto md:mx-0">
+        <m.div variants={fadeUp} className="mx-auto md:mx-0">
           <Portrait />
-        </motion.div>
+        </m.div>
 
         <div className="legible">
-          <motion.p
+          <m.p
             variants={fadeUp}
             className="text-pretty text-lg leading-relaxed text-ink sm:text-xl"
           >
             {site.bio}
-          </motion.p>
-          <motion.span
+          </m.p>
+          <m.span
             variants={fadeUp}
             aria-hidden
             className="my-6 flex items-center gap-3 text-ink-soft"
@@ -33,22 +33,22 @@ export default function Profil() {
             <span className="h-px w-10 bg-current opacity-50" />
             <span className="size-1.5 rotate-45 bg-accent" />
             <span className="h-px w-10 bg-current opacity-50" />
-          </motion.span>
+          </m.span>
           {/* Signature */}
-          <motion.p variants={fadeUp} className="text-ink">
+          <m.p variants={fadeUp} className="text-ink">
             <span className="title-spaced block text-lg">{site.name}</span>
             <span className="label-spaced mt-1 block text-ink">
               {site.role}
             </span>
-          </motion.p>
+          </m.p>
         </div>
 
         {/* Fiche : chaque information est une étoile du fil */}
-        <motion.div
+        <m.div
           variants={fadeUp}
           className="veil rounded-3xl px-5 py-4 md:col-span-2 lg:col-span-1"
         >
-          <motion.dl variants={group} className="relative">
+          <m.dl variants={group} className="relative">
             <span
               aria-hidden
               className="absolute bottom-6 left-[17px] top-6 w-px bg-ink/20"
@@ -56,7 +56,7 @@ export default function Profil() {
             {specs.map((s) => {
               const Icon = icons[s.icon];
               return (
-                <motion.div
+                <m.div
                   key={s.label}
                   variants={fadeUp}
                   className="relative flex items-center gap-4 py-2.5"
@@ -68,11 +68,11 @@ export default function Profil() {
                     <dt className="label-spaced text-ink-soft">{s.label}</dt>
                     <dd className="mt-0.5 text-sm text-ink">{s.value}</dd>
                   </div>
-                </motion.div>
+                </m.div>
               );
             })}
-          </motion.dl>
-        </motion.div>
+          </m.dl>
+        </m.div>
       </div>
     </SectionShell>
   );

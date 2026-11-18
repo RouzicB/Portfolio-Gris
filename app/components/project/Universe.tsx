@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 // Typographies des projets présentés en spécimen (hébergées avec le site ; chargées seulement sur cette page)
 import "@fontsource/major-mono-display/latin-400.css";
 import "@fontsource/play/latin-400.css";
@@ -29,16 +29,16 @@ export default function Universe({ universe }: { universe: UniverseData }) {
   const { logo, palette, fonts, motif, photo } = universe;
   return (
     <div className="space-y-14">
-      <motion.p variants={fadeUp} className={`veil mx-auto max-w-3xl px-6 py-5 text-center text-pretty leading-relaxed text-ink sm:px-10 ${leaf()}`}>
+      <m.p variants={fadeUp} className={`veil mx-auto max-w-3xl px-6 py-5 text-center text-pretty leading-relaxed text-ink sm:px-10 ${leaf()}`}>
         {universe.intro}
-      </motion.p>
+      </m.p>
 
       {/* Le logotype, sur le fond de la marque, et le sens de chaque lettre */}
       {logo && (
         <Sub title="Logotype">
           <div className="grid gap-5 font-sans lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
             {/* Le logo seul, sur le fond de la marque, dans un cadre à clé de voûte */}
-            <motion.figure
+            <m.figure
               variants={fadeUp}
               className={`relative grid min-h-64 place-items-center px-8 py-12 sm:px-14 ${leaf()}`}
               style={{ background: logo.background }}
@@ -47,11 +47,11 @@ export default function Universe({ universe }: { universe: UniverseData }) {
               <span aria-hidden className={`pointer-events-none absolute inset-2 border border-white/25 ${leaf()}`} />
               {/* eslint-disable-next-line @next/next/no-img-element -- logo vectoriel ou WebP déjà optimisé */}
               <img src={logo.src} alt={logo.alt} className={`h-auto w-full ${logo.wide || (logo.glyphs && logo.glyphs.length > 3) ? "max-w-sm" : "max-w-[15rem]"}`} />
-            </motion.figure>
+            </m.figure>
 
             {/* Sa lecture, élément par élément, sur un voile : texte sombre, lisible quel que soit le fond de la marque */}
             {(logo.glyphs || logo.note) && (
-              <motion.div variants={fadeUp} className={`veil flex flex-col justify-center px-6 py-6 sm:px-8 ${leaf(true)}`}>
+              <m.div variants={fadeUp} className={`veil flex flex-col justify-center px-6 py-6 sm:px-8 ${leaf(true)}`}>
                 {logo.glyphs && (
                   <ol className="divide-y divide-ink/15">
                     {logo.glyphs.map((g, i) => (
@@ -81,7 +81,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
                     {logo.note}
                   </p>
                 )}
-              </motion.div>
+              </m.div>
             )}
           </div>
         </Sub>
@@ -97,14 +97,14 @@ export default function Universe({ universe }: { universe: UniverseData }) {
           }`}
         >
           {palette.map((c) => (
-            <motion.li key={c.hex} variants={fadeUp} className="veil flex flex-col rounded-b-2xl rounded-t-[999px] p-1.5 pb-4">
+            <m.li key={c.hex} variants={fadeUp} className="veil flex flex-col rounded-b-2xl rounded-t-[999px] p-1.5 pb-4">
               <span aria-hidden className="block aspect-[4/5] w-full rounded-b-lg rounded-t-[999px] ring-1 ring-inset ring-ink/15" style={{ background: c.hex }} />
               <span className="mt-3 px-2 text-center">
                 <span className="label-spaced block text-ink">{c.name}</span>
                 <span className="mt-1 block font-mono text-xs tracking-wider text-ink">{c.hex}</span>
                 <span className="mt-2 block text-pretty text-sm leading-snug text-ink">{c.role}</span>
               </span>
-            </motion.li>
+            </m.li>
           ))}
         </ul>
       </Sub>
@@ -112,7 +112,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
       {/* Les typographies, en spécimen (seulement si leurs fichiers sont hébergés avec le site) */}
       {fonts.length > 0 && (
       <Sub title="Typographies">
-        <motion.ul variants={fadeUp} className={`veil divide-y divide-ink/15 px-6 sm:px-8 ${leaf(true)}`}>
+        <m.ul variants={fadeUp} className={`veil divide-y divide-ink/15 px-6 sm:px-8 ${leaf(true)}`}>
           {fonts.map((f) => (
             <li key={f.name} className="grid grid-cols-1 items-center gap-x-8 gap-y-3 py-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
               <div aria-hidden className="min-w-0 text-ink" style={{ fontFamily: f.family }}>
@@ -128,7 +128,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
               </div>
             </li>
           ))}
-        </motion.ul>
+        </m.ul>
       </Sub>
       )}
 
@@ -141,7 +141,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
               { item: photo, label: photo?.label ?? "Photographie", mirrored: true },
             ].map(({ item, label, mirrored }) =>
               item ? (
-                <motion.figure key={label} variants={fadeUp} className={`veil flex flex-col p-1.5 sm:p-2 ${leaf(mirrored)}`}>
+                <m.figure key={label} variants={fadeUp} className={`veil flex flex-col p-1.5 sm:p-2 ${leaf(mirrored)}`}>
                   <span
                     className={`relative block aspect-[16/10] overflow-hidden ${mirrored ? "rounded-[0.5rem_2.1rem_0.5rem_2.1rem]" : "rounded-[2.1rem_0.5rem_2.1rem_0.5rem]"}`}
                     style={item.background ? { background: item.background } : undefined}
@@ -159,7 +159,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
                     <span className="label-spaced text-ink">{label}</span>
                     <span className="mt-2 block text-pretty text-sm leading-relaxed text-ink">{item.text}</span>
                   </figcaption>
-                </motion.figure>
+                </m.figure>
               ) : null,
             )}
           </div>
@@ -174,13 +174,13 @@ function Sub({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
       {/* Le libellé sur une pastille de verre : lisible quel que soit le décor qui passe derrière */}
-      <motion.h3 variants={fadeUp} className="mb-5 flex items-center gap-3 text-ink">
+      <m.h3 variants={fadeUp} className="mb-5 flex items-center gap-3 text-ink">
         <span className="veil inline-flex items-center gap-2.5 rounded-full py-1.5 pl-3 pr-4">
           <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
           <span className="label-spaced">{title}</span>
         </span>
         <span aria-hidden className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
-      </motion.h3>
+      </m.h3>
       {children}
     </section>
   );

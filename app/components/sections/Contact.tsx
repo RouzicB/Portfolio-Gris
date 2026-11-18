@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { sections } from "../../data/sections";
 import { site } from "../../data/site";
 import { ArrowUpRightIcon, CheckIcon, CopyIcon, DownloadIcon } from "../icons/GrisIcons";
@@ -46,25 +46,25 @@ export default function Contact() {
           style={{ ["--emblem-bg" as string]: "var(--sky-top)" }}
           aria-hidden
         >
-          <motion.div variants={fadeIn} className="absolute inset-0 text-ink">
+          <m.div variants={fadeIn} className="absolute inset-0 text-ink">
             <Emblem className="size-full" />
-          </motion.div>
-          <motion.div variants={fadeUp} className="relative flex flex-col items-center">
+          </m.div>
+          <m.div variants={fadeUp} className="relative flex flex-col items-center">
             <span className="label-spaced text-[max(0.5625rem,3.6cqw)] text-ink-soft">07 · {SECTION.label}</span>
             <span className="title-spaced mt-[3.5cqw] pl-[0.32em] text-[5.2cqw] leading-snug text-ink">
               Écrivons
               <br />
               la suite
             </span>
-          </motion.div>
+          </m.div>
         </div>
 
-        <motion.p variants={fadeUp} className="mt-5 max-w-md text-balance text-ink short:mt-3">
+        <m.p variants={fadeUp} className="mt-5 max-w-md text-balance text-ink short:mt-3">
           {SECTION.intro}
-        </motion.p>
+        </m.p>
 
         {/* L'adresse, en très grand */}
-        <motion.div variants={fadeUp} className="mt-4 flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        <m.div variants={fadeUp} className="mt-4 flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2">
           <a
             href={`mailto:${site.email}`}
             className="group relative max-w-full break-all font-display text-[clamp(1.6rem,6vw,3.25rem)] font-light leading-tight text-ink"
@@ -89,10 +89,10 @@ export default function Contact() {
           <span className="sr-only" aria-live="polite">
             {copied ? "Adresse copiée" : ""}
           </span>
-        </motion.div>
+        </m.div>
 
         {/* Les autres chemins, sur une ligne */}
-        <motion.ul variants={fadeUp} className="veil mt-7 grid grid-cols-2 justify-items-center gap-x-6 gap-y-2 rounded-[1.75rem] px-6 py-3 short:mt-5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-1 sm:py-2.5" aria-label="Ailleurs">
+        <m.ul variants={fadeUp} className="veil mt-7 grid grid-cols-2 justify-items-center gap-x-6 gap-y-2 rounded-[1.75rem] px-6 py-3 short:mt-5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-1 sm:py-2.5" aria-label="Ailleurs">
           {links.map((l, i) => (
             <Fragment key={l.label}>
               {i > 0 && <li aria-hidden className="mx-3 hidden size-1.5 rotate-45 bg-accent sm:block" />}
@@ -109,10 +109,10 @@ export default function Contact() {
               </li>
             </Fragment>
           ))}
-        </motion.ul>
+        </m.ul>
 
         {/* Disponibilité et retour au début */}
-        <motion.div variants={fadeUp} className="mt-7 flex flex-col items-center gap-3 short:mt-4">
+        <m.div variants={fadeUp} className="mt-7 flex flex-col items-center gap-3 short:mt-4">
           <p className="veil inline-flex items-center gap-2.5 rounded-full py-1.5 pl-3 pr-4 text-sm text-ink">
             <span aria-hidden className="relative flex size-2.5">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:animate-none" />
@@ -129,7 +129,7 @@ export default function Contact() {
             <span className="label-spaced text-ink">Revenir au début du voyage</span>
             <span aria-hidden className="h-px w-8 bg-current opacity-60" />
           </button>
-        </motion.div>
+        </m.div>
       </div>
     </SectionShell>
   );

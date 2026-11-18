@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { careerChapters, careerEdges, careerNodes, defaultNodeId } from "../../data/career";
 import type { FlowNode } from "../../types";
 import { flowLayout, isTaken, kindLabels, type Orientation } from "../../lib/flowchart";
@@ -90,7 +90,7 @@ export default function Parcours() {
   return (
     <SectionShell index={4}>
       {/* Canevas : défile horizontalement sur petit écran */}
-      <motion.div
+      <m.div
         ref={scrollRef}
         variants={group}
         tabIndex={overflowing ? 0 : undefined}
@@ -109,7 +109,7 @@ export default function Parcours() {
           {careerChapters.map((c) => {
             const box = layout.chapterBox(c);
             return (
-              <motion.div
+              <m.div
                 key={c.id}
                 variants={fadeIn}
                 className={`absolute flex items-center gap-2 ${vertical ? "z-10" : ""}`}
@@ -122,12 +122,12 @@ export default function Parcours() {
                   <span className="label-spaced legible whitespace-nowrap text-ink">{c.title}</span>
                 </span>
                 <span className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
-              </motion.div>
+              </m.div>
             );
           })}
 
           {/* Liens */}
-          <motion.svg
+          <m.svg
             variants={fadeIn}
             className="pointer-events-none absolute inset-0 overflow-visible"
             width={size.width}
@@ -158,7 +158,7 @@ export default function Parcours() {
                 const p = layout.exit(layout.nodeBox(n));
                 return <circle key={n.id} cx={p.x} cy={p.y} r="2.6" fill="var(--accent)" />;
               })}
-          </motion.svg>
+          </m.svg>
 
           {/* Nœuds */}
           {careerNodes.map((node) => {
@@ -166,7 +166,7 @@ export default function Parcours() {
             const isSelected = node.id === selectedId;
             const muted = node.kind === "locked" || node.kind === "future";
             return (
-              <motion.button
+              <m.button
                 variants={fadeUp}
                 key={node.id}
                 type="button"
@@ -192,11 +192,11 @@ export default function Parcours() {
                 {node.kind === "current" && (
                   <span aria-hidden className="absolute -right-1.5 -top-1.5 size-3 animate-ping rounded-full bg-accent/70" />
                 )}
-              </motion.button>
+              </m.button>
             );
           })}
         </div>
-      </motion.div>
+      </m.div>
       {overflowing && (
         <p className="legible mt-1 flex items-center gap-1.5 text-xs text-ink">
           Faites glisser pour parcourir la suite
@@ -206,14 +206,14 @@ export default function Parcours() {
 
       {/* Détail de l'étape sélectionnée */}
       {/* Le panneau de verre apparaît lui-même (fadeUp) ; seul son contenu change d'une étape à l'autre */}
-      <motion.div
+      <m.div
         ref={detailRef}
         variants={fadeUp}
         className="veil relative mx-auto mt-6 scroll-mb-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
         style={{ maxWidth: vertical ? undefined : size.width }}
       >
         <AnimatePresence mode="wait" initial={false}>
-          <motion.article
+          <m.article
             key={selected.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -248,9 +248,9 @@ export default function Parcours() {
                 </ul>
               )}
             </div>
-          </motion.article>
+          </m.article>
         </AnimatePresence>
-      </motion.div>
+      </m.div>
     </SectionShell>
   );
 }

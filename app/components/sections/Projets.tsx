@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { projects } from "../../data/projects";
+import { m } from "framer-motion";
 import { pad } from "../../lib/journey";
+import type { ProjectCard } from "../../types";
 import { ArrowRightIcon, ChevronIcon } from "../icons/GrisIcons";
 import { WASH, fadeUp, group } from "../journey/motion";
 import ProjectThumb from "../ui/ProjectThumb";
 import SectionShell from "./SectionShell";
 
-const MotionLink = motion.create(Link);
+const MotionLink = m.create(Link);
 
 /** Cartes visibles à la fois selon la largeur disponible */
 const perPageFor = (width: number) => (width < 600 ? 1 : width < 940 ? 2 : 3);
@@ -21,7 +21,7 @@ const perPageFor = (width: number) => (width < 600 ? 1 : width < 940 ? 2 : 3);
  * et une pierre de clé au sommet. Une à trois arches visibles selon la largeur ; flèches, pagination en losanges,
  * glissement au doigt ou geste horizontal du trackpad pour parcourir le reste.
  */
-export default function Projets() {
+export default function Projets({ cards: projects }: { cards: ProjectCard[] }) {
   const viewRef = useRef<HTMLDivElement>(null);
   const [perPage, setPerPage] = useState(3);
   const [page, setPage] = useState(0);
@@ -130,7 +130,7 @@ export default function Projets() {
                   inert={!visible}
                   aria-hidden={!visible}
                 >
-                  <ArchCard index={i} />
+                  <ArchCard project={p} index={i} />
                 </li>
               );
             })}
@@ -138,13 +138,13 @@ export default function Projets() {
         </div>
 
         {/* Pagination : flèches, losanges, compteur */}
-        <motion.div variants={group} className="flex items-center justify-between gap-4">
-          <motion.p variants={fadeUp} className="label-spaced legible whitespace-nowrap tabular-nums text-ink" aria-live="polite">
+        <m.div variants={group} className="flex items-center justify-between gap-4">
+          <m.p variants={fadeUp} className="label-spaced legible whitespace-nowrap tabular-nums text-ink" aria-live="polite">
             {pad(first + 1)}
             {last - first > 1 && <> — {pad(last)}</>} <span className="text-ink-soft">/ {pad(projects.length)}</span>
-          </motion.p>
+          </m.p>
           <div className="flex items-center gap-2">
-            <motion.button
+            <m.button
               variants={fadeUp}
               type="button"
               onClick={() => go(current - 1)}
@@ -153,8 +153,8 @@ export default function Projets() {
               className="veil grid size-10 place-items-center rounded-full text-ink transition hover:-translate-x-0.5 disabled:pointer-events-none disabled:opacity-40"
             >
               <ChevronIcon size={18} className="rotate-180" />
-            </motion.button>
-            <motion.ol variants={fadeUp} className="flex items-center gap-1" aria-label="Pages">
+            </m.button>
+            <m.ol variants={fadeUp} className="flex items-center gap-1" aria-label="Pages">
               {Array.from({ length: pages }, (_, k) => (
                 <li key={k}>
                   <button
@@ -172,8 +172,8 @@ export default function Projets() {
                   </button>
                 </li>
               ))}
-            </motion.ol>
-            <motion.button
+            </m.ol>
+            <m.button
               variants={fadeUp}
               type="button"
               onClick={() => go(current + 1)}
@@ -182,17 +182,16 @@ export default function Projets() {
               className="veil grid size-10 place-items-center rounded-full text-ink transition hover:translate-x-0.5 disabled:pointer-events-none disabled:opacity-40"
             >
               <ChevronIcon size={18} />
-            </motion.button>
+            </m.button>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </SectionShell>
   );
 }
 
 /** Une arche de verre : la vignette peinte dans la fenêtre, une pierre de clé au sommet */
-function ArchCard({ index }: { index: number }) {
-  const p = projects[index];
+function ArchCard({ project: p, index }: { project: ProjectCard; index: number }) {
   return (
     <MotionLink
       href={`/projets/${p.slug}`}
@@ -208,7 +207,10 @@ function ArchCard({ index }: { index: number }) {
         <span aria-hidden className="absolute inset-2 rounded-b-xl rounded-t-[999px] border border-white/50" />
       </span>
       {/* Pierre de clé */}
-      <span aria-hidden className="absolute left-1/2 top-0 size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent shadow-[0_0_12px_var(--accent)]" />
+      <span
+        aria-hidden
+        className="absolute left-1/2 top-0 size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent shadow-[0_0_12px_var(--accent)]"
+      />
 
       <span className="flex flex-1 flex-col px-3 pb-3 pt-4 text-center short:pb-2 short:pt-3">
         <span className="label-spaced tabular-nums text-ink-soft">

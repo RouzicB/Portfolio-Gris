@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import ProjectCase from "@/app/components/project/ProjectCase";
-import { adjacentProjects, projects } from "@/app/data/projects";
+import { adjacentProjects, projects, toCard } from "@/app/data/projects";
 import { palettes } from "@/app/data/palettes";
 
 describe("Pages projet", () => {
@@ -21,7 +21,13 @@ describe("Pages projet", () => {
 
   it("affiche l'étude de cas complète et la navigation", () => {
     const p = projects[1];
-    render(<ProjectCase slug={p.slug} />);
+    const nav = adjacentProjects(p.slug)!;
+    render(
+      <ProjectCase
+        project={p}
+        nav={{ index: nav.index, total: projects.length, prev: { ...toCard(nav.prev), index: 0 }, next: { ...toCard(nav.next), index: 2 } }}
+      />,
+    );
     expect(screen.getByRole("heading", { level: 1, name: p.title })).toBeInTheDocument();
     expect(screen.getByText(p.problem)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Démarche/ })).toBeInTheDocument();

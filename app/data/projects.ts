@@ -1,4 +1,4 @@
-import type { Project } from "../types";
+import type { Project, ProjectCard } from "../types";
 import { afficheIaDetails, afficheIaUniverse } from "./affiche-ia";
 import { bambouLivret, bambouUniverse } from "./bambou";
 import { charteSlift } from "./charte-slift";
@@ -24,11 +24,26 @@ const all: Project[] = [
     solution:
       "VIBES réunit billets et merch imprimé à la demande dans un panier unifié, et donne à chaque artiste sa page à sa couleur. Son identité assume « l'éco-responsabilité version Dark Mode » : la nuit, des néons bleus et violets, des typographies de code pour dire la transparence.",
     process: [
-      { title: "Recherche", text: "Marché du live, benchmark (Merchbar, Chez Simone, Twitch), deux personas (Chloé, fan ; Marcus, manager de label) et trois hypothèses." },
-      { title: "Identité", text: "Logotype dessiné lettre à lettre, palette nocturne, trois typos, motifs en W et M, direction photo, éco-conception graphique." },
-      { title: "Prototype", text: "Maquettes Figma en Atomic Design, thème par artiste, parcours d'achat aligné sur les 10 heuristiques de Nielsen." },
-      { title: "Tests", text: "5 testeurs en think aloud : 3 points de friction (taille oubliée, prix et CO₂ confondus, XP incomprise), corrigés dans la maquette." },
-      { title: "Intégration", text: "Webflow en composants, interactions natives sans JavaScript lourd, images WebP en lazy loading, sémantique et contrastes vérifiés." },
+      {
+        title: "Recherche",
+        text: "Marché du live, benchmark (Merchbar, Chez Simone, Twitch), deux personas (Chloé, fan ; Marcus, manager de label) et trois hypothèses.",
+      },
+      {
+        title: "Identité",
+        text: "Logotype dessiné lettre à lettre, palette nocturne, trois typos, motifs en W et M, direction photo, éco-conception graphique.",
+      },
+      {
+        title: "Prototype",
+        text: "Maquettes Figma en Atomic Design, thème par artiste, parcours d'achat aligné sur les 10 heuristiques de Nielsen.",
+      },
+      {
+        title: "Tests",
+        text: "5 testeurs en think aloud : 3 points de friction (taille oubliée, prix et CO₂ confondus, XP incomprise), corrigés dans la maquette.",
+      },
+      {
+        title: "Intégration",
+        text: "Webflow en composants, interactions natives sans JavaScript lourd, images WebP en lazy loading, sémantique et contrastes vérifiés.",
+      },
     ],
     learnings: [
       "Une identité peut porter un engagement : ici, le noir dit l'écologie mieux que le vert.",
@@ -81,9 +96,18 @@ const all: Project[] = [
       "Une identité bâtie sur la précision : un pictogramme montagneux et une typographie anguleuse inscrits dans un triangle asymétrique, une base neutre où le rouge ne dépasse jamais 10 à 15 % de la surface, deux typographies et un motif de triangles dérivé du logo.",
     process: [
       { title: "Plateforme de marque", text: "Mission, vision, valeurs (rigueur, sobriété, engagement), positionnement et public cible." },
-      { title: "Logotype", text: "Logo principal, version horizontale, favicon, zones de protection, tailles minimales et usages interdits." },
-      { title: "Couleurs & typographies", text: "Trame noir, gris, blanc et un rouge d'accent rare ; Righteous pour les titres, Kumbh Sans pour le texte, hiérarchie complète." },
-      { title: "Iconographie & mockups", text: "Photo noir et blanc contrastée, motif de triangles, plan de salle, pictogrammes sur grille de 32 px, applications textiles." },
+      {
+        title: "Logotype",
+        text: "Logo principal, version horizontale, favicon, zones de protection, tailles minimales et usages interdits.",
+      },
+      {
+        title: "Couleurs & typographies",
+        text: "Trame noir, gris, blanc et un rouge d'accent rare ; Righteous pour les titres, Kumbh Sans pour le texte, hiérarchie complète.",
+      },
+      {
+        title: "Iconographie & mockups",
+        text: "Photo noir et blanc contrastée, motif de triangles, plan de salle, pictogrammes sur grille de 32 px, applications textiles.",
+      },
     ],
     learnings: [
       "Une charte vaut autant par ses règles que par ses visuels : proportions, contrastes, interdits.",
@@ -132,10 +156,22 @@ const all: Project[] = [
     solution:
       "Une v1.1 du design system bâtie sur une règle : la couleur confirme, elle n'informe jamais seule. Une forme par rareté (du cercle à l'hexagone) et un libellé sur chaque badge, des états à deux signaux (barre, coche, anneau), un sens par couleur (bleu pour l'interaction, or pour la récompense), des contrastes AA mesurés et des couleurs passées en variables.",
     process: [
-      { title: "Audit", text: "Chaque composant passé au simulateur (protanopie, deutéranopie, tritanopie), en niveaux de gris, au contraste et à l'écart ΔE : 8 informations portées par la couleur seule." },
-      { title: "Priorités", text: "Classées par impact sur le jeu, fréquence et composants touchés : d'abord les raretés, puis les alertes et boutons, enfin la navigation et le niveau." },
-      { title: "Règles", text: "Six règles de système : double codage, contraste, écart mesuré, un sens par couleur, états à deux signaux, vérification avant livraison." },
-      { title: "Design system", text: "Variables à trois niveaux, badges de rareté, boutons à cinq états, navigation, grille d'inventaire et 46 icônes dessinées pour l'univers, dans un document de 24 pages." },
+      {
+        title: "Audit",
+        text: "Chaque composant passé au simulateur (protanopie, deutéranopie, tritanopie), en niveaux de gris, au contraste et à l'écart ΔE : 8 informations portées par la couleur seule.",
+      },
+      {
+        title: "Priorités",
+        text: "Classées par impact sur le jeu, fréquence et composants touchés : d'abord les raretés, puis les alertes et boutons, enfin la navigation et le niveau.",
+      },
+      {
+        title: "Règles",
+        text: "Six règles de système : double codage, contraste, écart mesuré, un sens par couleur, états à deux signaux, vérification avant livraison.",
+      },
+      {
+        title: "Design system",
+        text: "Variables à trois niveaux, badges de rareté, boutons à cinq états, navigation, grille d'inventaire et 46 icônes dessinées pour l'univers, dans un document de 24 pages.",
+      },
       { title: "Vérification", text: "Les mêmes tests avant et après, et l'écran Inventaire refait comme écran de référence." },
     ],
     learnings: [
@@ -186,10 +222,22 @@ const all: Project[] = [
     solution:
       "Une affiche pensée comme un circuit imprimé : des pistes bleues relient des blocs repérés comme des composants (A1, B1, C1…) et guident l'œil du titre aux chiffres clés, de l'impression 3D aux secteurs puis aux avantages. Les chiffres passent en grand, chaque explication tient sur une ligne, et un seul bleu hiérarchise tout sur un fond clair quadrillé.",
     process: [
-      { title: "Recherche", text: "Les apports de l'IA dans l'industrie, rassemblés en chiffres : productivité, rebut, précision, défauts détectés, maintenance prédictive." },
-      { title: "Hiérarchie", text: "Six chiffres clés, trois volets d'impression 3D, quatre secteurs, trois avantages : chaque niveau d'information a son bloc." },
-      { title: "Grille", text: "Un fond quadrillé, des pistes coudées et des repères de composants (A1 à E1) : l'affiche se lit comme une carte électronique." },
-      { title: "Images", text: "Un bras robotisé en pleine soudure et une impression 3D métal, en teintes froides relevées par l'orange du métal chauffé." },
+      {
+        title: "Recherche",
+        text: "Les apports de l'IA dans l'industrie, rassemblés en chiffres : productivité, rebut, précision, défauts détectés, maintenance prédictive.",
+      },
+      {
+        title: "Hiérarchie",
+        text: "Six chiffres clés, trois volets d'impression 3D, quatre secteurs, trois avantages : chaque niveau d'information a son bloc.",
+      },
+      {
+        title: "Grille",
+        text: "Un fond quadrillé, des pistes coudées et des repères de composants (A1 à E1) : l'affiche se lit comme une carte électronique.",
+      },
+      {
+        title: "Images",
+        text: "Un bras robotisé en pleine soudure et une impression 3D métal, en teintes froides relevées par l'orange du métal chauffé.",
+      },
       { title: "Impression", text: "Un fichier prêt pour l'imprimeur : fonds perdus, traits de coupe et gamme de contrôle des couleurs." },
     ],
     // ⚠ Propositions à ajuster : ce que tu en as retenu
@@ -241,10 +289,19 @@ const all: Project[] = [
     solution:
       "Une refonte guidée par les règles de l'éco-design : deux tons seulement, le blanc du papier comme troisième couleur, la silhouette de Marseille en aplats plutôt qu'une profusion d'illustrations. L'affiche descend à 43 % d'encrage, le flyer à 14 %, sur papier ensemencé ; les goodies deviennent utiles et durables.",
     process: [
-      { title: "Diagnostic", text: "Taux d'encrage mesuré sur l'affiche originale (86 %), trop de couleurs, trop d'éléments ; objectif fixé entre 30 et 40 %." },
-      { title: "Logo", text: "Le script d'origine gardé pour son geste, réduit à un contour ; les mains et le néon remplacés par un triangle, le delta." },
+      {
+        title: "Diagnostic",
+        text: "Taux d'encrage mesuré sur l'affiche originale (86 %), trop de couleurs, trop d'éléments ; objectif fixé entre 30 et 40 %.",
+      },
+      {
+        title: "Logo",
+        text: "Le script d'origine gardé pour son geste, réduit à un contour ; les mains et le néon remplacés par un triangle, le delta.",
+      },
       { title: "Affiche", text: "Notre-Dame-de-la-Garde, un soleil et des palmiers en bichromie ; impression offset et éco-encre." },
-      { title: "Flyer", text: "La programmation au trait, sur papier ensemencé fabriqué à Marseille, chez un imprimeur certifié ISO 14001." },
+      {
+        title: "Flyer",
+        text: "La programmation au trait, sur papier ensemencé fabriqué à Marseille, chez un imprimeur certifié ISO 14001.",
+      },
       { title: "Goodies", text: "Bouchons d'oreilles en plastique océanique et lunettes en coquillages, logo sérigraphié en une couleur." },
     ],
     learnings: [
@@ -350,9 +407,18 @@ const all: Project[] = [
       "Un livret A5 de 12 pages qui montre avant d'expliquer : la liste des essentiels, quatre étapes illustrées où le même bambou se construit page après page, un geste d'entretien et des photos de résultats. Chaque étape annonce ce qu'elle demande (1× billes d'argile, 1× eau…), et une frise de bambous indique où l'on en est.",
     process: [
       { title: "Contenu", text: "Ce qu'il faut savoir, réduit à l'essentiel : le matériel, quatre gestes, un entretien." },
-      { title: "Identité", text: "Un logo en pastille, un titre en lettres rondes découpées dans des photos, un vert profond et un papier clair." },
-      { title: "Illustration", text: "Des pictogrammes au trait et un bambou en aplats qui grandit d'étape en étape, avec ses billes, son eau et sa lumière." },
-      { title: "Mise en page", text: "Des étapes numérotées en grand, des compteurs « 1× » pour le matériel et une frise de progression en pied de page." },
+      {
+        title: "Identité",
+        text: "Un logo en pastille, un titre en lettres rondes découpées dans des photos, un vert profond et un papier clair.",
+      },
+      {
+        title: "Illustration",
+        text: "Des pictogrammes au trait et un bambou en aplats qui grandit d'étape en étape, avec ses billes, son eau et sa lumière.",
+      },
+      {
+        title: "Mise en page",
+        text: "Des étapes numérotées en grand, des compteurs « 1× » pour le matériel et une frise de progression en pied de page.",
+      },
       { title: "Livret", text: "Le format A5 pensé en doubles pages, puis exporté en imposition livret pour l'impression." },
     ],
     // ⚠ Propositions à ajuster : ce que tu en as retenu
@@ -405,9 +471,15 @@ const all: Project[] = [
       "Un site pensé selon les principes de l'anti-design : typographies gothiques et condensées qui se chevauchent, mots posés à la verticale, formes chromées liquides, étoiles et nébuleuses, photos de mode cadrées en biais. La lisibilité cède là où l'impact compte ; la navigation (boutique, marque, contact, compte, panier) reste nette pour qu'on puisse acheter.",
     process: [
       { title: "Positionnement", text: "La marque, ses pièces et sa devise : « Ose briller. Sors des normes. Sois Holograph'. »" },
-      { title: "Moodboard", text: "Mode holographique, néons de ville, nébuleuses, un astronaute : une palette de cinq teintes, du rose au pêche, sur fond noir." },
+      {
+        title: "Moodboard",
+        text: "Mode holographique, néons de ville, nébuleuses, un astronaute : une palette de cinq teintes, du rose au pêche, sur fond noir.",
+      },
       { title: "Typographies", text: "Une gothique pour la voix de la marque, une condensée pour le rythme, des titres qui se heurtent." },
-      { title: "Maquette", text: "La page d'accueil sur Figma : l'accroche « Now / Future clothes », la marque, puis quatre collections (Quantum, Cybernetics, Hologram, Virtuality)." },
+      {
+        title: "Maquette",
+        text: "La page d'accueil sur Figma : l'accroche « Now / Future clothes », la marque, puis quatre collections (Quantum, Cybernetics, Hologram, Virtuality).",
+      },
       { title: "Note d'intention", text: "Une présentation qui défend le parti pris : où et pourquoi le site enfreint les règles." },
     ],
     // ⚠ Propositions à ajuster : ce que tu en as retenu
@@ -450,6 +522,18 @@ const all: Project[] = [
 
 /** Du plus récent au plus ancien (tri stable : l'ordre d'écriture départage une même année) */
 export const projects: Project[] = [...all].sort((a, b) => b.year - a.year);
+
+/** Les seuls champs d'une carte : c'est tout ce que la galerie envoie au navigateur */
+export const toCard = ({ slug, title, context, year, summary, hues, thumb, cover }: Project): ProjectCard => ({
+  slug,
+  title,
+  context,
+  year,
+  summary,
+  hues,
+  thumb,
+  cover,
+});
 
 /** Projet précédent et suivant (en boucle) pour la navigation entre études de cas */
 export function adjacentProjects(slug: string) {

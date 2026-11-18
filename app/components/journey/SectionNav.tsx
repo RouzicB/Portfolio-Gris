@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { motion, useTransform } from "framer-motion";
+import { m, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
 import { ChevronIcon, icons } from "../icons/GrisIcons";
 import { useJourneyControls } from "./JourneyContext";
@@ -38,7 +38,7 @@ export default function SectionNav() {
             aria-hidden
             className="absolute left-[17px] right-[17px] top-1/2 h-px -translate-y-1/2 bg-ink/25 md:bottom-5 md:left-1/2 md:right-auto md:top-5 md:h-auto md:w-px md:-translate-x-1/2 md:translate-y-0 tiny:md:bottom-4 tiny:md:top-4"
           />
-          <motion.span
+          <m.span
             aria-hidden
             style={{ ["--fill" as string]: filled }}
             className="absolute left-[17px] right-[17px] top-1/2 h-px origin-left bg-ink [transform:translateY(-50%)_scaleX(var(--fill))] md:bottom-5 md:left-1/2 md:right-auto md:top-5 md:h-auto md:w-px md:origin-top md:[transform:translateX(-50%)_scaleY(var(--fill))] tiny:md:bottom-4 tiny:md:top-4"

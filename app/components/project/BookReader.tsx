@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type TouchEvent } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import type { Book } from "../../types";
 import { pad } from "../../lib/journey";
 import { ChevronIcon, DownloadIcon } from "../icons/GrisIcons";
@@ -136,7 +136,7 @@ export default function BookReader({ book }: { book: Book }) {
         <span aria-hidden className="absolute -top-[5px] left-1/2 z-10 size-2.5 -translate-x-1/2 rotate-45 bg-accent" />
         <div className="relative aspect-video w-full overflow-hidden rounded-[1.9rem_0.5rem_1.9rem_0.5rem] bg-ink/5 [:fullscreen_&]:w-[min(100%,calc((100svh-3rem)*16/9))]">
           <AnimatePresence initial={false} custom={dir}>
-            <motion.img
+            <m.img
               key={page.src}
               src={page.src}
               alt={`${words.unit} ${index + 1} : ${page.title}`}

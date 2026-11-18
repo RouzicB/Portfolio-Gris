@@ -3,12 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { motionValue } from "framer-motion";
 import Projets from "@/app/components/sections/Projets";
 import { JourneyContext } from "@/app/components/journey/JourneyContext";
-import { projects } from "@/app/data/projects";
+import { projects, toCard } from "@/app/data/projects";
 
 const renderGallery = () =>
   render(
     <JourneyContext.Provider value={{ active: 5, progress: motionValue(5), goTo: jest.fn() }}>
-      <Projets />
+      <Projets cards={projects.map(toCard)} />
     </JourneyContext.Provider>,
   );
 
