@@ -10,7 +10,7 @@ export const site = {
   // à compléter
   bio: "En 5e année de Mastère UX/UI, spécialité création graphique, je relie la recherche utilisateur, l'architecture de l'information et l'interface. J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.",
   description:
-    "Portfolio de Baptiste Rouzic, étudiant UX/UI en 5e année : profil, méthode, aptitudes, parcours, projets et contact.",
+    "Portfolio de Baptiste Rouzic, étudiant UX/UI en 5e année : profil, convictions, aptitudes, parcours, projets et contact.",
   status: "Recherche une alternance ou un premier poste UX/UI pour 2027",
   // à compléter
   email: "rouzicb.pro@gmail.com",

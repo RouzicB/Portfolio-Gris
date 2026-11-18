@@ -2,13 +2,13 @@
  * Le portfolio lisible par les machines (moteurs de recherche, assistants IA, agents qui parcourent les portfolios) :
  * tout est tiré des mêmes données que les pages, rien n'est à maintenir en double.
  * - portfolioMarkdown : le contenu en texte (/llms.txt, /llms-full.txt), y compris ce que l'interface ne montre
- *   qu'au clic (chaque étape du parcours, chaque étape de la méthode, chaque écran des études de cas) ;
+ *   qu'au clic (chaque étape du parcours, chaque écran des études de cas) ;
  * - personJsonLd / projectJsonLd : données structurées schema.org, intégrées aux pages (invisibles).
  */
 import fs from "node:fs";
 import path from "node:path";
 import { careerChapters, careerNodes } from "../data/career";
-import { process as methode } from "../data/process";
+import { convictions } from "../data/convictions";
 import { projects } from "../data/projects";
 import { sections } from "../data/sections";
 import { site, specs } from "../data/site";
@@ -105,11 +105,11 @@ export function portfolioMarkdown(full: boolean): string {
     "",
     site.bio,
     "",
-    `## Méthode : ${sec("methode").title} (${sectionUrl("methode")})`,
+    `## Convictions : ${sec("convictions").title} (${sectionUrl("convictions")})`,
     "",
-    sec("methode").intro,
+    sec("convictions").intro,
     "",
-    ...methode.map((s, i) => `${i + 1}. **${s.name}** : ${s.goal} Méthodes : ${s.methods.join(", ")}.`),
+    ...convictions.map((c) => `- **${c.title}** : ${c.text} Vu dans : ${c.proof.title} (${absolute(`/projets/${c.proof.slug}`)}).`),
     "",
     `## Aptitudes : ${sec("aptitudes").title} (${sectionUrl("aptitudes")})`,
     "",

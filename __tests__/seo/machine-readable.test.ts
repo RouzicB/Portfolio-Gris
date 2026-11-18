@@ -1,5 +1,5 @@
 import { careerNodes } from "@/app/data/career";
-import { process as methode } from "@/app/data/process";
+import { convictions } from "@/app/data/convictions";
 import { projects } from "@/app/data/projects";
 import { site } from "@/app/data/site";
 import { personJsonLd, portfolioMarkdown, projectJsonLd } from "@/app/lib/machine-readable";
@@ -9,7 +9,7 @@ describe("Portfolio lisible par les IA", () => {
     const md = portfolioMarkdown(false);
     expect(md).toContain(site.name);
     expect(md).toContain(site.email);
-    methode.forEach((s) => expect(md).toContain(s.goal));
+    convictions.forEach((c) => expect(md).toContain(c.text));
     careerNodes.filter((n) => n.kind !== "future").forEach((n) => expect(md).toContain(n.text));
     projects.forEach((p) => expect(md).toContain(`/projets/${p.slug}`));
   });

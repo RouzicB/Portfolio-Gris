@@ -2,7 +2,7 @@ import { Layer } from "../Parallax";
 import { Frame, HangingTriangles, moundPath, moundSurface, seeded } from "./shared";
 
 /**
- * Méthode — forêt verte, un seul ton décliné :
+ * Convictions — forêt verte, un seul ton décliné :
  * troncs-colonnes, triangles suspendus en rideau, grand tronc qui se tord en arche,
  * monticule clair à la crête sombre, pousses.
  */

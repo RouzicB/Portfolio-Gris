@@ -10,7 +10,7 @@ export interface Sun {
 }
 
 /** Identifiant de section (ancre #section-…) */
-export type SectionId = "accueil" | "profil" | "methode" | "aptitudes" | "parcours" | "projets" | "contact";
+export type SectionId = "accueil" | "profil" | "convictions" | "aptitudes" | "parcours" | "projets" | "contact";
 
 /** Nom d'icône du jeu d'icônes maison (voir components/icons/GrisIcons.tsx) */
 export type IconName =
@@ -96,10 +96,11 @@ export interface FlowChapter {
   cols: readonly [number, number];
 }
 
-export interface ProcessStep {
-  name: string;
-  goal: string;
-  methods: string[];
+export interface Conviction {
+  title: string;
+  text: string;
+  /** Le projet où ce parti pris s'est vérifié */
+  proof: { slug: string; title: string };
 }
 
 export interface Project {

@@ -2,7 +2,7 @@ import type { Section } from "../types";
 
 /**
  * Les sections de l'accueil, dans l'ordre du scroll (même architecture que le portfolio principal :
- * identification, profil, méthode, aptitudes, parcours, projets, contact) ; les crédits ont leur propre page (/credits).
+ * identification, profil, convictions, aptitudes, parcours, projets, contact) ; les crédits ont leur propre page (/credits).
  * `stage` choisit l'ambiance du décor ; le scroll fond une ambiance dans la suivante.
  */
 export const sections: Section[] = [
@@ -25,10 +25,10 @@ export const sections: Section[] = [
     sun: { x: 74, y: 14, size: 90 },
   },
   {
-    id: "methode",
-    label: "Méthode",
-    title: "Faire pousser une idée",
-    intro: "Cinq étapes, chacune pousse sur la précédente.",
+    id: "convictions",
+    label: "Convictions",
+    title: "Ce qui guide mon travail",
+    intro: "Pas de recette, quelques partis pris : chacun s'est vérifié sur un projet.",
     icon: "methode",
     stage: "vert",
     sun: { x: 22, y: 20, size: 110 },

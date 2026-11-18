@@ -1,177 +1,81 @@
 "use client";
 
-import { useId, useState, type KeyboardEvent } from "react";
-import { AnimatePresence, m } from "framer-motion";
-import { process } from "../../data/process";
-import { pad } from "../../lib/journey";
-import { ChevronIcon } from "../icons/GrisIcons";
-import { WASH, fadeUp } from "../journey/motion";
+import type { CSSProperties } from "react";
+import Link from "next/link";
+import { m } from "framer-motion";
+import { convictions } from "../../data/convictions";
+import { ArrowRightIcon } from "../icons/GrisIcons";
+import { fadeUp } from "../journey/motion";
 import SectionShell from "./SectionShell";
 
-/** Nœuds de la tige (repère 1000 × 140) : elle monte de gauche à droite, comme une pousse */
-const NODES = process.map((_, i) => ({ x: 100 + i * 200, y: 112 - i * 19 }));
-const STEM = `M0 128 Q50 126 ${NODES[0].x} ${NODES[0].y} ${NODES.slice(1)
-  .map((n) => `T${n.x} ${n.y}`)
-  .join(" ")} T1000 18`;
+/**
+ * Les troncs, dans les tons de ceux du décor (scène de la forêt) : pâles comme les troncs lointains, pour que le texte
+ * reste bien lisible dessus. Largeur et hauteur de départ du texte
+ * varient d'un tronc à l'autre, comme dans la forêt.
+ */
+const TRUNKS = [
+  { top: "#e6f0e3", bottom: "#d3e5d0", width: "100%", drop: 2.5 },
+  { top: "#dcebd9", bottom: "#c8dec6", width: "88%", drop: 0 },
+  { top: "#e3eee0", bottom: "#cfe2cc", width: "94%", drop: 4 },
+  { top: "#d9e9d6", bottom: "#c5dcc3", width: "100%", drop: 1 },
+  { top: "#e6f0e3", bottom: "#d1e3ce", width: "90%", drop: 3 },
+] as const;
 
 /**
- * 03 — Méthode : une tige qui pousse.
- * Cinq nœuds sur une tige ondulée ; elle se colore jusqu'à l'étape choisie et chaque étape atteinte porte sa
- * feuille en triangle (celles qui pendent dans la forêt). Le détail s'ouvre dans un panneau en forme de feuille.
- * Onglets accessibles : clic, flèches gauche / droite, Début / Fin.
+ * 03 — Convictions : une forêt.
+ * Chaque conviction est gravée sur un tronc peint comme ceux du décor (même bord d'aquarelle, sans grain sous le texte) ;
+ * les troncs sortent de la brume par le haut, passent derrière le titre et se fondent dans le sol.
+ * Chacune renvoie au projet où elle s'est vérifiée.
  */
-export default function Methode() {
-  const [active, setActive] = useState(0);
-  const uid = useId();
-  const step = process[active];
-  const go = (i: number) => setActive((i + process.length) % process.length);
-
-  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    const next = e.key === "ArrowRight" ? active + 1 : e.key === "ArrowLeft" ? active - 1 : e.key === "Home" ? 0 : e.key === "End" ? process.length - 1 : null;
-    if (next === null) return;
-    e.preventDefault();
-    go(next);
-    document.getElementById(`${uid}-tab-${(next + process.length) % process.length}`)?.focus();
-  };
-
+export default function Convictions() {
   return (
     <SectionShell index={2}>
-      {/* La tige et ses nœuds */}
-      <m.div variants={fadeUp} className="legible relative mx-auto aspect-[1000/140] w-full max-w-5xl">
-        <svg viewBox="0 0 1000 140" className="absolute inset-0 size-full overflow-visible" aria-hidden focusable="false">
-          <path d={STEM} fill="none" stroke="var(--ink)" strokeOpacity="0.22" strokeWidth="2" strokeLinecap="round" />
-          <path
-            d={STEM}
-            fill="none"
-            stroke="var(--accent)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            pathLength={100}
-            strokeDasharray={`${10 + active * 20} 200`}
-            style={{ transition: "stroke-dasharray 900ms cubic-bezier(0.22,1,0.36,1)" }}
-          />
-          {/* Feuilles en triangle, une par étape atteinte */}
-          {NODES.map((n, i) => (
-            <path
-              key={i}
-              d={`M${n.x + 30} ${n.y - 14} L${n.x + 62} ${n.y - 38} L${n.x + 52} ${n.y - 4}Z`}
-              fill="var(--accent)"
-              style={{
-                transformBox: "fill-box",
-                transformOrigin: "0% 100%",
-                transform: `scale(${i <= active ? 1 : 0})`,
-                opacity: i <= active ? 0.85 : 0,
-                transition: "transform 600ms cubic-bezier(0.22,1,0.36,1), opacity 400ms",
-              }}
-            />
-          ))}
-        </svg>
-
-        <div role="tablist" aria-label="Étapes de la méthode" onKeyDown={onKey}>
-          {NODES.map((n, i) => {
-            const current = i === active;
-            const reached = i < active;
-            return (
-              <button
-                key={i}
-                id={`${uid}-tab-${i}`}
-                type="button"
-                role="tab"
-                aria-selected={current}
-                aria-controls={`${uid}-panel`}
-                tabIndex={current ? 0 : -1}
-                onClick={() => setActive(i)}
-                className="group absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center focus-visible:outline-none"
-                style={{ left: `${n.x / 10}%`, top: `${(n.y / 140) * 100}%` }}
+      <ul className="grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-5 xl:items-start xl:gap-7">
+        {convictions.map((c, i) => {
+          const t = TRUNKS[i % TRUNKS.length];
+          return (
+            <m.li
+              key={c.title}
+              variants={fadeUp}
+              style={{ "--drop": `${t.drop}rem`, "--w": t.width } as CSSProperties}
+              className={`group relative isolate mx-auto w-full xl:mt-(--drop) xl:w-(--w) ${i === convictions.length - 1 ? "md:col-span-2 xl:col-span-1" : ""}`}
+            >
+              {/* Le tronc : il sort de la brume au-dessus (grand écran) et se fond dans le sol en bas */}
+              <svg
+                aria-hidden
+                focusable="false"
+                preserveAspectRatio="none"
+                viewBox="0 0 100 100"
+                className="trunk absolute left-0 top-0 -z-10 h-[calc(100%+1.5rem)] w-full transition-[filter] duration-500 group-hover:brightness-[1.04] xl:-top-48 xl:h-[calc(100%+13.5rem)]"
               >
-                <span
-                  className={`relative grid size-9 place-items-center rounded-full font-display text-xs tabular-nums outline-offset-[7px] outline-accent transition duration-500 group-focus-visible:outline-2 group-focus-visible:outline sm:size-11 sm:text-sm ${
-                    current ? "bg-ink text-sky-top" : `veil ${reached ? "text-ink" : "text-ink-soft"} group-hover:scale-110`
-                  }`}
-                >
-                  {current && (
-                    <svg viewBox="0 0 48 48" className="pointer-events-none absolute -inset-[6px] overflow-visible text-ink" aria-hidden>
-                      <g className="emblem-spin-slow" style={{ transformOrigin: "24px 24px" }}>
-                        <circle cx="24" cy="24" r="23" fill="none" stroke="currentColor" strokeWidth="0.9" pathLength={100} strokeDasharray="86 14" opacity="0.7" />
-                        <path d="M24 -1 L26.2 1.6 L24 4.2 L21.8 1.6Z" fill="var(--accent)" />
-                      </g>
-                    </svg>
-                  )}
-                  {pad(i + 1)}
-                </span>
-                <span
-                  className={`label-spaced absolute top-full mt-3 hidden whitespace-nowrap transition md:block ${
-                    current ? "text-ink" : "text-ink opacity-90 group-hover:opacity-100"
-                  }`}
-                >
-                  {process[i].name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </m.div>
+                <defs>
+                  <linearGradient id={`trunk-${i}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor={t.top} />
+                    <stop offset="1" stopColor={t.bottom} />
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="100" height="100" fill={`url(#trunk-${i})`} filter="url(#wc-edge)" />
+              </svg>
 
-      {/* Le détail, dans un panneau en forme de feuille */}
-      <m.div
-        variants={fadeUp}
-        id={`${uid}-panel`}
-        role="tabpanel"
-        aria-labelledby={`${uid}-tab-${active}`}
-        className="veil relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[3rem_0.75rem_3rem_0.75rem] md:mt-16 short:md:mt-12"
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <m.div
-            key={active}
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.45, ease: WASH }}
-            className="grid items-center gap-6 p-6 sm:p-8 md:grid-cols-[auto_1fr] md:gap-10 md:px-12 md:pr-28"
-          >
-            <span
-              aria-hidden
-              className="font-display text-7xl font-light leading-none text-transparent [-webkit-text-stroke:1.2px_var(--accent)] sm:text-8xl short:sm:text-7xl"
-            >
-              {pad(active + 1)}
-            </span>
-            <div>
-              <p className="label-spaced text-ink-soft">
-                Étape {active + 1} sur {process.length}
-              </p>
-              <h3 className="title-spaced mt-2 text-2xl text-ink sm:text-3xl">{step.name}</h3>
-              <p className="mt-3 max-w-xl text-pretty leading-relaxed text-ink">{step.goal}</p>
-              <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2" aria-label="Méthodes">
-                {step.methods.map((m) => (
-                  <li key={m} className="flex items-center gap-2 text-sm text-ink">
-                    <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
-                    {m}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </m.div>
-        </AnimatePresence>
-
-        {/* Étape précédente / suivante */}
-        <div className="flex justify-end gap-1.5 px-6 pb-5 md:absolute md:right-5 md:top-5 md:p-0">
-          {[
-            [-1, "Étape précédente", "rotate-180"],
-            [1, "Étape suivante", ""],
-          ].map(([d, label, rot]) => (
-            <button
-              key={label as string}
-              type="button"
-              onClick={() => go(active + (d as number))}
-              aria-label={label as string}
-              className="grid size-8 place-items-center rounded-full border border-ink/15 text-ink transition hover:bg-ink/10"
-            >
-              <ChevronIcon size={14} className={rot as string} />
-            </button>
-          ))}
-        </div>
-      </m.div>
+              <div className="px-5 pb-8 pt-5 sm:px-6 xl:px-5 xl:pb-12 xl:pt-6">
+                <h3 className="text-balance font-display text-xl font-normal leading-snug text-ink sm:text-2xl xl:text-[1.35rem]">{c.title}</h3>
+                <p className="mt-2.5 text-pretty text-[0.9375rem] font-medium md:max-xl:text-sm leading-relaxed text-ink">{c.text}</p>
+                <Link
+                  href={`/projets/${c.proof.slug}`}
+                  className="group/link mt-4 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink transition"
+                >
+                  <span className="label-spaced whitespace-nowrap">Vu dans</span>
+                  {/* Titre et flèche insécables : la flèche ne part jamais seule à la ligne */}
+                  <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                    <span className="text-ink underline decoration-ink/30 underline-offset-4 transition group-hover/link:decoration-ink">{c.proof.title}</span>
+                    <ArrowRightIcon size={13} className="transition-transform group-hover/link:translate-x-0.5" />
+                  </span>
+                </Link>
+              </div>
+            </m.li>
+          );
+        })}
+      </ul>
     </SectionShell>
   );
 }
-

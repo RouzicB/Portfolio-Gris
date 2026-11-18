@@ -1,7 +1,7 @@
 import Journey from "./components/journey/Journey";
 import Accueil from "./components/sections/Accueil";
 import Profil from "./components/sections/Profil";
-import Methode from "./components/sections/Methode";
+import Convictions from "./components/sections/Convictions";
 import Aptitudes from "./components/sections/Aptitudes";
 import Parcours from "./components/sections/Parcours";
 import Projets from "./components/sections/Projets";
@@ -18,7 +18,7 @@ export default function HomePage() {
       <Journey>
         <Accueil />
         <Profil />
-        <Methode />
+        <Convictions />
         <Aptitudes />
         <Parcours />
         {/* Seulement les champs des cartes : le contenu des études de cas reste sur leurs pages */}

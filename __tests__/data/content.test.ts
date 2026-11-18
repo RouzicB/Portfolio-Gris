@@ -12,7 +12,7 @@ describe("contenu", () => {
     expect(sections.map((s) => s.id)).toEqual([
       "accueil",
       "profil",
-      "methode",
+      "convictions",
       "aptitudes",
       "parcours",
       "projets",

@@ -21,7 +21,7 @@ describe("SectionNav", () => {
     );
     // 7 sections + flèches monter / descendre
     expect(screen.getAllByRole("button")).toHaveLength(9);
-    expect(screen.getByRole("button", { name: "Méthode" })).toHaveAttribute("aria-current", "location");
+    expect(screen.getByRole("button", { name: "Convictions" })).toHaveAttribute("aria-current", "location");
     expect(screen.getByRole("button", { name: "Profil" })).not.toHaveAttribute("aria-current");
   });
 

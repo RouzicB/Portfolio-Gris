@@ -91,7 +91,8 @@ export default function SectionShell({
           animate={reveal}
         >
           {heading ? (
-            <m.header variants={fadeUp} className="legible mb-8 md:mb-12 short:md:mb-6">
+            // Au-dessus du contenu : un élément de décor dessiné dans la section (troncs des convictions) passe derrière le titre
+            <m.header variants={fadeUp} className="legible relative z-10 mb-8 md:mb-12 short:md:mb-6">
               <p className="label-spaced flex items-center gap-2 text-ink">
                 <Icon size={18} className="text-ink" />
                 <span className="tabular-nums">{pad(index + 1)}</span>

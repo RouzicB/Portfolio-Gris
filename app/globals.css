@@ -182,6 +182,12 @@ body {
 .animate-marquee { animation: marquee 32s linear infinite; }
 .animate-marquee:hover { animation-play-state: paused; }
 
+/* Troncs des convictions : ils se fondent dans le sol en bas ; sur grand écran, ils sortent aussi de la brume en haut */
+.trunk { mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent); }
+@media (min-width: 80rem) {
+  .trunk { mask-image: linear-gradient(to bottom, transparent, #000 10rem, #000 calc(100% - 2.5rem), transparent); }
+}
+
 /* ─── Emblème (anneaux concentriques en orbite) ────────────────────── */
 @keyframes emblem-draw {
   /* 101 et non 100 : le tracé se referme sans laisser de micro-coupure au point de départ */
@@ -299,6 +305,7 @@ html[data-travel] *::after {
   .animate-rise,
   .animate-nudge,
   .animate-marquee,
+
   .emblem-draw,
   .emblem-spin-slow,
   .emblem-orbit,
