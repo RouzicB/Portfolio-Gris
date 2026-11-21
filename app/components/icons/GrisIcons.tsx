@@ -266,6 +266,30 @@ export const VerrouIcon = make({
   pigment: diamond(12, 15.5, 1.5),
 });
 
+/* ─── Coordonnées (CV) ─────────────────────────────────────────────── */
+
+/** Combiné téléphonique en facettes, et l'onde de l'appel */
+export const TelephoneIcon = make({
+  strokes: ["M5 3.8H8.6L10.2 8.2 8 9.8C9.2 12.4 11.6 14.8 14.2 16L15.8 13.8 20.2 15.4V19A1.4 1.4 0 0 1 18.8 20.4C10.8 20 4 13.2 3.6 5.2A1.4 1.4 0 0 1 5 3.8Z"],
+  faint: ["M14.5 3.6A6 6 0 0 1 20.4 9.5"],
+  wash: ["M5 3.8H8.6L10.2 8.2 8 9.8Z"],
+  pigment: diamond(15.6, 8.4, 1.1),
+});
+
+/** Le monde en ensō : un cercle ouvert, ses méridiens */
+export const SiteIcon = make({
+  strokes: [ring(12, 12, 8.5), "M12 3.5C14.6 6.1 15.6 9 15.6 12S14.6 17.9 12 20.5C9.4 17.9 8.4 15 8.4 12S9.4 6.1 12 3.5", "M3.8 12H20.2"],
+  wash: ["M12 3.5C9.4 6.1 8.4 9 8.4 12H3.5A8.5 8.5 0 0 1 12 3.5Z"],
+  pigment: diamond(19.2, 5.2, 1),
+});
+
+/** Réseau professionnel : les lettres « in » au pinceau, dans un cadre */
+export const ReseauIcon = make({
+  strokes: ["M3.8 3.8H20.2V20.2H3.8Z", "M8.2 11V16.6", "M11.8 16.6V11", "M11.8 13.2C12.4 11.4 16.2 10.4 16.2 13.4V16.6"],
+  wash: ["M20.2 3.8V12L12 3.8Z"],
+  pigment: diamond(8.2, 7.9, 1.15),
+});
+
 /* ─── Interface ────────────────────────────────────────────────────── */
 
 export const ChevronIcon = make({ strokes: ["M9 5.5 15.5 12 9 18.5"] });
@@ -274,7 +298,7 @@ export const ArrowUpRightIcon = make({ strokes: ["M7 17 17 7", "M9 7H17V15"] });
 export const CloseIcon = make({ strokes: ["M6 6 18 18", "M18 6 6 18"] });
 export const CheckIcon = make({ strokes: ["M5 12.5 9.5 17 19 7.5"] });
 export const CopyIcon = make({ strokes: ["M8.5 8.5H19.5V19.5H8.5Z", "M5 15.5V4.5H15.5"] });
-export const MailIcon = make({ strokes: ["M3 5.5H21V18.5H3Z", "M3.5 7 12 13 20.5 7"] });
+export const MailIcon = make({ strokes: ["M3 5.5H21V18.5H3Z", "M3.5 7 12 13 20.5 7"], wash: ["M3.5 7 12 13 20.5 7Z"] });
 export const DownloadIcon = make({ strokes: ["M12 4V15", "M7.5 10.5 12 15 16.5 10.5", "M5 19.5H19"] });
 export const SunIcon = make({
   strokes: [ring(12, 12, 4), "M12 2.5V5", "M12 19V21.5", "M2.5 12H5", "M19 12H21.5", "M5.3 5.3 7 7", "M17 17 18.7 18.7", "M5.3 18.7 7 17", "M17 7 18.7 5.3"],
@@ -315,6 +339,9 @@ export const iconGallery: { name: string; Icon: Icon }[] = [
   { name: "choix", Icon: ChoixIcon },
   { name: "verrou", Icon: VerrouIcon },
   { name: "courrier", Icon: MailIcon },
+  { name: "téléphone", Icon: TelephoneIcon },
+  { name: "site", Icon: SiteIcon },
+  { name: "réseau", Icon: ReseauIcon },
   { name: "télécharger", Icon: DownloadIcon },
   { name: "copier", Icon: CopyIcon },
   { name: "durée", Icon: ClockIcon },

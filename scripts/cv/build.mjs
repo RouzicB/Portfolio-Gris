@@ -5,7 +5,7 @@
 // Prépare aussi le QR code personnalisé (qr.svg) et les images du CV (décors en JPEG légers, portrait en PNG transparent).
 // Usage : node scripts/cv/build.mjs   (chemin de Chrome : variable CHROME, sinon les emplacements habituels)
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import QRCode from "qrcode";
@@ -85,6 +85,52 @@ writeFileSync(resolve(here, "qr.svg"), qrSvg(SITE, { disc: "#fbfaf8", glow: "#ff
 // Version numérique : fond transparent, code blanc posé sur la nuit (code inversé, lu par les appareils photo récents)
 writeFileSync(resolve(here, "qr-bleu.svg"), qrSvg(SITE, { disc: null, glow: "#7fd3ea", ink: "#ffffff", ring: "#bfe6f2", accent: "#e0566f" }));
 
+// ─── Icônes : celles du site (app/components/icons/GrisIcons.tsx), rendues en SVG statique ───
+// Le composant est transpilé à la volée puis rendu avec React : le CV reprend exactement le trait de pinceau,
+// le lavis et le pigment des icônes du portfolio. Le pigment suit la couleur de chaque rubrique (var(--accent)).
+{
+  const ts = (await import("typescript")).default;
+  const React = (await import("react")).default;
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  // Les icônes dessinées (GrisIcons) et les logos des outils (BrandIcons), comme dans la section Aptitudes
+  const load = async (file, tmpName) => {
+    const source = readFileSync(resolve(root, file), "utf8");
+    const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX } }).outputText;
+    const tmp = resolve(here, tmpName);
+    writeFileSync(tmp, js);
+    try {
+      return await import(pathToFileURL(tmp).href);
+    } finally {
+      rmSync(tmp, { force: true });
+    }
+  };
+  {
+    const I = await load("app/components/icons/GrisIcons.tsx", ".icons.tmp.mjs");
+    const Brand = (await load("app/components/icons/BrandIcons.tsx", ".brands.tmp.mjs")).default;
+    const wanted = {
+      mail: I.MailIcon,
+      telephone: I.TelephoneIcon,
+      lieu: I.LieuIcon,
+      reseau: I.ReseauIcon,
+      site: I.SiteIcon,
+      contact: I.ContactIcon,
+      aptitudes: I.AptitudesIcon,
+      outils: I.OutilsIcon,
+      langue: I.LangueIcon,
+      travail: I.TravailIcon,
+      formation: I.FormationIcon,
+      projets: I.ProjetsIcon,
+      statut: I.StatutIcon,
+      conception: I.ConceptionIcon,
+      interface: I.InterfaceIcon,
+    };
+    const svgs = Object.fromEntries(Object.entries(wanted).map(([k, C]) => [k, renderToStaticMarkup(React.createElement(C, { size: 24 }))]));
+    for (const name of ["figma", "illustrator", "photoshop", "indesign", "aftereffects", "premiere", "vscode", "tailwind", "node", "jest"])
+      svgs[`outil-${name}`] = renderToStaticMarkup(React.createElement(Brand, { name, size: 24 }));
+    writeFileSync(resolve(here, "icons.js"), `// Généré par build.mjs depuis GrisIcons.tsx et BrandIcons.tsx : ne pas modifier à la main.\nwindow.ICONS = ${JSON.stringify(svgs, null, 1)};\n`);
+  }
+}
+
 // ─── Chrome : PDF et aperçus ───
 const candidates = [
   process.env.CHROME,
@@ -117,7 +163,7 @@ for (const v of versions) {
 // ─── Empreintes : ajoutées aux adresses des aperçus et des PDF sur le site (?v=…), pour qu'un CV régénéré
 // ne soit jamais remplacé par l'ancien gardé en cache par le navigateur ───
 const { createHash } = await import("node:crypto");
-const { readFileSync } = await import("node:fs");
+
 const hash = (file) => createHash("sha256").update(readFileSync(resolve(publicDir, file))).digest("hex").slice(0, 10);
 const files = ["cv-baptiste-rouzic.pdf", "cv-baptiste-rouzic-impression.pdf", "cv/cv-numerique.webp", "cv/cv-impression.webp"];
 writeFileSync(

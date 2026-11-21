@@ -8,24 +8,21 @@ import { fadeUp } from "../journey/motion";
 import { ROMAN } from "../ui/Chapter";
 import SectionShell from "./SectionShell";
 
-/** Grand écran : chaque arche s'élève plus ou moins haut au-dessus du sol commun, comme des troncs dans la forêt */
-const RISE = ["xl:pt-14", "xl:pt-20", "xl:pt-11", "xl:pt-24", "xl:pt-16"];
-
 /**
  * 03 — Convictions : une rangée d'arches.
  * Chaque conviction est une arche du design system (lavis, filet intérieur, pierre de clé au sommet), comme les cartes
  * de projet et le portrait : son numéro dans un anneau, son titre, ce qu'elle veut dire, puis le projet où elle
- * s'est vérifiée. Grand écran : les cinq arches sont posées sur le même sol, à des hauteurs différentes.
+ * s'est vérifiée. Grand écran : les cinq arches sont alignées, toutes de la même hauteur (« Vu dans » toujours en bas).
  */
 export default function Convictions() {
   return (
     <SectionShell index={2}>
-      <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-5 xl:items-end xl:gap-5">
+      <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-5 xl:gap-5">
         {convictions.map((c, i) => (
           <m.li
             key={c.title}
             variants={fadeUp}
-            className={`veil panel arch group flex flex-col items-center rounded-b-3xl px-6 pb-6 pt-9 text-center transition-[translate] duration-500 hover:-translate-y-1 xl:px-5 ${RISE[i % RISE.length]} ${
+            className={`veil panel arch group flex flex-col items-center rounded-b-3xl px-6 pb-6 pt-9 text-center transition-[translate] duration-500 hover:-translate-y-1 xl:px-5 ${
               i === convictions.length - 1 ? "md:col-span-2 md:mx-auto md:w-[calc(50%-0.625rem)] xl:col-span-1 xl:w-auto" : ""
             }`}
           >

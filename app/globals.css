@@ -222,16 +222,20 @@ body {
     content: "";
     position: absolute;
     z-index: -1;
-    top: -1.5rem;
-    bottom: -1.5rem;
+    top: -2.5rem;
+    bottom: -2.5rem;
     left: 50%;
     width: 100vw;
     translate: -50% 0;
+    /* Voile à peine perceptible : faible densité, bords très étirés en courbe douce, aucune limite visible.
+       Le contraste vient surtout du halo serré autour des lettres (legible, ci-dessous). */
     background: linear-gradient(
       to bottom,
       transparent,
-      color-mix(in srgb, var(--sky-top) 80%, transparent) 1.5rem,
-      color-mix(in srgb, var(--sky-top) 80%, transparent) calc(100% - 1.5rem),
+      color-mix(in srgb, var(--sky-top) 10%, transparent) 1rem,
+      color-mix(in srgb, var(--sky-top) 30%, transparent) 2.5rem,
+      color-mix(in srgb, var(--sky-top) 30%, transparent) calc(100% - 2.5rem),
+      color-mix(in srgb, var(--sky-top) 10%, transparent) calc(100% - 1rem),
       transparent
     );
     pointer-events: none;
@@ -393,7 +397,7 @@ html[data-travel] *::after {
   }
   /* Halo de lisibilité : une seule ombre courte (les ombres larges se redessinent à chaque changement de palette) */
   .legible,
-  .max-md\:legible { text-shadow: 0 0 1px var(--sky-top), 0 0 10px var(--sky-top); }
+  .max-md\:legible { text-shadow: 0 0 1px var(--sky-top), 0 0 3px var(--sky-top), 0 0 8px color-mix(in srgb, var(--sky-top) 70%, transparent); }
   .paper-grain { mix-blend-mode: normal; opacity: 0.1; }
   [data-landscape] .animate-drift,
   [data-landscape] .animate-drift-slow,

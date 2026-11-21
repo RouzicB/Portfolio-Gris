@@ -28,7 +28,7 @@
     --line: rgba(47, 46, 45, 0.16);
     /* Une couleur par rubrique : l'accent de la zone du site qui lui correspond */
     --profil: #a8283a;     /* Profil : désert rouge */
-    --convictions: #2a6a45; /* Convictions : forêt */
+    --formation: #2a6a45;  /* Formation : la forêt (la pousse) */
     --aptitudes: #1f7a93;  /* Aptitudes : grotte bleue (assombri pour le papier) */
     --parcours: #b8862a;   /* Parcours : ville d'or (assombri) */
     --projets: #b23f6a;    /* Projets : ciel */
@@ -47,7 +47,7 @@
     --veil: rgba(18, 48, 70, 0.78);
     --line: rgba(234, 247, 252, 0.18);
     --profil: #f2798a;
-    --convictions: #6fd39a;
+    --formation: #6fd39a;
     --aptitudes: #7fd3ea;
     --parcours: #f2c14e;
     --projets: #f08fb4;
@@ -86,7 +86,7 @@
     background: radial-gradient(60% 100% at 50% 100%, var(--paper-deep), transparent 70%);
   }
 
-  .page { position: relative; height: calc(100vh - 0.5mm); padding: 12mm 13mm 9mm; display: flex; flex-direction: column; }
+  .page { position: relative; height: calc(100vh - 0.5mm); padding: 10mm 13mm 7.5mm; display: flex; flex-direction: column; }
 
   /* ─── En-tête ─── */
   header { display: grid; grid-template-columns: 48mm 1fr 30mm; gap: 6mm; align-items: center; }
@@ -118,45 +118,65 @@
     display: inline-flex; align-items: center; gap: 2.2mm; margin-top: 3.5mm;
     background: var(--veil); border: 0.25mm solid var(--line); border-radius: 99px; padding: 1.3mm 3.4mm 1.3mm 2.4mm; font-size: 7.7pt; white-space: nowrap;
   }
-  .status i { width: 2.2mm; height: 2.2mm; border-radius: 50%; background: var(--contact); box-shadow: 0 0 0 1mm rgba(200, 70, 109, 0.18); }
+  .status { --accent: var(--contact); }
+  .status .ico { width: 4mm; height: 4mm; }
+
+  /* Icônes du site : trait de pinceau à l'encre, lavis et pigment de la couleur de la rubrique */
+  section { --accent: var(--c); }
+  .ico { display: block; flex: none; width: 4mm; height: 4mm; overflow: visible; }
 
   /* ─── Corps : colonne de verre à gauche, parcours à droite ─── */
-  .body { display: grid; grid-template-columns: 62mm 1fr; gap: 8mm; margin-top: 6mm; flex: 1; min-height: 0; }
+  .body { display: grid; grid-template-columns: 62mm 1fr; gap: 8mm; margin-top: 5mm; flex: 1; min-height: 0; }
   aside {
     background: var(--veil); border: 0.25mm solid var(--edge);
-    border-radius: 4mm; padding: 5.5mm 5.6mm;
+    border-radius: 4mm; padding: 7.5mm 6.6mm 6.5mm;
     box-shadow: 0 2mm 6mm rgba(47, 46, 45, 0.06);
-    display: flex; flex-direction: column; gap: 4mm;
+    display: flex; flex-direction: column; gap: 6.6mm;
+    position: relative;
+  }
+  aside::before {
+    content: ""; position: absolute; inset: 1.6mm; border-radius: 2.6mm;
+    border: 0.25mm solid color-mix(in srgb, var(--ink) 15%, transparent); pointer-events: none;
+  }
+  aside::after {
+    content: ""; position: absolute; top: 0.6mm; left: 50%; width: 2mm; height: 2mm;
+    transform: translateX(-50%) rotate(45deg); background: var(--profil);
+    box-shadow: 0 0 0 0.8mm var(--paper); pointer-events: none;
   }
   h2 {
     display: flex; align-items: center; gap: 2.4mm;
     font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 7.4pt;
     text-transform: uppercase; letter-spacing: 0.3em;
   }
-  h2::before { content: ""; width: 2mm; height: 2mm; transform: rotate(45deg); background: var(--c, var(--ink)); flex: none; }
+  h2 .ico { width: 4.4mm; height: 4.4mm; margin-right: 0.6mm; }
   h2::after { content: ""; height: 0.25mm; flex: 1; background: var(--line); }
-  aside h2 { margin-bottom: 2.6mm; }
+  aside h2 { margin-bottom: 3mm; }
 
-  .contact li { display: flex; gap: 2.4mm; align-items: center; list-style: none; margin-top: 1.4mm; }
-  .contact svg { width: 3.6mm; height: 3.6mm; flex: none; color: var(--ink-soft); }
+  .contact li { display: flex; gap: 2.8mm; align-items: center; list-style: none; margin-top: 2mm; }
+  .contact li:first-child { margin-top: 0; }
+  .contact .ico { width: 4.2mm; height: 4.2mm; }
   .contact a { color: inherit; text-decoration: none; }
 
   ul.dots { list-style: none; }
-  ul.dots li { position: relative; padding-left: 3.6mm; margin-top: 0.8mm; }
+  ul.dots li { position: relative; padding-left: 3.8mm; margin-top: 1.1mm; }
   ul.dots li::before { content: ""; position: absolute; left: 0.3mm; top: 1.7mm; width: 1.3mm; height: 1.3mm; transform: rotate(45deg); background: var(--c, var(--ink)); opacity: 0.85; }
   .muted { color: var(--ink-soft); }
-  .chips { display: flex; flex-wrap: wrap; gap: 1.4mm; }
-  .chips span { border: 0.25mm solid var(--line); border-radius: 99px; padding: 0.3mm 2.2mm; font-size: 7pt; }
-  .sub { font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 6.4pt; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin: 2.4mm 0 1.2mm; }
+  .chips { display: flex; flex-wrap: wrap; gap: 1.6mm 1.4mm; }
+  .chips span { display: inline-flex; align-items: center; gap: 1.3mm; border: 0.25mm solid var(--line); border-radius: 99px; padding: 0.5mm 2.4mm 0.5mm 1.8mm; font-size: 7pt; background: color-mix(in srgb, var(--paper) 55%, transparent); }
+  .chips .ico { width: 3mm; height: 3mm; color: var(--ink); }
+  /* Logos Adobe : monogramme dans la typo des titres */
+  .chips text { font-family: "Josefin Sans", sans-serif; }
+  .sub { display: flex; align-items: center; gap: 1.6mm; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 6.4pt; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin: 3.4mm 0 1.4mm; }
+  .sub .ico { width: 3.4mm; height: 3.4mm; color: var(--ink); }
   .sub:first-of-type { margin-top: 0; }
 
-  main { display: flex; flex-direction: column; gap: 5.2mm; }
-  main h2 { margin-bottom: 2.6mm; }
+  main { display: flex; flex-direction: column; gap: 5.4mm; padding-top: 1mm; }
+  main h2 { margin-bottom: 2.5mm; }
 
   /* Frise : un fil vertical, une pierre par étape (pleine pour l'étape en cours) */
   .timeline { position: relative; padding-left: 6mm; }
   .timeline::before { content: ""; position: absolute; left: 1.15mm; top: 1.6mm; bottom: 1.6mm; width: 0.3mm; background: var(--line); }
-  .step { position: relative; margin-top: 2.8mm; }
+  .step { position: relative; margin-top: 2.7mm; }
   .step:first-child { margin-top: 0; }
   .step::before {
     content: ""; position: absolute; left: -6mm; top: 1.1mm; width: 2.6mm; height: 2.6mm; transform: rotate(45deg);
@@ -170,17 +190,43 @@
   .step p { margin-top: 0.8mm; }
   .tag { display: inline-block; margin-left: 1.6mm; padding: 0.2mm 2mm; border-radius: 99px; font-size: 6.4pt; font-family: "Josefin Sans", sans-serif; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-accent); background: var(--c); vertical-align: 0.4mm; }
 
-  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2mm 5mm; }
-  .projects div { border-left: 0.6mm solid color-mix(in srgb, var(--projets) 55%, transparent); padding-left: 2.6mm; }
-  .projects b { font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 8.8pt; }
-  .projects small { display: block; font-size: 6.6pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); font-family: "Josefin Sans", sans-serif; font-weight: 500; }
-  .projects span { display: block; font-size: 8pt; margin-top: 0.4mm; }
-
+  /* Projets : une carte en arche par projet (le haut en cintre des cartes du site), lavis, filet intérieur
+     et pierre de clé au sommet ; l'année et la discipline, le titre, puis ce que le projet a apporté */
+  .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.8mm; }
+  .projects article {
+    position: relative; text-align: center;
+    background: var(--veil); border: 0.25mm solid var(--edge);
+    border-radius: 50% 50% 2.6mm 2.6mm / 8mm 8mm 2.6mm 2.6mm;
+    box-shadow: 0 1.2mm 4mm rgba(47, 46, 45, 0.06);
+    padding: 3.3mm 2.6mm 2.8mm;
+  }
+  .projects article::before {
+    content: ""; position: absolute; inset: 1.1mm; border-radius: 50% 50% 1.8mm 1.8mm / 7mm 7mm 1.8mm 1.8mm;
+    border: 0.25mm solid color-mix(in srgb, var(--ink) 13%, transparent); pointer-events: none;
+  }
+  .projects article::after {
+    content: ""; position: absolute; top: 0.3mm; left: 50%; width: 1.6mm; height: 1.6mm;
+    transform: translateX(-50%) rotate(45deg); background: var(--projets); box-shadow: 0 0 0 0.6mm var(--paper);
+  }
+  .projects em { display: block; font-style: normal; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 6.2pt; letter-spacing: 0.2em; color: var(--projets); }
+  .projects small { display: block; margin-top: 0.4mm; font-size: 5.8pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); font-family: "Josefin Sans", sans-serif; font-weight: 600; }
+  .projects b { display: block; margin-top: 0.9mm; line-height: 1.25; text-wrap: balance; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 8.8pt; }
+  .projects span { display: block; font-size: 7.4pt; line-height: 1.38; margin-top: 0.8mm; text-wrap: pretty; color: var(--ink); }
   footer { margin-top: 4mm; display: flex; justify-content: center; align-items: center; gap: 3mm; }
   footer .line { height: 0.25mm; width: 22mm; background: var(--line); }
+  footer .gem { width: 1.5mm; height: 1.5mm; transform: rotate(45deg); background: var(--contact); }
 </style>
 </head>
 <body>
+  <script src="icons.js"></script>
+  <script>
+    // Icônes du site (générées par build.mjs) posées à la place de chaque <i data-icon>
+    addEventListener("DOMContentLoaded", () =>
+      document.querySelectorAll("i[data-icon]").forEach((i) => {
+        i.outerHTML = (window.ICONS || {})[i.dataset.icon].replace("<svg ", '<svg class="ico" ');
+      }),
+    );
+  </script>
   <script>if (/[?&]v=numerique/.test(location.search)) document.documentElement.classList.add("numerique");</script>
   <div class="decor"></div>
   <div class="ground"></div>
@@ -211,7 +257,7 @@
           l'architecture de l'information et l'interface, puis je construis ce que je dessine.
           J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.
         </p>
-        <p class="status"><i></i>Recherche une alternance ou un premier poste UX/UI pour 2027</p>
+        <p class="status"><i data-icon="statut"></i>Recherche une alternance ou un premier poste UX/UI pour 2027</p>
       </div>
 
       <figure class="qr">
@@ -224,34 +270,34 @@
     <div class="body">
       <aside>
         <section style="--c: var(--contact)">
-          <h2>Contact</h2>
+          <h2><i data-icon="contact"></i>Contact</h2>
           <ul class="contact">
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5.5h18v13H3z" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
+              <i data-icon="mail"></i>
               <a href="mailto:rouzicb.pro@gmail.com">rouzicb.pro@gmail.com</a>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2Z" /></svg>
+              <i data-icon="telephone"></i>
               06 48 64 45 37
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></svg>
+              <i data-icon="lieu"></i>
               Courcelles-sur-Seine (27)
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+              <i data-icon="reseau"></i>
               <a href="https://www.linkedin.com/in/baptiste-rouzic">in/baptiste-rouzic</a>
             </li>
             <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.4 3.6 8.5s-1.1 5.9-3.6 8.5c-2.5-2.6-3.6-5.4-3.6-8.5S9.5 6.1 12 3.5Z" /></svg>
+              <i data-icon="site"></i>
               <a href="https://baptisterouzic.fr">baptisterouzic.fr</a>
             </li>
           </ul>
         </section>
 
         <section style="--c: var(--aptitudes)">
-          <h2>Aptitudes</h2>
-          <p class="sub">Côté dessin</p>
+          <h2><i data-icon="aptitudes"></i>Aptitudes</h2>
+          <p class="sub"><i data-icon="conception"></i>Côté dessin</p>
           <ul class="dots">
             <li>Recherche utilisateur</li>
             <li>Architecture &amp; parcours</li>
@@ -259,7 +305,7 @@
             <li>Identité &amp; édition</li>
             <li>Motion &amp; vidéo</li>
           </ul>
-          <p class="sub">Côté code</p>
+          <p class="sub"><i data-icon="interface"></i>Côté code</p>
           <ul class="dots">
             <li>Intégration responsive</li>
             <li>React · Next.js · TypeScript</li>
@@ -269,25 +315,24 @@
         </section>
 
         <section style="--c: var(--aptitudes)">
-          <h2>Outils</h2>
+          <h2><i data-icon="outils"></i>Outils</h2>
           <div class="chips">
-            <span>Figma</span><span>Illustrator</span><span>Photoshop</span><span>InDesign</span><span>After Effects</span><span>Premiere Pro</span>
-            <span>VS Code</span><span>Tailwind CSS</span><span>Node.js</span><span>Jest</span>
+            <span><i data-icon="outil-figma"></i>Figma</span>
+            <span><i data-icon="outil-illustrator"></i>Illustrator</span>
+            <span><i data-icon="outil-photoshop"></i>Photoshop</span>
+            <span><i data-icon="outil-indesign"></i>InDesign</span>
+            <span><i data-icon="outil-aftereffects"></i>After Effects</span>
+            <span><i data-icon="outil-premiere"></i>Premiere Pro</span>
+            <span><i data-icon="outil-vscode"></i>VS Code</span>
+            <span><i data-icon="outil-tailwind"></i>Tailwind CSS</span>
+            <span><i data-icon="outil-node"></i>Node.js</span>
+            <span><i data-icon="outil-jest"></i>Jest</span>
           </div>
         </section>
 
-        <section style="--c: var(--convictions)">
-          <h2>Convictions</h2>
-          <ul class="dots">
-            <li>La structure avant l'habillage</li>
-            <li>Penser à ceux qu'on oublie</li>
-            <li>Dire l'essentiel</li>
-            <li>Construire ce que je dessine</li>
-          </ul>
-        </section>
 
         <section style="--c: var(--profil)">
-          <h2>Langues</h2>
+          <h2><i data-icon="langue"></i>Langues</h2>
           <ul class="dots">
             <li>Français <span class="muted">· langue maternelle</span></li>
             <li>Anglais <span class="muted">· C1, professionnel</span></li>
@@ -298,12 +343,12 @@
 
       <main>
         <section style="--c: var(--parcours)">
-          <h2>Expériences</h2>
+          <h2><i data-icon="travail"></i>Expériences</h2>
           <div class="timeline">
             <div class="step now">
               <div class="head"><h3>Dév full-stack &amp; UX/UI designer <span class="tag">En cours</span></h3><span class="when">2025 – 2027</span></div>
               <p class="where">Renault Group · alternance · applications</p>
-              <p>Concevoir et développer des applications : de la recherche utilisateur et des maquettes jusqu'au code full-stack. Le lien entre design et développement, au quotidien.</p>
+              <p>Concevoir et développer des applications : de la recherche utilisateur et des maquettes jusqu'au code full-stack. Le lien entre design et développement.</p>
             </div>
             <div class="step">
               <div class="head"><h3>Chargé de communication &amp; graphiste</h3><span class="when">Oct. 2024 – 2025</span></div>
@@ -318,8 +363,8 @@
           </div>
         </section>
 
-        <section style="--c: var(--convictions)">
-          <h2>Formation</h2>
+        <section style="--c: var(--formation)">
+          <h2><i data-icon="formation"></i>Formation</h2>
           <div class="timeline">
             <div class="step now">
               <div class="head"><h3>Mastère UX/UI · spécialité création graphique</h3><span class="when">2025 – 2027</span></div>
@@ -335,23 +380,23 @@
         </section>
 
         <section style="--c: var(--projets)">
-          <h2>Projets choisis</h2>
+          <h2><i data-icon="projets"></i>Projets choisis</h2>
           <div class="projects">
-            <div><small>2026 · UX/UI &amp; Webflow</small><b>Vibes</b><span>Billetterie de concerts et merch éco-responsable, dans l'esthétique de la nuit.</span></div>
-            <div><small>2026 · Design system</small><b>Elyndor</b><span>Le design system d'un jeu de rôle, repensé pour les joueurs daltoniens.</span></div>
-            <div><small>2026 · Identité de marque</small><b>Slift</b><span>Une charte graphique complète pour une salle d'escalade.</span></div>
-            <div><small>2025 · Éco-design</small><b>Delta</b><span>L'identité d'un festival, redessinée pour imprimer deux fois moins d'encre.</span></div>
-            <div><small>2025 · UX/UI</small><b>Pluies de Juillet</b><span>Le site d'un festival engagé, repensé pour s'y repérer et réserver sans effort.</span></div>
-            <div><small>2026 · Ce portfolio</small><b>Un voyage en sept zones</b><span>Direction artistique et développement Next.js, de A à Z.</span></div>
+            <article><em>2026</em><small>UX/UI &amp; Webflow</small><b>Vibes</b><span>Billetterie de concerts et merch éco-responsable, dans l'esthétique de la nuit.</span></article>
+            <article><em>2026</em><small>Design system</small><b>Elyndor</b><span>Le design system d'un jeu de rôle, repensé pour les joueurs daltoniens.</span></article>
+            <article><em>2026</em><small>Identité de marque</small><b>Slift</b><span>Une charte graphique complète pour une salle d'escalade.</span></article>
+            <article><em>2025</em><small>Éco-design</small><b>Delta</b><span>L'identité d'un festival, redessinée pour imprimer deux fois moins d'encre.</span></article>
+            <article><em>2025</em><small>UX/UI</small><b>Pluies de Juillet</b><span>Le site d'un festival engagé, repensé pour s'y repérer et réserver sans effort.</span></article>
+            <article><em>2026</em><small>Ce portfolio</small><b>Un voyage en sept zones</b><span>Direction artistique et développement Next.js, de A à Z.</span></article>
           </div>
         </section>
       </main>
     </div>
 
     <footer>
-      <span class="line"></span>
+      <span class="line"></span><span class="gem"></span>
       <span class="label">Tout le voyage sur baptisterouzic.fr</span>
-      <span class="line"></span>
+      <span class="gem"></span><span class="line"></span>
     </footer>
   </div>
 </body>
