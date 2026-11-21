@@ -155,7 +155,7 @@ export interface SceneTheme {
 /** Un des deux profils (designer, développeur web) : savoir-faire décrits par ce qu’on livre, sans niveau chiffré */
 export interface SkillProfile {
   id: "design" | "dev";
-  /** Petit libellé au-dessus du nom (« Côté dessin ») */
+  /** Petit libellé au-dessus du nom (« Côté design ») */
   side: string;
   name: string;
   icon: IconName;

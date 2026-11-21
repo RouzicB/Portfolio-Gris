@@ -37,7 +37,7 @@ export const sections: Section[] = [
     id: "aptitudes",
     label: "Aptitudes",
     title: "Ce que je sais faire",
-    intro: "Deux métiers qui se répondent : je dessine les interfaces, puis je les construis.",
+    intro: "Deux métiers qui se répondent : je fais le design des interfaces, puis je les construis.",
     icon: "aptitudes",
     stage: "bleu",
     sun: { x: 67, y: 6, size: 0 },

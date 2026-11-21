@@ -26,8 +26,8 @@ export const convictions: Conviction[] = [
     proof: { slug: "holograph", title: "Holograph'" },
   },
   {
-    title: "Construire ce que je dessine",
-    text: "Je développe mes propres maquettes : elles arrivent en ligne telles que je les ai pensées, et je sais dès le dessin ce qui est faisable.",
+    title: "Développer mes propres designs",
+    text: "Je développe mes propres maquettes : elles arrivent en ligne telles que je les ai pensées, et je sais dès le design ce qui est faisable.",
     proof: { slug: "vibes", title: "Vibes" },
   },
 ];

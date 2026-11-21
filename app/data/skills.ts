@@ -32,7 +32,7 @@ export const profiles: SkillProfile[] = [
     side: "Côté code",
     name: "Développeur web",
     icon: "interface",
-    pitch: "Front-end : construire ce que je dessine, fidèle à la maquette, accessible et rapide.",
+    pitch: "Front-end : développer mes propres designs, fidèles à la maquette, accessibles et rapides.",
     skills: [
       { name: "Intégration", detail: "HTML, CSS, Tailwind, responsive" },
       { name: "Interfaces React", detail: "composants, état, animation" },
