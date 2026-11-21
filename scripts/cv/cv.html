@@ -216,11 +216,11 @@
      et pierre de clé au sommet ; l'année et la discipline, le titre, puis ce que le projet a apporté */
   .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.8mm; }
   .projects article {
-    position: relative; text-align: center;
+    position: relative; text-align: left;
     background: var(--veil); border: 0.25mm solid var(--edge);
     border-radius: 50% 50% 2.6mm 2.6mm / 8mm 8mm 2.6mm 2.6mm;
     box-shadow: 0 1.2mm 4mm rgba(47, 46, 45, 0.06);
-    padding: 3.3mm 2.6mm 2.8mm;
+    padding: 4.8mm 3.2mm 2.8mm;
   }
   .projects article::before {
     content: ""; position: absolute; inset: 1.1mm; border-radius: 50% 50% 1.8mm 1.8mm / 7mm 7mm 1.8mm 1.8mm;
@@ -230,9 +230,9 @@
     content: ""; position: absolute; top: 0.3mm; left: 50%; width: 1.6mm; height: 1.6mm;
     transform: translateX(-50%) rotate(45deg); background: var(--projets); box-shadow: 0 0 0 0.6mm var(--paper);
   }
-  .projects em { display: block; font-style: normal; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 6.2pt; letter-spacing: 0.2em; color: var(--projets); }
+  .projects em { display: block; text-align: center; padding-left: 0.2em; font-style: normal; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 6.2pt; letter-spacing: 0.2em; color: var(--projets); }
   .projects small { display: block; margin-top: 0.4mm; font-size: 5.8pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); font-family: "Josefin Sans", sans-serif; font-weight: 600; }
-  .projects b { display: block; margin-top: 0.9mm; line-height: 1.25; text-wrap: balance; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 8.8pt; }
+  .projects b { display: block; margin-top: 0.9mm; line-height: 1.25; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 8.8pt; }
   .projects span { display: block; font-size: 7.4pt; line-height: 1.38; margin-top: 0.8mm; text-wrap: pretty; color: var(--ink); }
 </style>
 </head>
