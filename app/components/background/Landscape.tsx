@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useSyncExternalStore, type ComponentType } 
 import { useReducedMotion, type MotionValue } from "framer-motion";
 import type { StageId, Sun } from "../../types";
 import { segment, stageWeights, zoomScale } from "../../lib/journey";
-import { TOUCH_QUERY, WIDE_QUERY, bakedScene } from "../../lib/decor";
+import { WIDE_QUERY, bakedScene } from "../../lib/decor";
+import { isLite, subscribeLite } from "../../lib/perf";
 import { PointerProvider } from "./Parallax";
 import { WatercolorDefs } from "./art/shared";
 import GrisArt from "./art/GrisArt";
@@ -20,17 +21,8 @@ import LuneArt from "./art/LuneArt";
  * Côté serveur, aucune : le HTML ne transporte plus ~2 000 éléments SVG que les téléphones masquaient sans les afficher.
  * Sur ordinateur, elles se montent juste après l'hydratation, sous l'écran de chargement.
  */
-const subscribeTouch = (cb: () => void) => {
-  const mq = window.matchMedia(TOUCH_QUERY);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-};
-const useLiveScenes = () =>
-  useSyncExternalStore(
-    subscribeTouch,
-    () => !window.matchMedia(TOUCH_QUERY).matches,
-    () => false,
-  );
+// Écrans tactiles et ordinateurs en mode léger (lib/perf.ts) : images pré-rendues
+const useLiveScenes = () => useSyncExternalStore(subscribeLite, () => !isLite(), () => false);
 
 const ART: Record<StageId, ComponentType> = {
   gris: GrisArt,
@@ -60,7 +52,7 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
     // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (quasi transparentes),
     // pour qu'un voyage n'ait pas à peindre d'un coup une scène aquarelle à haute densité de pixels.
     // (Sur ordinateur, inutile : et leurs nuages animés se redessineraient en continu.)
-    const prewarm = window.matchMedia(TOUCH_QUERY).matches;
+    const prewarm = isLite();
     // Dernier état écrit par scène : on ne touche au DOM que si quelque chose change
     const state: Partial<Record<StageId, "off" | "warm" | "on">> = {};
     const apply = (f: number) => {

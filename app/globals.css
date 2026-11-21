@@ -420,6 +420,28 @@ html[data-travel] *::after {
   [data-landscape] .animate-rise { animation: none; }
 }
 
+/* Ordinateur modeste (classe `lite`, lib/perf.ts) : les mêmes allègements que sur téléphone */
+html.lite .scene-live { display: none; }
+html.lite .scene-baked { display: block; }
+html.lite { background-attachment: scroll; }
+html.lite .veil {
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--veil) 65%, var(--sky-top));
+}
+html.lite [class*="backdrop-blur"] {
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--veil) 65%, var(--sky-top));
+}
+/* Halo de lisibilité : une seule ombre courte (les ombres larges se redessinent à chaque changement de palette) */
+html.lite .legible { text-shadow: 0 0 1px var(--veil), 0 0 3px var(--veil), 0 0 8px color-mix(in srgb, var(--veil) 70%, transparent); }
+html.lite .paper-grain { mix-blend-mode: normal; opacity: 0.1; }
+html.lite [data-landscape] .animate-drift,
+html.lite [data-landscape] .animate-drift-slow,
+html.lite [data-landscape] .animate-float,
+html.lite [data-landscape] .animate-twinkle,
+html.lite [data-landscape] .animate-rise { animation: none; }
+
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .animate-drift,

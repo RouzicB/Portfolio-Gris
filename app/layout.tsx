@@ -11,6 +11,7 @@ import { palettes } from "./data/palettes";
 import { site } from "./data/site";
 import { paletteToVars } from "./lib/journey";
 import { siteUrl } from "./lib/site-url";
+import { PERF_SCRIPT } from "./lib/perf";
 import { profiles } from "./data/skills";
 
 export const metadata: Metadata = {
@@ -81,6 +82,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const initial = paletteToVars(palettes.gris) as CSSProperties;
   return (
     <html lang="fr" style={initial} className="palette-settling" suppressHydrationWarning>
+      <head>
+        {/* Mode léger décidé avant le premier affichage (lib/perf.ts) : aucune scène lourde n'est dessinée pour rien */}
+        <script dangerouslySetInnerHTML={{ __html: PERF_SCRIPT }} />
+      </head>
       <body className="antialiased">
         <Providers>
           {children}

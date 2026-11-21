@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { site } from "../../data/site";
-import { TOUCH_QUERY, WIDE_QUERY, bakedScene, supportsAvif } from "../../lib/decor";
+import { WIDE_QUERY, bakedScene, supportsAvif } from "../../lib/decor";
+import { isLite } from "../../lib/perf";
 import type { StageId } from "../../types";
 import Emblem from "./Emblem";
 
@@ -74,7 +75,7 @@ export default function PageLoader() {
       });
       // Décors pré-rendus, au cadrage et au format que l'écran affichera. On n'attend que la scène visible
       // et ses voisines (déjà dessinées d'avance) : les autres arrivent en arrière-plan, bien avant qu'on y voyage.
-      if (window.matchMedia(TOUCH_QUERY).matches) {
+      if (isLite()) {
         const format = window.matchMedia(WIDE_QUERY).matches ? "wide" : "portrait";
         const ext = (await supportsAvif()) ? "avif" : "webp";
         document.querySelectorAll<HTMLElement>("[data-scene]").forEach((s) => {

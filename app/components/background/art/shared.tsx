@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { isLite, subscribeLite } from "../../../lib/perf";
 
 /**
  * Outils de dessin partagés par toutes les scènes (déclarés une seule fois dans la page).
@@ -18,11 +19,9 @@ export function WatercolorDefs() {
   // Le rendu reste aquarelle, mais chaque scène se dessine plusieurs fois plus vite à haute densité de pixels.
   const [lite, setLite] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(pointer: coarse), (max-width: 767px)");
-    const update = () => setLite(mq.matches);
+    const update = () => setLite(isLite());
     update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    return subscribeLite(update);
   }, []);
   if (lite) {
     return (

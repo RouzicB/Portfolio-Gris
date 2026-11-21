@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { isLite } from "../../lib/perf";
 import { m, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "framer-motion";
 
 interface Pointer {
@@ -22,6 +23,8 @@ export function PointerProvider({ children }: Readonly<{ children: ReactNode }>)
     // Écran tactile : pas de souris à suivre, et un glissé ne doit pas animer sept décors à chaque image
     if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
     const onMove = (e: PointerEvent) => {
+      // Mode léger (ordinateur modeste) : décor immobile
+      if (isLite()) return;
       rawX.set((e.clientX / window.innerWidth) * 2 - 1);
       rawY.set((e.clientY / window.innerHeight) * 2 - 1);
     };
