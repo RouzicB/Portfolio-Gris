@@ -164,7 +164,8 @@ export default function ProjectCase({
                     aria-hidden
                     className="relative grid size-10 shrink-0 place-items-center rounded-full border border-ink/25 bg-[color-mix(in_srgb,var(--veil)_55%,var(--sky-top))] font-display text-[0.95rem] tracking-[0.04em] text-[color-mix(in_srgb,var(--accent)_75%,var(--ink))] transition duration-300 group-hover:scale-110 group-hover:border-accent"
                   >
-                    {c.numeral}
+                    {/* Capitales sans jambage : leur centre visuel est plus haut que celui de la ligne, on les redescend (mesuré) */}
+                    <span className="translate-y-[0.23em]">{c.numeral}</span>
                   </span>
                   <span className="min-w-0 pt-1 md:pt-0">
                     <span className="sr-only">Chapitre {i + 1} : </span>
@@ -376,7 +377,8 @@ function Steps({ steps }: { steps: Project["process"] }) {
           <li key={s.title} className="grid grid-cols-[3rem_1fr] gap-4 lg:grid-cols-1 lg:justify-items-center lg:text-center">
             <Ring>
               <span className="grid size-9 place-items-center rounded-full bg-ink font-display text-sky-top text-sm tabular-nums">
-                {pad(i + 1)}
+                {/* Chiffres de la police : ils descendent sous la ligne, on les remonte (mesuré) */}
+                <span className="-translate-y-[0.24em]">{pad(i + 1)}</span>
               </span>
             </Ring>
             <div className="pt-1 lg:pt-3">
