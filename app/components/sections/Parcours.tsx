@@ -210,7 +210,7 @@ export default function Parcours() {
       <m.div
         ref={detailRef}
         variants={fadeUp}
-        className="veil panel mx-auto mt-6 scroll-mb-6 rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
+        className="veil panel mx-auto mt-6 scroll-mb-6 rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-6 sm:px-10 sm:py-8 short:mt-4 short:sm:py-6"
         style={{ maxWidth: vertical ? undefined : size.width }}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -220,7 +220,7 @@ export default function Parcours() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.35, ease: WASH }}
-            className="grid gap-3 sm:grid-cols-[1fr_auto_1.4fr] sm:gap-7"
+            className="grid gap-4 sm:grid-cols-[1fr_auto_1.4fr] sm:gap-10"
             aria-live="polite"
           >
             <div>
@@ -229,17 +229,17 @@ export default function Parcours() {
                 {kindLabels[selected.kind]}
                 {selected.period && <span className="tabular-nums">· {selected.period}</span>}
               </p>
-              <h3 className="title-spaced mt-2.5 text-base leading-snug text-ink sm:text-lg">{selected.title}</h3>
-              {selected.place && <p className="mt-1 text-sm text-ink-soft">{selected.place}</p>}
+              <h3 className="title-spaced mt-3.5 text-base leading-snug text-ink sm:text-lg">{selected.title}</h3>
+              {selected.place && <p className="mt-2 text-sm text-ink-soft">{selected.place}</p>}
             </div>
             {/* Filet vertical et losange, comme une couture entre les deux colonnes */}
             <span aria-hidden className="relative hidden w-px bg-ink/15 sm:block">
               <span className="absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent" />
             </span>
             <div>
-              <p className="text-sm leading-relaxed text-ink">{selected.text}</p>
+              <p className="text-sm leading-[1.8] text-ink">{selected.text}</p>
               {selected.tags && (
-                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+                <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
                   {selected.tags.map((t) => (
                     <li key={t} className="flex items-center gap-2 text-xs text-ink">
                       <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
