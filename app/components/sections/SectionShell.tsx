@@ -83,7 +83,7 @@ export default function SectionShell({
       }
       className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >
-      <div className="flex min-h-full items-center px-4 pb-40 pt-16 sm:px-8 md:pb-24 md:pr-24 short:pt-10 short:md:pb-24">
+      <div className="flex min-h-full items-center px-4 pb-28 pt-16 sm:px-8 md:pb-24 md:pr-24 short:pt-10 short:md:pb-24">
         <m.div
           className="mx-auto w-full max-w-[1200px] max-md:legible"
           variants={stagger}

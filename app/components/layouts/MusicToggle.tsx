@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
-import { usePathname } from "next/navigation";
 import { TRACKS, TRACK_LENGTH, ambient } from "../../lib/ambient";
 import { bakedScene } from "../../lib/decor";
 
@@ -27,6 +26,14 @@ const SkipIcon = ({ back = false }: { back?: boolean }) => (
     <rect x="16.5" y="5.5" width="2.6" height="13" rx="1.1" fill="currentColor" />
   </svg>
 );
+/** Note de musique : la pastille du lecteur replié (téléphone) */
+const NoteIcon = () => (
+  <svg viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
+    <path d="M9 17.5V5.5l10-2v12" />
+    <ellipse cx="6.5" cy="17.5" rx="2.5" ry="2" fill="currentColor" stroke="none" />
+    <ellipse cx="16.5" cy="15.5" rx="2.5" ry="2" fill="currentColor" stroke="none" />
+  </svg>
+);
 /** Haut-parleur : ondes selon le volume, croix quand le son est coupé */
 const SpeakerIcon = ({ level }: { level: number }) => (
   <svg viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
@@ -47,23 +54,21 @@ const SpeakerIcon = ({ level }: { level: number }) => (
  * (la musique continue d'une page à l'autre). Coupée par défaut : on n'impose jamais le son.
  * Pochette (le décor de la zone, avec un égaliseur qui ondule pendant la lecture), titre et tonalité,
  * morceau précédent / lecture / suivant, barre de progression avec ses temps (avancer, reculer), volume (coupure, curseur).
- * Ordinateur : en bas à droite. Téléphone : en bas, au-dessus de la navigation sur l'accueil,
- * à côté du lien Crédits sur les autres pages ; le curseur de volume y laisse la place aux boutons du téléphone.
+ * Ordinateur : en bas à droite, en tiroir. Téléphone : une pastille en haut à droite (la pochette) qui ouvre le lecteur
+ * par-dessus la page ; le curseur de volume y laisse la place aux boutons du téléphone.
  */
 export default function MusicToggle() {
-  const pathname = usePathname();
   const engine = ambient();
   const { playing, index, volume, muted } = useSyncExternalStore(engine.subscribe, engine.getSnapshot, () => SERVER_SNAP);
   const track = TRACKS[index];
   const [pos, setPos] = useState(0);
   const [dragging, setDragging] = useState<number | null>(null);
   const pointer = useRef(false);
-  const home = pathname === "/";
 
   // Tiroir : déplié à l'arrivée (on découvre le lecteur), puis replié en languette quand on ne s'en sert pas.
   // Souris : le survol le déplie, il se replie peu après la sortie. Clavier : le focus le déplie.
   // Toucher : un appui sur la languette le déplie, il se replie après quelques secondes sans geste ou un appui ailleurs.
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const dock = useRef<HTMLDivElement>(null);
   const hovered = useRef(false);
   const timer = useRef<number | undefined>(undefined);
@@ -82,8 +87,14 @@ export default function MusicToggle() {
     if (autoHide) hideSoon(autoHide);
   };
   useEffect(() => {
+    // Ordinateur : déplié quelques secondes à l'arrivée. Téléphone : reste replié en pastille, on l'ouvre d'un toucher
+    if (window.matchMedia("(max-width: 767px)").matches) return;
+    const first = window.setTimeout(() => setOpen(true), 0);
     timer.current = window.setTimeout(() => !hovered.current && setOpen(false), 4000);
-    return () => window.clearTimeout(timer.current);
+    return () => {
+      window.clearTimeout(first);
+      window.clearTimeout(timer.current);
+    };
   }, []);
   useEffect(() => {
     if (!open) return;
@@ -157,7 +168,10 @@ export default function MusicToggle() {
         hideSoon(600);
       }}
       onPointerDown={(e) => {
-        if (e.pointerType !== "mouse") show(5000);
+        // Toucher : un geste dans le lecteur déjà ouvert repousse sa fermeture. Replié, c'est le clic sur la pastille
+        // ou la languette qui l'ouvre (au relâchement) : ouvrir dès l'appui ferait apparaître les boutons sous le doigt,
+        // et le toucher finirait sur l'un d'eux (morceau suivant)
+        if (e.pointerType !== "mouse" && open) show(5000);
       }}
       onFocus={(e) => {
         // Clavier seulement : un clic donne aussi le focus, le survol s'en charge déjà
@@ -166,14 +180,34 @@ export default function MusicToggle() {
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) hideSoon(400);
       }}
-      className={`music-dock fixed z-40 px-1.5 pt-3 md:inset-x-auto md:bottom-0 md:right-4 md:w-[24.5rem] md:pb-4 md:[--dock-pb:1rem] ${
+      className={`music-dock pointer-events-none fixed right-2 top-2 z-40 w-[min(23rem,calc(100vw-1rem))] sm:right-4 sm:top-4 md:bottom-0 md:right-4 md:top-auto md:w-[24.5rem] md:px-1.5 md:pb-4 md:pt-3 md:[--dock-pb:1rem] ${
         open ? "is-open" : ""
-      } ${home ? "inset-x-1.5 bottom-[3.85rem] pb-1 [--dock-pb:0.25rem]" : "bottom-0 left-[4.1rem] right-1.5 pb-3 [--dock-pb:0.75rem]"}`}
+      } ${playing ? "is-on" : ""}`}
     >
+      {/* Téléphone : replié, le lecteur est une pastille en haut à droite (une note, un égaliseur pendant la lecture) ; un toucher l'ouvre */}
+      <button
+        type="button"
+        onClick={() => show(6000)}
+        aria-label={`Ouvrir le lecteur de musique (${track.title}${playing ? ", en lecture" : ""})`}
+        aria-expanded={open}
+        data-palette-live
+        className="music-mini veil pointer-events-auto absolute right-2 top-2 grid size-10 place-items-center rounded-full text-ink md:hidden"
+      >
+        {playing ? (
+          // En lecture : un égaliseur qui ondule
+          <span aria-hidden className="flex h-4 items-end gap-[3px]">
+            {[0.5, 0.9, 0.65, 0.8].map((h, i) => (
+              <span key={i} className="music-bar block w-[2px] rounded-full bg-current" style={{ "--h": h, animationDelay: `${-i * 0.27}s` } as CSSProperties} />
+            ))}
+          </span>
+        ) : (
+          <NoteIcon />
+        )}
+      </button>
     <section
       data-palette-live
       aria-label="Lecteur de musique d'ambiance"
-      className={`music-player veil panel rounded-[1rem_0.4rem_1rem_0.4rem] px-4 pb-3 pt-4 text-ink ${playing ? "is-on" : ""}`}
+      className={`music-player veil panel pointer-events-auto rounded-[1rem_0.4rem_1rem_0.4rem] px-4 pb-3 pt-4 text-ink ${playing ? "is-on" : ""}`}
     >
       {/* Languette du tiroir replié : le haut du lecteur, vide, qu’on survole ou touche pour le déplier */}
       <button

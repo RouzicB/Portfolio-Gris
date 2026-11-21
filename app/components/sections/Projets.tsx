@@ -154,7 +154,7 @@ export default function Projets({ cards: projects }: { cards: ProjectCard[] }) {
             >
               <ChevronIcon size={18} className="rotate-180" />
             </m.button>
-            <m.ol variants={fadeUp} className="flex items-center gap-1" aria-label="Pages">
+            <m.ol variants={fadeUp} className="flex items-center gap-1 max-sm:hidden" aria-label="Pages">
               {Array.from({ length: pages }, (_, k) => (
                 <li key={k}>
                   <button

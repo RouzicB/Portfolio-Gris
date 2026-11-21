@@ -55,8 +55,9 @@ export default function PageScene({
         />
       )}
 
-      {/* Pas de barre : une pastille de retour flottante, et un repère discret à droite */}
-      <nav aria-label="Navigation de la page" className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-start justify-between p-4 sm:p-6">
+      {/* Pas de barre : une pastille de retour flottante, et un repère discret à droite (sur téléphone, laissé à gauche
+          de la pastille du lecteur de musique, en haut à droite) */}
+      <nav aria-label="Navigation de la page" className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-start justify-between p-4 max-md:pr-16 sm:p-6 sm:max-md:pr-[4.5rem]">
         {/* Retour : une pastille de verre, une flèche fine qui recule au survol, un filet, le libellé espacé des titres */}
         <Link
           href={back.href}

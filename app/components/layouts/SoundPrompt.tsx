@@ -17,7 +17,7 @@ const HeadphonesIcon = () => (
 /**
  * Première visite : une fenêtre propose d'activer la bande originale avant d'entrer dans le voyage.
  * On n'impose jamais le son : « sans son » est un choix aussi visible que l'autre, et Échap revient à le choisir.
- * Le choix est retenu dans ce navigateur ; le lecteur en bas de l'écran permet d'en changer à tout moment.
+ * Le choix est retenu dans ce navigateur ; le lecteur de musique permet d'en changer à tout moment.
  * Fenêtre native (<dialog>) : le focus y reste enfermé et le reste de la page devient inerte tant qu'elle est ouverte.
  */
 export default function SoundPrompt() {
@@ -78,7 +78,7 @@ export default function SoundPrompt() {
           Continuer sans son
         </button>
       </div>
-      <p className="mt-4 text-sm text-ink-soft">Le lecteur, en bas de l’écran, permet de changer d’avis à tout moment.</p>
+      <p className="mt-4 text-sm text-ink-soft">Le lecteur de musique permet de changer d’avis à tout moment.</p>
     </dialog>
   );
 }

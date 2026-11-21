@@ -62,7 +62,7 @@ export default function CvPage() {
   return (
     <PageScene stage="bleu" back={{ href: "/#section-contact", label: "Contact" }}>
       <m.main
-        className="relative mx-auto flex w-full flex-col items-center gap-6 px-4 pb-40 pt-24 sm:px-8 md:pb-28 lg:flex-row lg:items-start lg:justify-center lg:gap-8 lg:px-10 lg:pb-10 lg:pt-20"
+        className="relative mx-auto flex w-full flex-col items-center gap-6 px-4 pb-24 pt-24 sm:px-8 md:pb-28 lg:flex-row lg:items-start lg:justify-center lg:gap-8 lg:px-10 lg:pb-10 lg:pt-20"
         variants={stagger}
         initial="hidden"
         animate="show"
