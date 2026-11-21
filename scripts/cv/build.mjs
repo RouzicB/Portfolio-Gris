@@ -12,7 +12,7 @@ import QRCode from "qrcode";
 import sharp from "sharp";
 
 /** Adresse du portfolio, encodée dans le QR code */
-const SITE = "https://baptisterouzic.fr";
+const SITE = "https://baptiste-rouzic.fr";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "../..");

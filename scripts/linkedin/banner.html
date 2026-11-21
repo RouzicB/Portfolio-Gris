@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Bannière LinkedIn — Baptiste Rouzic</title>
+<!--
+  Bannière LinkedIn (1584 × 396), dans la direction artistique du portfolio : la grotte bleue des Aptitudes
+  (palette « bleu » du site), l'emblème aux anneaux, les titres Josefin Sans espacés, les losanges de pigment.
+  La photo de profil LinkedIn recouvre le bas à gauche : le texte reste au centre et à droite.
+  Générer l'image : node scripts/linkedin/build.mjs
+-->
+<style>
+  @font-face { font-family: "Josefin Sans"; src: url("../../node_modules/@fontsource-variable/josefin-sans/files/josefin-sans-latin-wght-normal.woff2") format("woff2"); font-weight: 100 700; }
+  @font-face { font-family: "Quicksand"; src: url("../../node_modules/@fontsource-variable/quicksand/files/quicksand-latin-wght-normal.woff2") format("woff2"); font-weight: 300 700; }
+  @font-face { font-family: "Quicksand"; src: url("../../node_modules/@fontsource-variable/quicksand/files/quicksand-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 300 700; unicode-range: U+0100-024F, U+2000-206F, U+20AC; }
+
+  :root {
+    /* Palette « bleu » du site (app/data/palettes.ts) */
+    --sky-top: #081a2b;
+    --sky-bottom: #1d5677;
+    --accent: #7fd3ea;
+    --ink: #eaf7fc;
+    --ink-soft: #c6e3ef;
+    --sun: #d9f4ff;
+    --pigment: #9fd4e6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1584px; height: 396px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "Quicksand", sans-serif;
+    color: var(--ink);
+    background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+  }
+
+  /* Lumière qui tombe dans la grotte */
+  .glow {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(38% 120% at 74% 0%, color-mix(in srgb, var(--sun) 26%, transparent), transparent 70%),
+      radial-gradient(30% 80% at 30% 100%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+  }
+  /* Le décor de la grotte bleue : l'arbre de lumière à droite, les parois sombres sur les bords */
+  .decor {
+    position: absolute; inset: 0;
+    background: url("../../public/decor/bleu-wide.webp") 0 68% / 2200px auto no-repeat;
+    opacity: 0.55;
+  }
+  /* Voile sombre derrière le texte, pour la lecture */
+  .shade {
+    position: absolute; inset: 0;
+    background: radial-gradient(42% 90% at 50% 52%, color-mix(in srgb, var(--sky-top) 62%, transparent), transparent 75%);
+  }
+  /* Grain du papier, comme sur le site */
+  .grain {
+    position: absolute; inset: 0; opacity: 0.16; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 -0.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* Emblème : les anneaux de l'accueil, en grand, derrière le texte */
+  .emblem { position: absolute; left: 792px; top: 50%; width: 520px; height: 520px; transform: translate(-50%, -50%); color: var(--ink); opacity: 0.22; }
+
+  .content {
+    position: absolute; left: 792px; top: 50%; transform: translate(-50%, -50%);
+    width: 1000px; text-align: center;
+  }
+  .label {
+    font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 13px;
+    letter-spacing: 0.42em; text-transform: uppercase; color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 16px; padding-left: 0.42em;
+  }
+  .label i, .domain i { display: block; width: 7px; height: 7px; transform: rotate(45deg); background: var(--pigment); }
+  h1 {
+    margin-top: 0;
+    font-family: "Josefin Sans", sans-serif; font-weight: 300; font-size: 54px; line-height: 1;
+    letter-spacing: 0.32em; padding-left: 0.32em; text-transform: uppercase;
+  }
+  .role {
+    margin-top: 18px;
+    font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 17px;
+    letter-spacing: 0.28em; padding-left: 0.28em; text-transform: uppercase;
+  }
+  .divider { margin: 20px auto 0; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--ink-soft); }
+  .divider span { width: 56px; height: 1px; background: currentColor; opacity: 0.5; }
+  .divider i { width: 7px; height: 7px; transform: rotate(45deg); background: var(--pigment); }
+  .tagline { margin-top: 18px; font-size: 18px; color: var(--ink-soft); }
+
+  /* Adresse du site, sous l'accroche */
+  .domain {
+    margin-top: 22px; padding-left: 0.3em;
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="decor"></div>
+  <div class="shade"></div>
+  <div class="grain"></div>
+
+  <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="0.18" />
+    <circle cx="50" cy="50" r="45.5" fill="none" stroke="currentColor" stroke-opacity="0.7" stroke-width="0.18" />
+    <circle cx="50" cy="50" r="41.5" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="0.4 1.4" />
+    <circle cx="85.5" cy="31" r="2.4" fill="none" stroke="currentColor" stroke-width="0.2" />
+    <circle cx="85.5" cy="31" r="1" fill="currentColor" />
+    <path d="M50 0.2 L51.2 1.6 L50 3 L48.8 1.6Z" fill="#9fd4e6" />
+  </svg>
+
+  <div class="content">
+    <h1>Baptiste Rouzic</h1>
+    <p class="role">UX/UI designer &amp; développeur front</p>
+    <div class="divider"><span></span><i></i><span></span></div>
+  </div>
+</body>
+</html>

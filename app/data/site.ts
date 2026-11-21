@@ -20,9 +20,7 @@ export const site = {
   /** Portrait (chemin dans /public) ; null = monogramme peint */
   portrait: "/portrait.webp" as string | null,
   socials: [
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/baptiste-rouzic" },
-    { label: "Behance", href: "https://www.behance.net/" },
-    { label: "Dribbble", href: "https://dribbble.com/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/baptiste-rouzic/" },
   ],
 } as const;
 

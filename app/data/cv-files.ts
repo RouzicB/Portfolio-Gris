@@ -1,10 +1,10 @@
 // Généré par scripts/cv/build.mjs : ne pas modifier à la main.
 /** Empreinte du contenu de chaque fichier du CV (dans public/), pour contourner le cache du navigateur */
 export const cvHashes: Record<string, string> = {
-  "/cv-baptiste-rouzic.pdf": "5a7a204eef",
-  "/cv-baptiste-rouzic-impression.pdf": "bcfbd3dfcf",
-  "/cv/cv-numerique.webp": "7f420e3583",
-  "/cv/cv-impression.webp": "d5a7ec566b",
+  "/cv-baptiste-rouzic.pdf": "e771edf22c",
+  "/cv-baptiste-rouzic-impression.pdf": "9cb1c93aac",
+  "/cv/cv-numerique.webp": "e1b98b6c74",
+  "/cv/cv-impression.webp": "51debe5e43",
 };
 
 /** Adresse d'un fichier du CV, suivie de son empreinte */

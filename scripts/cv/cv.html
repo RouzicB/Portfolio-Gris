@@ -201,7 +201,13 @@
   .step .head { display: flex; justify-content: space-between; gap: 4mm; align-items: baseline; }
   .step h3 { font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 9.6pt; letter-spacing: 0.02em; }
   .step .when { font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 6.8pt; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); white-space: nowrap; }
-  .step .where { font-size: 8.2pt; color: var(--ink-soft); }
+  .step .where { font-size: 8.2pt; color: var(--ink-soft); display: flex; align-items: center; gap: 1.8mm; }
+  /* Pictogramme de l'entreprise ou de l'école (son favicon), à gauche du nom : une seule couleur, celle de l'encre
+     (blanc sur la nuit, encre sur le papier). Les fichiers de logos/ sont des masques (forme seule, sans couleur). */
+  .logo {
+    flex: none; width: 3.9mm; height: 3.9mm; background: var(--ink); opacity: 0.85;
+    -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat;
+  }
   .step .cert { font-weight: 600; }
   .step p { margin-top: 0.8mm; }
   .tag { display: inline-block; margin-left: 1.6mm; padding: 0.8mm 1.7mm 0.3mm 2mm; line-height: 1; border-radius: 99px; font-size: 6.4pt; font-family: "Josefin Sans", sans-serif; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-accent); background: var(--c); vertical-align: 0.4mm; }
@@ -294,11 +300,11 @@
             </li>
             <li>
               <i data-icon="reseau"></i>
-              <a href="https://www.linkedin.com/in/baptiste-rouzic">in/baptiste-rouzic</a>
+              <a href="https://www.linkedin.com/in/baptiste-rouzic/">in/baptiste-rouzic</a>
             </li>
             <li>
               <i data-icon="site"></i>
-              <a href="https://baptisterouzic.fr">baptisterouzic.fr</a>
+              <a href="https://baptiste-rouzic.fr">baptiste-rouzic.fr</a>
             </li>
           </ul>
         </section>
@@ -355,9 +361,9 @@
 
         <!-- Le QR code vers le site, au pied du panneau -->
         <figure class="qr">
-          <img class="only-print" src="qr.svg" alt="QR code vers le portfolio baptisterouzic.fr" />
-          <img class="only-digital" src="qr-bleu.svg" alt="QR code vers le portfolio baptisterouzic.fr" />
-          <figcaption><span class="label">Le voyage<br />en ligne</span><span class="url">baptisterouzic.fr</span></figcaption>
+          <img class="only-print" src="qr.svg" alt="QR code vers le portfolio baptiste-rouzic.fr" />
+          <img class="only-digital" src="qr-bleu.svg" alt="QR code vers le portfolio baptiste-rouzic.fr" />
+          <figcaption><span class="label">Le voyage<br />en ligne</span><span class="url">baptiste-rouzic.fr</span></figcaption>
         </figure>
       </aside>
 
@@ -367,17 +373,17 @@
           <div class="timeline">
             <div class="step now">
               <div class="head"><h3>Dév full-stack &amp; UX/UI designer <span class="tag">En cours</span></h3><span class="when">2025 – 2027</span></div>
-              <p class="where">Renault Group · alternance · applications</p>
+              <p class="where"><i class="logo" role="img" aria-label="Logo Renault Group" style="--logo: url('logos/fav-renault.png')"></i><span>Renault Group · alternance · applications</span></p>
               <p>Concevoir et développer des applications : de la recherche utilisateur et des maquettes jusqu'au code full-stack. Le lien entre design et développement.</p>
             </div>
             <div class="step">
               <div class="head"><h3>Chargé de communication &amp; graphiste</h3><span class="when">Oct. 2024 – 2025</span></div>
-              <p class="where">CHU de Rouen · service de cardiologie · alternance</p>
+              <p class="where"><i class="logo" role="img" aria-label="Logo CHU de Rouen" style="--logo: url('logos/fav-chu.png')"></i><span>CHU de Rouen · service de cardiologie · alternance</span></p>
               <p>Supports de communication et graphisme pour le service : rendre une information médicale claire, lisible et rassurante pour les patients et les équipes.</p>
             </div>
             <div class="step">
               <div class="head"><h3>Développeur web front-end &amp; back-end</h3><span class="when">Avr. – juin 2024</span></div>
-              <p class="where">Sesa Systems · stage</p>
+              <p class="where"><i class="logo" role="img" aria-label="Logo Sesa Systems" style="--logo: url('logos/fav-sesa.png')"></i><span>Sesa Systems · stage</span></p>
               <p>Développement d'une application web au sein d'une équipe, avec de vraies contraintes et des livrables utilisés par des clients.</p>
             </div>
           </div>
@@ -388,12 +394,12 @@
           <div class="timeline">
             <div class="step now">
               <div class="head"><h3>Mastère UX/UI · spécialité création graphique</h3><span class="when">2025 – 2027</span></div>
-              <p class="where">Normandie Web School · en alternance</p>
+              <p class="where"><i class="logo" role="img" aria-label="Logo Normandie Web School" style="--logo: url('logos/fav-nws.png')"></i><span>Normandie Web School · en alternance</span></p>
               <p><span class="cert">Certification « Expert en design d'expérience utilisateur »</span><br />Recherche utilisateur, architecture de l'information, UI design et design system.</p>
             </div>
             <div class="step">
               <div class="head"><h3>BUT Métiers du Multimédia et de l'Internet</h3><span class="when">2022 – 2025</span></div>
-              <p class="where">IUT de Rouen · parcours développement web</p>
+              <p class="where"><i class="logo" role="img" aria-label="Logo IUT de Rouen" style="--logo: url('logos/fav-iut.png')"></i><span>IUT de Rouen · parcours développement web</span></p>
               <p>Développement, design graphique, audiovisuel et communication, puis spécialisation en développement web et dispositifs interactifs.</p>
             </div>
           </div>
