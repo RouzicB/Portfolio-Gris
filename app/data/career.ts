@@ -110,7 +110,7 @@ export const careerNodes: FlowNode[] = [
     title: "Mastère UX/UI · spécialité création graphique",
     place: "Normandie Web School",
     period: "2025 – 2027 · années 4 & 5",
-    text: "Recherche utilisateur, architecture de l'information, UI design et design system, avec une spécialité en création graphique, en alternance.",
+    text: "Certification « Expert en design d'expérience utilisateur ». Recherche utilisateur, architecture de l'information, UI design et design system, avec une spécialité en création graphique, en alternance.",
     tags: ["UX research", "UI design", "Création graphique"],
     col: 5,
     row: 0,
