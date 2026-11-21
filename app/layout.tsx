@@ -80,7 +80,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   // La palette de l'accueil est posée dès le rendu serveur
   const initial = paletteToVars(palettes.gris) as CSSProperties;
   return (
-    <html lang="fr" style={initial} suppressHydrationWarning>
+    <html lang="fr" style={initial} className="palette-settling" suppressHydrationWarning>
       <body className="antialiased">
         <Providers>
           {children}

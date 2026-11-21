@@ -6,6 +6,7 @@ import { sections } from "../../data/sections";
 import { palettes } from "../../data/palettes";
 import { parseColor, type RGBA } from "../../lib/color";
 import { anchorId, canScrollWithin, clampIndex, cssVarName, gestureDirection, segment } from "../../lib/journey";
+import { settlePalette } from "../../lib/settle";
 import type { Palette } from "../../types";
 import { JourneyContext, JourneyControlsContext } from "./JourneyContext";
 import Landscape from "../background/Landscape";
@@ -84,8 +85,10 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     [progress, reduce],
   );
 
-  // La page d'accueil ne défile plus : chaque section est un écran
+  // La page d'accueil ne défile plus : chaque section est un écran.
+  // Retour à l'accueil depuis une autre page : la palette des boutons communs change, sans fondu (lib/settle.ts)
   useEffect(() => {
+    settlePalette(250);
     const root = document.documentElement;
     const previous = root.style.overflow;
     root.style.overflow = "hidden";

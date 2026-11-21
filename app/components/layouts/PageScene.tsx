@@ -7,6 +7,7 @@ import type { SceneTheme, StageId } from "../../types";
 import { palettes, stageSuns } from "../../data/palettes";
 import { paletteToVars } from "../../lib/journey";
 import { ambient } from "../../lib/ambient";
+import { settlePalette } from "../../lib/settle";
 import Landscape from "../background/Landscape";
 import { ArrowRightIcon } from "../icons/GrisIcons";
 
@@ -38,7 +39,9 @@ export default function PageScene({
   useEffect(() => ambient().setStage(stage), [stage]);
 
   // <html> prend aussi l'ambiance (fond hors page, barre d'adresse mobile)
+  // Transitions coupées le temps du changement : sinon les boutons communs (musique, crédits) clignotent
   useEffect(() => {
+    settlePalette();
     const root = document.documentElement;
     Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
   }, [vars]);

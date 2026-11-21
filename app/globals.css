@@ -251,7 +251,18 @@ body {
 
 /* Focus clavier : dans la couche de base, pour que les composants puissent l'ajuster (utilitaires Tailwind).
    Pas de border-radius forcé : le contour suit la forme de chaque élément (boutons ronds, arches, feuilles). */
+/* Palette en train de s'installer (lib/settle.ts) : aucune transition, pour qu'aucun bouton ne fasse de fondu */
+html.palette-settling *,
+html.palette-settling *::before,
+html.palette-settling *::after {
+  transition: none !important;
+}
+
 @layer base {
+  /* Téléphone : pas de rectangle gris natif au toucher, les éléments ont leurs propres états */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
