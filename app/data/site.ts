@@ -8,7 +8,7 @@ export const site = {
   role: "Étudiant UX/UI Designer · 5e année",
   tagline: "Je conçois des interfaces calmes et lisibles : la structure d'abord, l'émotion ensuite.",
   // à compléter
-  bio: "En 5e année de Mastère UX/UI, spécialité création graphique, je relie la recherche utilisateur, l'architecture de l'information et l'interface. J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.",
+  bio: "En 5e année de Mastère UX/UI, spécialité création graphique, je relie la recherche utilisateur, l'architecture de l'information et l'interface.",
   /** Description des moteurs de recherche (environ 155 caractères : au-delà, Google la coupe) */
   description:
     "Baptiste Rouzic, UX/UI designer et développeur front en Normandie : Mastère UX/UI à la Normandie Web School, alternance chez Renault Group. Projets, CV, contact.",

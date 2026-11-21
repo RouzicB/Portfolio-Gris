@@ -60,6 +60,8 @@
     --decor-opacity: 0.7;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Les pseudo-éléments ne sont pas couverts par * : sans cette règle, la bordure des losanges les décalait du fil */
+  ::before, ::after { box-sizing: border-box; }
   html { background: var(--paper); }
   html, body { width: 100%; height: 100vh; overflow: hidden; }
   body {
@@ -205,7 +207,7 @@
   /* Pictogramme de l'entreprise ou de l'école (son favicon), à gauche du nom : une seule couleur, celle de l'encre
      (blanc sur la nuit, encre sur le papier). Les fichiers de logos/ sont des masques (forme seule, sans couleur). */
   .logo {
-    flex: none; width: 3.9mm; height: 3.9mm; background: var(--ink); opacity: 0.85;
+    flex: none; width: 4.4mm; height: 4.4mm; background: var(--ink); opacity: 0.85;
     -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat;
   }
   .step .cert { font-weight: 600; }
@@ -274,7 +276,6 @@
         <p class="pitch">
           En 5<sup>e</sup> année de Mastère UX/UI, spécialité création graphique, je relie la recherche utilisateur,
           l'architecture de l'information et l'interface, puis je développe mes propres designs.
-          J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.
         </p>
         <p class="status"><i data-icon="statut"></i>Recherche un poste UX/UI ou développeur front</p>
       </div>
@@ -413,7 +414,7 @@
             <article><em>2026</em><small>Identité de marque</small><b>Slift</b><span>Une charte graphique complète pour une salle d'escalade.</span></article>
             <article><em>2025</em><small>Éco-design</small><b>Delta</b><span>L'identité d'un festival, redessinée pour imprimer deux fois moins d'encre.</span></article>
             <article><em>2025</em><small>UX/UI</small><b>Pluies de Juillet</b><span>Le site d'un festival engagé, repensé pour s'y repérer et réserver sans effort.</span></article>
-            <article><em>2026</em><small>Ce portfolio</small><b>Un voyage en sept zones</b><span>Direction artistique et développement Next.js, de A à Z.</span></article>
+            <article><em>2026</em><small>Portfolio</small><b>Un voyage en sept zones</b><span>Direction artistique et développement Next.js, de A à Z.</span></article>
           </div>
         </section>
       </main>
