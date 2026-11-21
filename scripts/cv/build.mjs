@@ -25,7 +25,7 @@ sharp.cache(false);
 const flat = (file, out, bg, resize, quality = 74) =>
   sharp(resolve(publicDir, file)).flatten({ background: bg }).resize(resize).jpeg({ quality, mozjpeg: true }).toFile(resolve(here, out));
 await Promise.all([
-  flat("decor/gris-wide.webp", "decor.jpg", "#f3f2f0", { width: 1600 }, 72),
+  flat("decor/gris-wide.webp", "decor.jpg", "#ffffff", { width: 1600 }, 72),
   flat("decor/bleu-wide.webp", "decor-bleu.jpg", "#0b2236", { width: 1600 }, 72),
 ]);
 // Portrait : carré pris sur toute la largeur de la photo, visage au centre (ni zoomé ni décalé vers le haut).

@@ -20,11 +20,12 @@
 
   @page { size: A4; margin: 0; }
   :root {
-    --paper: #f3f2f0;
-    --paper-deep: #e4e2df;
+    /* Version imprimable : papier blanc, décor très pâle, aucun aplat gris : le moins d'encre possible */
+    --paper: #ffffff;
+    --paper-deep: #f6f5f3;
     --ink: #2f2e2d;
     --ink-soft: #5b5854;
-    --veil: rgba(250, 249, 248, 0.82);
+    --veil: rgba(255, 255, 255, 0.9);
     --line: rgba(47, 46, 45, 0.16);
     /* Une seule couleur, celle du décor (le rouge du papier gris), déclinée en nuances : une par rubrique.
        Les nuances qui portent du texte (année des projets, pastille « En cours ») restent assez sombres pour être lues. */
@@ -37,7 +38,7 @@
     --edge: rgba(255, 255, 255, 0.7);
     --on-accent: #fff;
     --decor: url("decor.jpg");
-    --decor-opacity: 0.55;
+    --decor-opacity: 0.22;
   }
   /* Version numérique : la grotte bleue, encre claire, pigments éclaircis pour le fond sombre */
   :root.numerique {
@@ -178,8 +179,10 @@
   ul.flow li::before { content: ""; position: absolute; left: 0.1mm; top: 1.25mm; width: 1.15mm; height: 1.15mm; transform: rotate(45deg); background: var(--c); opacity: 0.85; }
   ul.dots li::before { content: ""; position: absolute; left: 0.3mm; top: 1.7mm; width: 1.3mm; height: 1.3mm; transform: rotate(45deg); background: var(--c, var(--ink)); opacity: 0.85; }
   .muted { color: var(--ink-soft); }
+  /* Marge volontaire sur la ligne la plus longue (After Effects · Premiere Pro) : à 0,2 px près, le PDF et l'aperçu
+     ne passaient pas à la ligne au même endroit */
   .chips { display: flex; flex-wrap: wrap; gap: 1.3mm 1.3mm; }
-  .chips span { display: inline-flex; align-items: center; gap: 1.3mm; border: 0.25mm solid var(--line); border-radius: 99px; padding: 0.5mm 2.4mm 0.5mm 1.8mm; font-size: 7pt; background: color-mix(in srgb, var(--paper) 55%, transparent); }
+  .chips span { display: inline-flex; align-items: center; gap: 1.3mm; border: 0.25mm solid var(--line); border-radius: 99px; padding: 0.5mm 2.1mm 0.5mm 1.6mm; font-size: 7pt; background: color-mix(in srgb, var(--paper) 55%, transparent); }
   .chips .ico { width: 3mm; height: 3mm; color: var(--ink); }
   /* Logos Adobe : monogramme dans la typo des titres */
   .chips text { font-family: "Josefin Sans", sans-serif; }
@@ -192,11 +195,13 @@
 
   /* Frise : un fil vertical, une pierre par étape (pleine pour l'étape en cours) */
   .timeline { position: relative; padding-left: 6mm; }
-  .timeline::before { content: ""; position: absolute; left: 1.15mm; top: 1.6mm; bottom: 1.6mm; width: 0.3mm; background: var(--line); }
+  /* Fil et losanges calés sur des pixels entiers (centre commun à 5 px) : en millimètres, l'arrondi à l'affichage
+     décalait le fil d'un pixel par rapport au centre des losanges */
+  .timeline::before { content: ""; position: absolute; left: 4.5px; top: 1.6mm; bottom: 1.6mm; width: 1px; background: var(--line); }
   .step { position: relative; margin-top: 2.7mm; }
   .step:first-child { margin-top: 0; }
   .step::before {
-    content: ""; position: absolute; left: -6mm; top: 1.1mm; width: 2.6mm; height: 2.6mm; transform: rotate(45deg);
+    content: ""; position: absolute; left: -6mm; top: 1.1mm; width: 10px; height: 10px; transform: rotate(45deg);
     border: 0.35mm solid var(--c); background: var(--paper);
   }
   .step.now::before { background: var(--c); box-shadow: 0 0 0 1mm color-mix(in srgb, var(--c) 18%, transparent); }

@@ -18,7 +18,7 @@ export default function Aptitudes() {
   const [design, dev] = profiles;
   return (
     <SectionShell index={3}>
-      <div className="grid gap-5 lg:grid-cols-[1fr_8.5rem_1fr] lg:gap-0">
+      <div className="grid gap-7 lg:grid-cols-[1fr_9.5rem_1fr] lg:gap-x-6">
         <Profile profile={design} />
         <Bridge />
         <Profile profile={dev} mirrored />

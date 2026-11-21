@@ -34,7 +34,6 @@ export const profiles: SkillProfile[] = [
     icon: "interface",
     pitch: "Front-end : développer mes propres designs, fidèles à la maquette, accessibles et rapides.",
     skills: [
-      { name: "Intégration", detail: "HTML, CSS, Tailwind, responsive" },
       { name: "Interfaces React", detail: "composants, état, animation" },
       { name: "Sites Next.js", detail: "rendu statique, routage, SEO" },
       { name: "Qualité", detail: "TypeScript, tests, accessibilité" },
