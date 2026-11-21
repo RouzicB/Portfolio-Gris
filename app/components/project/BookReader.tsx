@@ -111,7 +111,7 @@ export default function BookReader({ book }: { book: Book }) {
                 aria-current={chapter === k ? "true" : undefined}
                 className={`label-spaced inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition duration-300 ${chapter === k ? "stone" : "text-ink hover:bg-ink/10"}`}
               >
-                <span aria-hidden className={`size-1.5 rotate-45 transition duration-300 ${chapter === k ? "bg-sky-top" : "bg-accent"}`} />
+                <span aria-hidden className={`mark-caps size-1.5 rotate-45 transition duration-300 ${chapter === k ? "bg-sky-top" : "bg-accent"}`} />
                 {c.title}
               </button>
             </li>
@@ -130,11 +130,11 @@ export default function BookReader({ book }: { book: Book }) {
         onKeyDown={onKey}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="veil relative mt-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] p-1.5 sm:p-2 [&:fullscreen]:grid [&:fullscreen]:place-items-center [&:fullscreen]:rounded-none [&:fullscreen]:bg-sky-bottom [&:fullscreen]:p-6"
+        className="veil relative mt-6 rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.25rem_0.75rem_2.25rem_0.75rem] p-1.5 sm:p-2 [&:fullscreen]:grid [&:fullscreen]:place-items-center [&:fullscreen]:rounded-none [&:fullscreen]:bg-sky-bottom [&:fullscreen]:p-6"
       >
         {/* Clé de voûte */}
         <span aria-hidden className="absolute -top-[5px] left-1/2 z-10 size-2.5 -translate-x-1/2 rotate-45 bg-accent" />
-        <div className="relative aspect-video w-full overflow-hidden rounded-[1.9rem_0.5rem_1.9rem_0.5rem] bg-ink/5 [:fullscreen_&]:w-[min(100%,calc((100svh-3rem)*16/9))]">
+        <div className="relative aspect-video w-full overflow-hidden rounded-[1.125rem_0.3rem_1.125rem_0.3rem] sm:rounded-[1.9rem_0.5rem_1.9rem_0.5rem] bg-ink/5 [:fullscreen_&]:w-[min(100%,calc((100svh-3rem)*16/9))]">
           <AnimatePresence initial={false} custom={dir}>
             <m.img
               key={page.src}
@@ -191,7 +191,7 @@ export default function BookReader({ book }: { book: Book }) {
       </div>
 
       {/* Légende : repère, titre de la page, actions et texte, sur une plaque de verre */}
-      <div className="veil panel mt-4 rounded-[0.75rem_1.75rem_0.75rem_1.75rem] px-5 py-4 sm:px-6">
+      <div className="veil panel mt-4 rounded-[0.75rem_1.75rem_0.75rem_1.75rem] px-6 py-5">
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
         <p className="flex items-baseline gap-3 text-ink">
           <span className="font-display text-sm tabular-nums tracking-[0.12em]">

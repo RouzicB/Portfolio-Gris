@@ -117,8 +117,8 @@ export default function Parcours() {
                 aria-hidden
               >
                 {/* Vertical : les liens traversent la ligne du chapitre, son titre se pose sur une pastille */}
-                <span className={`flex items-center gap-2 ${vertical ? "veil rounded-full px-3 py-1" : ""}`}>
-                  <span className="size-1.5 shrink-0 rotate-45 bg-accent" />
+                <span className={`flex items-center gap-2 ${vertical ? "veil rounded-full px-3.5 py-1.5" : ""}`}>
+                  <span className="mark-caps size-1.5 shrink-0 rotate-45 bg-accent" />
                   <span className="label-spaced legible whitespace-nowrap text-ink">{c.title}</span>
                 </span>
                 <span className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />
@@ -209,7 +209,7 @@ export default function Parcours() {
       <m.div
         ref={detailRef}
         variants={fadeUp}
-        className="veil panel mx-auto mt-6 scroll-mb-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
+        className="veil panel mx-auto mt-6 scroll-mb-6 rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
         style={{ maxWidth: vertical ? undefined : size.width }}
       >
         <AnimatePresence mode="wait" initial={false}>

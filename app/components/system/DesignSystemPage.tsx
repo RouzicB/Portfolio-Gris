@@ -74,7 +74,7 @@ export default function DesignSystemPage() {
                 onClick={() => setStage(id)}
                 className={`label-spaced inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition ${stage === id ? "stone" : "text-ink hover:bg-ink/10"}`}
               >
-                <span aria-hidden className="size-2 rotate-45" style={{ background: palettes[id].accent }} />
+                <span aria-hidden className="mark-caps size-2 rotate-45" style={{ background: palettes[id].accent }} />
                 {ZONE[id]}
               </button>
             ))}
@@ -89,8 +89,8 @@ export default function DesignSystemPage() {
           </m.p>
           <m.ul variants={fadeUp} className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
             {TOKENS.map((t) => (
-              <li key={t.key} className="veil flex flex-col overflow-hidden rounded-b-2xl rounded-t-[999px] p-1.5 pb-3">
-                <span className="block aspect-[3/4] rounded-b-xl rounded-t-[999px]" style={{ background: p[t.key] }} />
+              <li key={t.key} className="veil flex flex-col overflow-hidden rounded-b-2xl arch p-1.5 pb-3">
+                <span className="block aspect-[3/4] rounded-b-xl arch" style={{ background: p[t.key] }} />
                 <span className="label-spaced mt-3 text-center text-ink">{t.name}</span>
                 <code className="mt-0.5 text-center text-xs text-ink-soft">{p[t.key]}</code>
                 <span className="mt-1 px-2 text-center text-[0.7rem] leading-snug text-ink-soft">{t.role}</span>
@@ -101,7 +101,7 @@ export default function DesignSystemPage() {
 
         {/* II — Typographie */}
         <Chapter numeral="II" title="Typographie" id="typographie">
-          <m.div variants={fadeUp} className="veil panel mx-auto grid max-w-4xl gap-8 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-9 sm:px-12">
+          <m.div variants={fadeUp} className="veil panel mx-auto grid max-w-4xl gap-8 rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-9 sm:px-12">
             <div>
               <p className="label-spaced text-ink-soft">title-spaced · Josefin Sans 300</p>
               <p className="title-spaced mt-2 text-3xl text-ink sm:text-5xl">Faire pousser</p>
@@ -207,7 +207,7 @@ export default function DesignSystemPage() {
               <span className="veil block size-24 rounded-[2rem_0.5rem_2rem_0.5rem]" />
             </Specimen>
             <Specimen name="Arche" use="Portraits, cartes de projet.">
-              <span className="veil block h-28 w-20 rounded-b-xl rounded-t-[999px]" />
+              <span className="veil block h-28 w-20 rounded-b-xl arch" />
             </Specimen>
             <Specimen name="Cercle" use="Emblèmes, boutons d'icône.">
               <span className="veil block size-24 rounded-full" />
@@ -220,9 +220,9 @@ export default function DesignSystemPage() {
 
         {/* VI — Icônes */}
         <Chapter numeral="VI" title="Icônes" id="icones">
-          <m.ul variants={fadeUp} className="grid grid-cols-3 gap-3 sm:grid-cols-5 lg:grid-cols-8">
+          <m.ul variants={fadeUp} className="grid grid-cols-2 gap-3 min-[25rem]:grid-cols-3 sm:grid-cols-5 lg:grid-cols-8">
             {iconGallery.map(({ name, Icon }) => (
-              <li key={name} className="veil flex flex-col items-center gap-2 rounded-b-2xl rounded-t-[999px] px-1 pb-3 pt-6">
+              <li key={name} className="veil flex flex-col items-center gap-2 rounded-b-2xl arch px-3 pb-3.5 pt-7">
                 <Icon size={28} className="text-ink" />
                 <span className="label-spaced text-[0.6rem] text-ink-soft">{name}</span>
               </li>

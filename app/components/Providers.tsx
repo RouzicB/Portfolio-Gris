@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { LazyMotion, MotionConfig, domAnimation } from "framer-motion";
+import ArchSizer from "./ui/ArchSizer";
 
 export default function Providers({ children }: Readonly<{ children: ReactNode }>) {
   // LazyMotion + composants « m » : seules les animations utilisées (pas de layout ni de glisser-déposer) sont chargées ;
@@ -11,7 +12,10 @@ export default function Providers({ children }: Readonly<{ children: ReactNode }
   // MotionConfig "user" : coupe les animations de mouvement si le système demande moins d'animations.
   return (
     <LazyMotion features={domAnimation} strict>
-      <MotionConfig reducedMotion="user">{children}</MotionConfig>
+      <MotionConfig reducedMotion="user">
+        {children}
+        <ArchSizer />
+      </MotionConfig>
     </LazyMotion>
   );
 }

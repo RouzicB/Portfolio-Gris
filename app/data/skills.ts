@@ -7,10 +7,10 @@ import type { SkillProfile } from "../types";
 export const profiles: SkillProfile[] = [
   {
     id: "design",
-    side: "Côté dessin",
+    side: "Côté design",
     name: "Designer",
     icon: "conception",
-    pitch: "UX/UI et création graphique : comprendre les gens, puis dessiner des interfaces claires et une identité qui tient.",
+    pitch: "UX/UI et création graphique : comprendre les gens, puis designer des interfaces claires et une identité qui tient.",
     skills: [
       { name: "Recherche utilisateur", detail: "entretiens, tests, synthèse" },
       { name: "Architecture & parcours", detail: "arborescence, wireframes, flows" },

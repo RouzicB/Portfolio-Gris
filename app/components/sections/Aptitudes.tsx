@@ -35,7 +35,7 @@ function Profile({ profile, mirrored = false }: { profile: SkillProfile; mirrore
       variants={fadeUp}
       aria-labelledby={id}
       className={`veil panel flex flex-col px-6 py-6 sm:px-8 short:py-4 ${
-        mirrored ? "rounded-[0.75rem_3rem_0.75rem_3rem]" : "rounded-[3rem_0.75rem_3rem_0.75rem]"
+        mirrored ? "rounded-[0.6rem_1.75rem_0.6rem_1.75rem] sm:rounded-[0.75rem_3rem_0.75rem_3rem]" : "rounded-[1.75rem_0.6rem_1.75rem_0.6rem] sm:rounded-[3rem_0.75rem_3rem_0.75rem]"
       }`}
     >
       {/* Les deux en-têtes se regardent, comme les visages jumeaux */}
@@ -89,7 +89,7 @@ function Bridge() {
   return (
     <m.div
       variants={fadeUp}
-      className="legible order-last flex flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:order-none lg:flex-col lg:flex-nowrap lg:justify-center lg:gap-3 lg:px-2"
+      className="legible max-md:mist order-last flex flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:order-none lg:flex-col lg:flex-nowrap lg:justify-center lg:gap-3 lg:px-2"
     >
       <span aria-hidden className="hidden w-px flex-1 bg-gradient-to-b from-transparent to-ink/25 lg:block" />
       <span className="relative grid size-14 shrink-0 place-items-center text-ink" aria-hidden>
@@ -101,7 +101,7 @@ function Bridge() {
         </svg>
         <span className="font-display text-2xl font-light">&amp;</span>
       </span>
-      <p className="label-spaced w-full text-center text-ink-soft sm:w-auto lg:w-full">Entre les deux</p>
+      <p className="label-spaced w-full text-center text-ink sm:w-auto lg:w-full">Entre les deux</p>
       <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 lg:flex-col lg:items-center lg:gap-2.5" aria-label="Ce qui relie les deux profils">
         {bridge.map((b) => (
           <li key={b} className="flex items-center gap-2 text-sm text-ink lg:flex-col lg:gap-1.5 lg:text-center">

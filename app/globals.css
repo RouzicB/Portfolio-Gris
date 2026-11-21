@@ -64,6 +64,12 @@ body {
 }
 
 /* Petit libellé espacé (« CHAPITRE II ») */
+/* Losange à côté d'un libellé en capitales : les capitales n'ont pas de jambage, leur centre visuel est plus haut
+   que celui de la ligne. On remonte le losange de cet écart (mesuré : 2 px pour les libellés espacés) */
+@utility mark-caps {
+  translate: 0 -0.125rem;
+}
+
 @utility label-spaced {
   font-family: var(--font-display);
   font-size: 0.6875rem;
@@ -109,7 +115,11 @@ body {
   &::before {
     content: "";
     position: absolute;
-    inset: 9px;
+    /* Téléphone : filet plus près du bord, pour laisser de l'air au contenu dans les coins arrondis */
+    inset: 6px;
+    @media (width >= 40rem) {
+      inset: 9px;
+    }
     border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent);
     border-radius: inherit;
     pointer-events: none;
@@ -117,7 +127,10 @@ body {
   &::after {
     content: "";
     position: absolute;
-    top: 5px;
+    top: 2px;
+    @media (width >= 40rem) {
+      top: 5px;
+    }
     left: 50%;
     width: 8px;
     height: 8px;
@@ -131,6 +144,8 @@ body {
 
 /* Bouton principal : une pierre d'encre */
 @utility stone {
+  /* Texte clair sur encre : jamais le halo de lisibilité hérité du décor */
+  text-shadow: none;
   background-color: var(--ink);
   background-image:
     radial-gradient(120% 140% at 30% 0%, color-mix(in srgb, var(--sky-top) 16%, transparent), transparent 55%),
@@ -143,6 +158,13 @@ body {
 /* Surface sans bord de pigment (écran de chargement plein écran) */
 @utility veil-flat {
   box-shadow: none;
+}
+
+/* Arche : haut en plein cintre, rayon = demi-largeur mesurée (ArchSizer). Jamais de rayon « infini » : il ferait
+   réduire tous les rayons, et les coins du bas disparaîtraient. Avant la mesure : demi-largeur, hauteur approchée */
+@utility arch {
+  border-top-left-radius: var(--arch, 50% 30%);
+  border-top-right-radius: var(--arch, 50% 30%);
 }
 
 /* ─── Barres de défilement ───────────────────────────────────────────
@@ -190,6 +212,23 @@ body {
 
 /* Texte posé à même le décor : un halo de la teinte du voile, invisible mais qui garantit la lisibilité
    quand un rocher, une liane ou un nuage passe derrière (contraste WCAG AA vérifié sur chaque section). */
+/* Brume : sous un texte posé sur le décor (téléphone surtout), un voile flou de la couleur du ciel
+   atténue le décor juste derrière les lettres, sans dessiner de carte. Un seul calque par bloc. */
+@utility mist {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -0.5rem -0.75rem;
+    z-index: -1;
+    border-radius: 1.5rem;
+    background: color-mix(in srgb, var(--sky-top) 72%, transparent);
+    filter: blur(12px);
+    pointer-events: none;
+  }
+}
+
 @utility legible {
   text-shadow:
     0 0 1px var(--veil),
@@ -350,7 +389,7 @@ html[data-travel] *::after {
   }
   /* Halo de lisibilité : une seule ombre courte (les ombres larges se redessinent à chaque changement de palette) */
   .legible,
-  .max-md\:legible { text-shadow: 0 0 1px var(--veil), 0 0 10px var(--veil); }
+  .max-md\:legible { text-shadow: 0 0 1px var(--sky-top), 0 0 10px var(--sky-top); }
   .paper-grain { mix-blend-mode: normal; opacity: 0.1; }
   [data-landscape] .animate-drift,
   [data-landscape] .animate-drift-slow,

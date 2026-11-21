@@ -18,7 +18,7 @@ export default function Profil() {
           <Portrait />
         </m.div>
 
-        <div className="legible">
+        <div className="legible max-md:mist">
           <m.p
             variants={fadeUp}
             className="text-pretty text-lg leading-relaxed text-ink sm:text-xl"
@@ -46,7 +46,7 @@ export default function Profil() {
         {/* Fiche : chaque information est une étoile du fil */}
         <m.div
           variants={fadeUp}
-          className="veil panel rounded-3xl px-5 py-4 md:col-span-2 lg:col-span-1"
+          className="veil panel rounded-3xl px-6 py-5 md:col-span-2 lg:col-span-1"
         >
           <m.dl variants={group} className="relative">
             <span
@@ -88,12 +88,12 @@ function Portrait() {
     .map((w) => w[0])
     .join("");
   return (
-    <div className="veil relative w-40 rounded-b-3xl rounded-t-[999px] p-2 sm:w-48 lg:w-56">
+    <div className="veil relative w-40 rounded-b-3xl arch p-2 sm:w-48 lg:w-56">
       <span
         aria-hidden
         className="absolute left-1/2 top-0 z-10 size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent shadow-[0_0_12px_var(--accent)]"
       />
-      <div className="relative aspect-[3/4] overflow-hidden rounded-b-2xl rounded-t-[999px]">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-b-2xl arch">
         <>
           {/* Décor peint aux couleurs de la section : derrière la photo détourée, ou seul avec le monogramme */}
           <svg
@@ -187,7 +187,7 @@ function Portrait() {
         {/* Moulure intérieure */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-1.5 rounded-b-xl rounded-t-[999px] border border-white/40"
+          className="pointer-events-none absolute inset-1.5 rounded-b-xl arch border border-white/40"
         />
       </div>
     </div>

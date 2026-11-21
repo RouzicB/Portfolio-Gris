@@ -66,7 +66,7 @@ export default function Contact() {
           </m.div>
         </div>
 
-        <m.p variants={fadeUp} className="mt-5 max-w-md text-balance text-ink short:mt-3">
+        <m.p variants={fadeUp} className="max-md:mist mt-5 max-w-md text-balance text-ink short:mt-3">
           {SECTION.intro}
         </m.p>
 

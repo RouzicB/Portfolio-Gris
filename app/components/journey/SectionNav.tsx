@@ -67,7 +67,7 @@ export default function SectionNav() {
                   </button>
                   {/* Libellé au survol (grand écran) */}
                   <span className="label-spaced veil pointer-events-none absolute right-full mr-3 hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-1 text-ink opacity-0 transition duration-300 group-hover:-translate-x-1 group-hover:opacity-100 group-focus-within:opacity-100 md:flex">
-                    <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
+                    <span aria-hidden className="mark-caps size-1.5 rotate-45 bg-accent" />
                     {s.label}
                   </span>
                 </li>

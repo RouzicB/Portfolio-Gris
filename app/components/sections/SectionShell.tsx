@@ -83,7 +83,7 @@ export default function SectionShell({
       }
       className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >
-      <div className="flex min-h-full items-center px-4 pb-28 pt-16 sm:px-8 md:pb-24 md:pr-24 short:pt-10 short:md:pb-24">
+      <div className="flex min-h-full items-center px-4 pb-28 pt-24 sm:px-8 md:pb-24 md:pr-24 md:pt-16 short:pt-20 short:md:pb-24 short:md:pt-10">
         <m.div
           className="mx-auto w-full max-w-[1200px] max-md:legible"
           variants={stagger}
@@ -92,7 +92,7 @@ export default function SectionShell({
         >
           {heading ? (
             // Au-dessus du contenu : un élément de décor dessiné dans la section (troncs des convictions) passe derrière le titre
-            <m.header variants={fadeUp} className="legible relative z-10 mb-8 md:mb-12 short:md:mb-6">
+            <m.header variants={fadeUp} className="legible max-md:mist relative z-10 mb-8 md:mb-12 short:md:mb-6">
               <p className="label-spaced flex items-center gap-2 text-ink">
                 <Icon size={18} className="text-ink" />
                 <span className="tabular-nums">{pad(index + 1)}</span>

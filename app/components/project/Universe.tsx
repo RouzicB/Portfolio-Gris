@@ -18,7 +18,7 @@ import "@fontsource/apfel-grotezk/latin-400.css";
 import type { Universe as UniverseData } from "../../types";
 import { fadeUp } from "../journey/motion";
 
-const leaf = (mirrored = false) => (mirrored ? "rounded-[0.75rem_2.5rem_0.75rem_2.5rem]" : "rounded-[2.5rem_0.75rem_2.5rem_0.75rem]");
+const leaf = (mirrored = false) => (mirrored ? "rounded-[0.6rem_1.5rem_0.6rem_1.5rem] sm:rounded-[0.75rem_2.5rem_0.75rem_2.5rem]" : "rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.5rem_0.75rem_2.5rem_0.75rem]");
 
 /**
  * Univers graphique d'une marque, présenté dans le vocabulaire du portfolio :
@@ -97,8 +97,8 @@ export default function Universe({ universe }: { universe: UniverseData }) {
           }`}
         >
           {palette.map((c) => (
-            <m.li key={c.hex} variants={fadeUp} className="veil flex flex-col rounded-b-2xl rounded-t-[999px] p-1.5 pb-4">
-              <span aria-hidden className="block aspect-[4/5] w-full rounded-b-lg rounded-t-[999px] ring-1 ring-inset ring-ink/15" style={{ background: c.hex }} />
+            <m.li key={c.hex} variants={fadeUp} className="veil flex flex-col rounded-b-2xl arch p-1.5 pb-4">
+              <span aria-hidden className="block aspect-[4/5] w-full rounded-b-lg arch ring-1 ring-inset ring-ink/15" style={{ background: c.hex }} />
               <span className="mt-3 px-2 text-center">
                 <span className="label-spaced block text-ink">{c.name}</span>
                 <span className="mt-1 block font-mono text-xs tracking-wider text-ink">{c.hex}</span>
@@ -143,7 +143,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
               item ? (
                 <m.figure key={label} variants={fadeUp} className={`veil flex flex-col p-1.5 sm:p-2 ${leaf(mirrored)}`}>
                   <span
-                    className={`relative block aspect-[16/10] overflow-hidden ${mirrored ? "rounded-[0.5rem_2.1rem_0.5rem_2.1rem]" : "rounded-[2.1rem_0.5rem_2.1rem_0.5rem]"}`}
+                    className={`relative block aspect-[16/10] overflow-hidden ${mirrored ? "rounded-[0.3rem_1.125rem_0.3rem_1.125rem] sm:rounded-[0.5rem_2.1rem_0.5rem_2.1rem]" : "rounded-[1.125rem_0.3rem_1.125rem_0.3rem] sm:rounded-[2.1rem_0.5rem_2.1rem_0.5rem]"}`}
                     style={item.background ? { background: item.background } : undefined}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP) */}
@@ -176,7 +176,7 @@ function Sub({ title, children }: { title: string; children: ReactNode }) {
       {/* Le libellé sur une pastille de verre : lisible quel que soit le décor qui passe derrière */}
       <m.h3 variants={fadeUp} className="mb-5 flex items-center gap-3 text-ink">
         <span className="veil inline-flex items-center gap-2.5 rounded-full py-1.5 pl-3 pr-4">
-          <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
+          <span aria-hidden className="mark-caps size-1.5 rotate-45 bg-accent" />
           <span className="label-spaced">{title}</span>
         </span>
         <span aria-hidden className="h-px flex-1 bg-gradient-to-r from-ink/25 to-transparent" />

@@ -25,7 +25,7 @@ import BookReader from "./BookReader";
 import Universe from "./Universe";
 
 /** Panneau en feuille ; « mirrored » inverse les coins, pour deux panneaux qui se font face */
-const leaf = (mirrored = false) => (mirrored ? "rounded-[0.75rem_2.5rem_0.75rem_2.5rem]" : "rounded-[2.5rem_0.75rem_2.5rem_0.75rem]");
+const leaf = (mirrored = false) => (mirrored ? "rounded-[0.6rem_1.5rem_0.6rem_1.5rem] sm:rounded-[0.75rem_2.5rem_0.75rem_2.5rem]" : "rounded-[1.5rem_0.6rem_1.5rem_0.6rem] sm:rounded-[2.5rem_0.75rem_2.5rem_0.75rem]");
 
 /**
  * Étude de cas sur sa propre page, lue comme un petit livre :
@@ -43,12 +43,12 @@ export default function ProjectCase({
 }) {
   // Chapitres présents (le document à feuilleter est facultatif)
   const chapters = [
-    { id: "enjeu", title: "L'enjeu" },
-    { id: "demarche", title: "Démarche" },
-    ...(project.universe ? [{ id: "univers", title: "L'univers graphique" }] : []),
-    ...(project.book ? [{ id: "document", title: project.book.title }] : []),
-    { id: "resultats", title: "Résultats" },
-    { id: "retenu", title: "Ce que j'en retiens" },
+    { id: "enjeu", title: "L'enjeu", hint: "Le problème de départ, et la réponse" },
+    { id: "demarche", title: "Démarche", hint: "Les étapes, de la recherche à l'écran" },
+    ...(project.universe ? [{ id: "univers", title: "L'univers graphique", hint: "Logo, couleurs, typographies" }] : []),
+    ...(project.book ? [{ id: "document", title: project.book.title, hint: `${project.book.pages.length} pages à feuilleter` }] : []),
+    { id: "resultats", title: "Résultats", hint: "Ce que le projet a produit" },
+    { id: "retenu", title: "Ce que j'en retiens", hint: "Les leçons pour la suite" },
   ].map((c, i) => ({ ...c, numeral: ROMAN[i] }));
   const chapter = Object.fromEntries(chapters.map((c) => [c.id, c]));
 
@@ -81,7 +81,7 @@ export default function ProjectCase({
         {/* Ouverture */}
         <header className="legible">
           <m.p variants={fadeUp} className="label-spaced flex items-center gap-2.5 text-ink">
-            <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
+            <span aria-hidden className="mark-caps size-1.5 rotate-45 bg-accent" />
             Étude de cas · {project.context}
           </m.p>
           <m.h1
@@ -103,7 +103,7 @@ export default function ProjectCase({
         {/* Fiche : quatre repères séparés par des filets */}
         <m.dl
           variants={fadeUp}
-          className={`veil panel mt-8 grid grid-cols-2 gap-y-5 px-5 py-5 text-sm sm:px-7 lg:grid-cols-4 lg:divide-x lg:divide-ink/15 ${leaf()}`}
+          className={`veil panel mt-8 grid grid-cols-2 gap-x-3 gap-y-5 px-6 py-6 text-sm sm:px-7 lg:grid-cols-4 lg:divide-x lg:divide-ink/15 ${leaf()}`}
         >
           {[
             { Icon: ProfilIcon, label: "Rôle", value: project.role },
@@ -127,7 +127,7 @@ export default function ProjectCase({
         <m.figure variants={fadeUp} className={`veil relative mt-6 p-1.5 sm:p-2 ${leaf()}`}>
           <span aria-hidden className="absolute -top-[5px] left-1/2 z-10 size-2.5 -translate-x-1/2 rotate-45 bg-accent" />
           <div
-            className={`relative overflow-hidden rounded-[2.1rem_0.5rem_2.1rem_0.5rem] ${project.cover ? "aspect-video" : "aspect-[16/7]"}`}
+            className={`relative overflow-hidden rounded-[1.125rem_0.3rem_1.125rem_0.3rem] sm:rounded-[2.1rem_0.5rem_2.1rem_0.5rem] ${project.cover ? "aspect-video" : "aspect-[16/7]"}`}
           >
             {project.cover ? (
               // eslint-disable-next-line @next/next/no-img-element -- fichiers statiques déjà optimisés (WebP)
@@ -138,19 +138,39 @@ export default function ProjectCase({
           </div>
         </m.figure>
 
-        {/* Sommaire */}
-        <m.nav variants={fadeUp} aria-label="Chapitres de l'étude de cas" className="mt-8 flex justify-center">
-          <ol className="veil inline-flex flex-wrap justify-center gap-1 rounded-[1.5rem] p-1.5">
-            {chapters.map((c) => (
-              <li key={c.id}>
+        {/* Sommaire : un fil de lecture, chaque chapitre est une étape (son numéro dans un anneau, son titre, ce qu'on y trouve).
+            Grand écran : les étapes se suivent sur un fil horizontal. Téléphone : le fil descend, comme une table des matières. */}
+        <m.nav variants={fadeUp} aria-labelledby="sommaire-titre" className={`veil panel mt-8 px-5 pb-5 pt-7 sm:px-8 sm:pb-7 ${leaf()}`}>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 id="sommaire-titre" className="label-spaced text-ink">
+              Sommaire
+            </h2>
+            <p className="text-sm text-ink-soft">
+              {chapters.length} chapitres, du problème à ce que j&apos;en retiens
+            </p>
+          </div>
+          <ol className="mt-5 grid md:mt-8 md:auto-cols-fr md:grid-flow-col">
+            {chapters.map((c, i) => (
+              <li key={c.id} className="relative">
+                {/* Fil jusqu'à l'étape suivante */}
+                {i < chapters.length - 1 && (
+                  <span aria-hidden className="absolute left-5 top-[1.875rem] h-full w-px bg-ink/20 md:left-1/2 md:top-5 md:h-px md:w-full" />
+                )}
                 <a
                   href={`#${c.id}`}
-                  className="label-spaced inline-flex items-baseline gap-2 rounded-full px-3 py-1.5 text-ink transition hover:bg-ink/10"
+                  className="group relative flex items-start gap-4 rounded-2xl py-2.5 pr-2 transition md:flex-col md:items-center md:px-2 md:py-0 md:text-center"
                 >
-                  <span className="font-display text-sm tracking-[0.04em] text-[color-mix(in_srgb,var(--accent)_70%,var(--ink))]">
+                  <span
+                    aria-hidden
+                    className="relative grid size-10 shrink-0 place-items-center rounded-full border border-ink/25 bg-[color-mix(in_srgb,var(--veil)_55%,var(--sky-top))] font-display text-[0.95rem] tracking-[0.04em] text-[color-mix(in_srgb,var(--accent)_75%,var(--ink))] transition duration-300 group-hover:scale-110 group-hover:border-accent"
+                  >
                     {c.numeral}
                   </span>
-                  {c.title}
+                  <span className="min-w-0 pt-1 md:pt-0">
+                    <span className="sr-only">Chapitre {i + 1} : </span>
+                    <span className="block font-medium leading-snug text-ink underline-offset-4 group-hover:underline">{c.title}</span>
+                    <span className="mt-0.5 block text-sm leading-snug text-ink-soft">{c.hint}</span>
+                  </span>
                 </a>
               </li>
             ))}
@@ -247,7 +267,7 @@ export default function ProjectCase({
               href={`/projets/${p.slug}`}
               className={`veil group flex items-center gap-4 p-3 transition hover:-translate-y-0.5 ${leaf(dir === "next")} ${dir === "next" ? "sm:flex-row-reverse sm:text-right" : ""}`}
             >
-              <span className="relative h-16 w-24 shrink-0 overflow-hidden rounded-t-[999px] rounded-b-lg">
+              <span className="relative h-16 w-24 shrink-0 overflow-hidden arch rounded-b-lg">
                 <ProjectThumb project={p} index={p.index} frame="arch" />
               </span>
               <span className="min-w-0 flex-1">

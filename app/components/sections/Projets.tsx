@@ -196,15 +196,15 @@ function ArchCard({ project: p, index }: { project: ProjectCard; index: number }
     <MotionLink
       href={`/projets/${p.slug}`}
       variants={fadeUp}
-      className="veil group relative flex h-full flex-col rounded-b-3xl rounded-t-[999px] p-2.5 text-left transition-[translate,box-shadow] duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink/10"
+      className="veil group relative flex h-full flex-col rounded-b-3xl arch p-2.5 text-left transition-[translate,box-shadow] duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink/10"
     >
       {/* Fenêtre de l'arche */}
-      <span className="relative block aspect-[5/4] overflow-hidden rounded-b-2xl rounded-t-[999px] short:aspect-[2/1]">
+      <span className="relative block aspect-[5/4] overflow-hidden rounded-b-2xl arch short:aspect-[2/1]">
         <span className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
           <ProjectThumb project={p} index={index} frame="arch" />
         </span>
         {/* Moulure intérieure */}
-        <span aria-hidden className="absolute inset-2 rounded-b-xl rounded-t-[999px] border border-white/50" />
+        <span aria-hidden className="absolute inset-2 rounded-b-xl arch border border-white/50" />
       </span>
       {/* Pierre de clé */}
       <span

@@ -207,7 +207,7 @@ export default function MusicToggle() {
     <section
       data-palette-live
       aria-label="Lecteur de musique d'ambiance"
-      className={`music-player veil panel pointer-events-auto rounded-[1rem_0.4rem_1rem_0.4rem] px-4 pb-3 pt-4 text-ink ${playing ? "is-on" : ""}`}
+      className={`music-player veil panel pointer-events-auto rounded-[1rem_0.4rem_1rem_0.4rem] px-5 pb-4 pt-5 text-ink ${playing ? "is-on" : ""}`}
     >
       {/* Languette du tiroir replié : le haut du lecteur, vide, qu’on survole ou touche pour le déplier */}
       <button

@@ -68,10 +68,10 @@ export default function CreditsPage() {
         <Chapter numeral="I" title="Direction artistique" id="direction">
           <m.article
             variants={fadeUp}
-            className="veil panel mx-auto max-w-3xl rounded-b-3xl rounded-t-[999px] px-6 pb-8 pt-[clamp(4rem,14vw,8rem)] text-center sm:px-14"
+            className="veil panel mx-auto max-w-3xl rounded-b-3xl arch px-6 pb-8 pt-[clamp(6.5rem,28vw,8rem)] text-center sm:px-14"
           >
             <span aria-hidden className="absolute left-1/2 top-0 size-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent shadow-[0_0_14px_var(--accent)]" />
-            <span aria-hidden className="pointer-events-none absolute inset-3 rounded-b-2xl rounded-t-[999px] border border-ink/10" />
+            <span aria-hidden className="pointer-events-none absolute inset-3 rounded-b-2xl arch border border-ink/10" />
             <p className="label-spaced text-ink-soft">Hommage à</p>
             <h3 className="title-spaced mt-3 pl-[0.32em] text-[clamp(2.5rem,9vw,4.5rem)] font-light leading-none text-ink">{game.title}</h3>
             <dl className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
@@ -154,7 +154,7 @@ export default function CreditsPage() {
               <m.li
                 key={name}
                 variants={fadeUp}
-                className="veil group flex flex-col items-center gap-2 rounded-b-2xl rounded-t-[999px] px-1 pb-3 pt-6 transition-[translate] duration-500 hover:-translate-y-1"
+                className="veil group flex flex-col items-center gap-2 rounded-b-2xl arch px-2.5 pb-3.5 pt-7 transition-[translate] duration-500 hover:-translate-y-1"
                 title={name}
               >
                 <Icon size={30} className="text-ink transition-transform duration-500 group-hover:scale-110" />
