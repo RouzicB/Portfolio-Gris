@@ -386,10 +386,7 @@ class Ambient {
   /** Volume choisi (0 – 1) et coupure du son, indépendants de la lecture */
   private volume = 0.8;
   private muted = false;
-  /** Lecture en attente (veille, onglet masqué) : elle reprendra d'elle-même au retour */
-  private held = false;
   private watching = false;
-  private awaitingGesture = false;
   /** Instantané stable pour React (useSyncExternalStore) : recréé à chaque changement d'état */
   private snap = { playing: false, index: 0, version: 0, volume: 0.8, muted: false };
 
@@ -413,7 +410,7 @@ class Ambient {
 
   /** Position dans le morceau (s) */
   get position() {
-    if (!this.playing || !this.ctx || this.held) return this.offset;
+    if (!this.playing || !this.ctx) return this.offset;
     return Math.min(TRACK_LENGTH, this.offset + this.ctx.currentTime - this.startedAt);
   }
 
@@ -442,66 +439,17 @@ class Ambient {
     this.master = master;
     this.bus = bus;
     this.noise = noise;
-    // Téléphone en veille, onglet masqué, appel entrant : lecture mise en attente, reprise au retour
+    // Téléphone mis en veille, onglet masqué : le son se coupe (une vraie pause, le lecteur affiche « lecture »).
+    // Même chose si le système interrompt le son (appel entrant). On relance quand on veut, depuis le lecteur.
     ctx.onstatechange = () => {
-      if (this.playing && !this.held && ctx.state !== "running" && !document.hidden) {
-        this.suspendPlayback();
-        void this.resumePlayback();
-      }
+      if (this.playing && ctx.state !== "running" && ctx.state !== "closed" && !document.hidden) this.pause();
     };
     if (!this.watching) {
       this.watching = true;
       document.addEventListener("visibilitychange", () => {
-        if (document.hidden) this.suspendPlayback();
-        else void this.resumePlayback();
+        if (document.hidden) this.pause();
       });
-      window.addEventListener("pageshow", () => void this.resumePlayback());
     }
-  }
-
-  /**
-   * Mise en attente (veille, onglet masqué) : la position est figée et plus rien n'est programmé.
-   * Sans ça, le minuteur des mesures continuait pendant la veille et empilait des notes sur une horloge audio arrêtée.
-   */
-  private suspendPlayback() {
-    if (!this.playing || !this.ctx || this.held) return;
-    this.offset = this.position;
-    this.held = true;
-    window.clearTimeout(this.timer);
-    this.ctx.suspend().catch(() => {});
-  }
-
-  /**
-   * Reprise après une attente : le contexte audio est relancé (recréé s'il a été fermé par le système),
-   * puis la lecture repart de sa position avec une voix neuve. Si le navigateur exige un geste pour rendre le son
-   * (iOS au réveil), le premier toucher, clic ou touche relance la musique.
-   */
-  private async resumePlayback() {
-    if (!this.held || !this.playing) return;
-    if (!this.ctx || this.ctx.state === "closed") {
-      this.ctx = null;
-      this.voice = null;
-      this.setup();
-      this.master!.gain.value = this.gainTarget;
-    }
-    const ctx = this.ctx!;
-    try {
-      await ctx.resume();
-    } catch {}
-    if (!this.held || !this.playing) return;
-    if (ctx.state !== "running") {
-      if (this.awaitingGesture) return;
-      this.awaitingGesture = true;
-      const retry = () => {
-        this.awaitingGesture = false;
-        for (const type of ["pointerdown", "keydown", "touchend"]) document.removeEventListener(type, retry, true);
-        void this.resumePlayback();
-      };
-      for (const type of ["pointerdown", "keydown", "touchend"]) document.addEventListener(type, retry, true);
-      return;
-    }
-    this.held = false;
-    this.run(this.offset);
   }
 
   // ─── Briques de synthèse ───
@@ -765,7 +713,7 @@ class Ambient {
 
   /** Joue la mesure `bar` à partir de `from` secondes, puis programme la suivante */
   private playBar(bar: number, from: number) {
-    if (!this.playing || !this.ctx || this.held) return;
+    if (!this.playing || !this.ctx) return;
     if (bar >= BARS) {
       // Fin du morceau : le suivant enchaîne
       this.load((this.index + 1) % TRACKS.length, 0, true);
@@ -809,13 +757,18 @@ class Ambient {
   private load(index: number, position = 0, play = this.playing) {
     this.index = (index + TRACKS.length) % TRACKS.length;
     this.offset = position;
-    if (play && this.ctx && this.playing && !this.held) this.run(position);
-    else if (play && !this.held) void this.play();
+    if (play && this.ctx && this.playing) this.run(position);
+    else if (play) void this.play();
     this.emit();
   }
 
   async play() {
-    if (!this.ctx) this.setup();
+    // Contexte fermé par le système (longue veille) : on en recrée un
+    if (!this.ctx || this.ctx.state === "closed") {
+      this.ctx = null;
+      this.voice = null;
+      this.setup();
+    }
     const ctx = this.ctx!;
     await ctx.resume();
     if (this.playing) return;
@@ -832,7 +785,6 @@ class Ambient {
     if (!this.playing || !this.ctx) return;
     this.offset = this.position;
     this.playing = false;
-    this.held = false;
     window.clearTimeout(this.timer);
     const ctx = this.ctx;
     const g = this.master!.gain;
@@ -882,7 +834,7 @@ class Ambient {
 
   /** Aller à une position (s) du morceau courant */
   seek(position: number) {
-    if (this.playing && this.ctx && !this.held) this.run(position);
+    if (this.playing && this.ctx) this.run(position);
     else this.offset = Math.max(0, Math.min(TRACK_LENGTH, position));
     this.emit();
   }

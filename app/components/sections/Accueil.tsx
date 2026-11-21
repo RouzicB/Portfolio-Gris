@@ -32,7 +32,7 @@ export default function Accueil() {
           </m.h1>
         </div>
 
-        <m.p variants={fadeUp} className="label-spaced max-md:mist mt-6 text-balance text-ink short:mt-3">
+        <m.p variants={fadeUp} className="label-spaced mt-6 text-balance text-ink short:mt-3">
           Portfolio - {year}
         </m.p>
 
@@ -57,7 +57,7 @@ export default function Accueil() {
           </m.button>
         </m.div>
 
-        <m.p variants={fadeUp} className="max-md:mist mt-10 flex items-center gap-2 text-xs text-ink short:mt-5 tiny:hidden">
+        <m.p variants={fadeUp} className="mt-10 flex items-center gap-2 text-xs text-ink short:mt-5 tiny:hidden">
           <ScrollIcon size={20} />
           Faites défiler
         </m.p>

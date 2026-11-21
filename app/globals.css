@@ -212,19 +212,28 @@ body {
 
 /* Texte posé à même le décor : un halo de la teinte du voile, invisible mais qui garantit la lisibilité
    quand un rocher, une liane ou un nuage passe derrière (contraste WCAG AA vérifié sur chaque section). */
-/* Brume : sous un texte posé sur le décor (téléphone surtout), un voile flou de la couleur du ciel
-   atténue le décor juste derrière les lettres, sans dessiner de carte. Un seul calque par bloc. */
+/* Brume : derrière un texte posé sur le décor (téléphone), une nappe de ciel sur toute la largeur de l'écran,
+   fondue en haut et en bas. Pas de forme ni de contour : le paysage s'éclaircit simplement à hauteur du texte,
+   comme une couche de brume entre deux plans du décor. Un seul calque par bloc, sans flou à calculer. */
 @utility mist {
   position: relative;
   isolation: isolate;
   &::before {
     content: "";
     position: absolute;
-    inset: -0.5rem -0.75rem;
     z-index: -1;
-    border-radius: 1.5rem;
-    background: color-mix(in srgb, var(--sky-top) 72%, transparent);
-    filter: blur(12px);
+    top: -1.5rem;
+    bottom: -1.5rem;
+    left: 50%;
+    width: 100vw;
+    translate: -50% 0;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      color-mix(in srgb, var(--sky-top) 80%, transparent) 1.5rem,
+      color-mix(in srgb, var(--sky-top) 80%, transparent) calc(100% - 1.5rem),
+      transparent
+    );
     pointer-events: none;
   }
 }

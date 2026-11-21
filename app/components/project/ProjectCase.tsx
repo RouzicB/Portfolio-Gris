@@ -377,8 +377,8 @@ function Steps({ steps }: { steps: Project["process"] }) {
           <li key={s.title} className="grid grid-cols-[3rem_1fr] gap-4 lg:grid-cols-1 lg:justify-items-center lg:text-center">
             <Ring>
               <span className="grid size-9 place-items-center rounded-full bg-ink font-display text-sky-top text-sm tabular-nums">
-                {/* Chiffres de la police : ils descendent sous la ligne, on les remonte (mesuré) */}
-                <span className="-translate-y-[0.24em]">{pad(i + 1)}</span>
+                {/* Chiffres sans jambage : redescendus d'un rien pour paraître centrés */}
+                <span className="translate-y-[0.06em]">{pad(i + 1)}</span>
               </span>
             </Ring>
             <div className="pt-1 lg:pt-3">
