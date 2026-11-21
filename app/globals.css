@@ -368,12 +368,15 @@ html[data-travel] *::after {
   transition-property: translate, scale, rotate, opacity !important;
 }
 
-/* Éléments animés par framer-motion (transform écrit à chaque image, en style en ligne) : une classe
-   `transition` relancerait une transition CSS de 300 ms à chaque image (apparitions saccadées et coûteuses).
-   On n'y laisse pas `transform` ; les survols de Tailwind passent par `translate` / `scale`, qui restent. */
+/* Éléments animés par framer-motion (opacité et transform écrits en style en ligne) : une classe `transition`
+   ne doit toucher ni à l'un ni à l'autre.
+   - `transform` : une transition CSS relancée à chaque image rendrait les apparitions saccadées et coûteuses ;
+   - `opacity` : à la fin de l'apparition, framer-motion écrit l'opacité finale ; une transition CSS repartait alors
+     de 0 et refaisait un fondu : les boutons et les cartes cliquables clignotaient une fois (téléphone surtout).
+   Les survols de Tailwind passent par `translate` / `scale`, qui restent animés. */
 [style*="transform"] {
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, box-shadow,
-    opacity, translate, scale, rotate !important;
+    translate, scale, rotate !important;
 }
 
 /* Scènes du décor : leurs couleurs sont écrites en dur, elles ne lisent pas la palette.
