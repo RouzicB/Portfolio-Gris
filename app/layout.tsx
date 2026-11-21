@@ -16,8 +16,8 @@ import { profiles } from "./data/skills";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${site.name} — ${site.role}`,
-    template: `%s · ${site.name}`,
+    default: "Portfolio",
+    template: "%s · Portfolio",
   },
   description: site.description,
   applicationName: `${site.name} — Portfolio`,
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "UX/UI designer",
     "UX designer",
     "UI designer",
-    "alternance UX/UI",
+    "poste UX/UI",
     "développeur front-end",
     ...profiles.flatMap((p) => p.skills.map((s) => s.name)),
   ],
