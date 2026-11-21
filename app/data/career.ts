@@ -95,7 +95,7 @@ export const careerNodes: FlowNode[] = [
   },
   {
     id: "master-dev",
-    short: "Master développement",
+    short: "Master dév.",
     kind: "locked",
     title: "Master 100 % développement",
     text: "Chemin non emprunté : le code reste un atout, mais c'est l'expérience utilisateur qui a gagné.",

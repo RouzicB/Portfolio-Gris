@@ -1,80 +1,58 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import { m } from "framer-motion";
 import { convictions } from "../../data/convictions";
 import { ArrowRightIcon } from "../icons/GrisIcons";
 import { fadeUp } from "../journey/motion";
+import { ROMAN } from "../ui/Chapter";
 import SectionShell from "./SectionShell";
 
-/**
- * Les troncs, dans les tons de ceux du décor (scène de la forêt) : pâles comme les troncs lointains, pour que le texte
- * reste bien lisible dessus. Largeur et hauteur de départ du texte
- * varient d'un tronc à l'autre, comme dans la forêt.
- */
-const TRUNKS = [
-  { top: "#e6f0e3", bottom: "#d3e5d0", width: "100%", drop: 2.5 },
-  { top: "#dcebd9", bottom: "#c8dec6", width: "88%", drop: 0 },
-  { top: "#e3eee0", bottom: "#cfe2cc", width: "94%", drop: 4 },
-  { top: "#d9e9d6", bottom: "#c5dcc3", width: "100%", drop: 1 },
-  { top: "#e6f0e3", bottom: "#d1e3ce", width: "90%", drop: 3 },
-] as const;
+/** Grand écran : chaque arche s'élève plus ou moins haut au-dessus du sol commun, comme des troncs dans la forêt */
+const RISE = ["xl:pt-14", "xl:pt-20", "xl:pt-11", "xl:pt-24", "xl:pt-16"];
 
 /**
- * 03 — Convictions : une forêt.
- * Chaque conviction est gravée sur un tronc peint comme ceux du décor (même bord d'aquarelle, sans grain sous le texte) ;
- * les troncs sortent de la brume par le haut, passent derrière le titre et se fondent dans le sol.
- * Chacune renvoie au projet où elle s'est vérifiée.
+ * 03 — Convictions : une rangée d'arches.
+ * Chaque conviction est une arche du design system (lavis, filet intérieur, pierre de clé au sommet), comme les cartes
+ * de projet et le portrait : son numéro dans un anneau, son titre, ce qu'elle veut dire, puis le projet où elle
+ * s'est vérifiée. Grand écran : les cinq arches sont posées sur le même sol, à des hauteurs différentes.
  */
 export default function Convictions() {
   return (
     <SectionShell index={2}>
-      <ul className="grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-5 xl:items-start xl:gap-7">
-        {convictions.map((c, i) => {
-          const t = TRUNKS[i % TRUNKS.length];
-          return (
-            <m.li
-              key={c.title}
-              variants={fadeUp}
-              style={{ "--drop": `${t.drop}rem`, "--w": t.width } as CSSProperties}
-              className={`group relative isolate mx-auto w-full xl:mt-(--drop) xl:w-(--w) ${i === convictions.length - 1 ? "md:col-span-2 xl:col-span-1" : ""}`}
+      <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-5 xl:items-end xl:gap-5">
+        {convictions.map((c, i) => (
+          <m.li
+            key={c.title}
+            variants={fadeUp}
+            className={`veil panel arch group flex flex-col items-center rounded-b-3xl px-6 pb-6 pt-9 text-center transition-[translate] duration-500 hover:-translate-y-1 xl:px-5 ${RISE[i % RISE.length]} ${
+              i === convictions.length - 1 ? "md:col-span-2 md:mx-auto md:w-[calc(50%-0.625rem)] xl:col-span-1 xl:w-auto" : ""
+            }`}
+          >
+            <span
+              aria-hidden
+              className="grid size-11 shrink-0 place-items-center rounded-full border border-ink/25 bg-[color-mix(in_srgb,var(--veil)_55%,var(--sky-top))] font-display text-[0.95rem] tracking-[0.04em] text-[color-mix(in_srgb,var(--accent)_75%,var(--ink))]"
             >
-              {/* Le tronc : il sort de la brume au-dessus (grand écran) et se fond dans le sol en bas */}
-              <svg
-                aria-hidden
-                focusable="false"
-                preserveAspectRatio="none"
-                viewBox="0 0 100 100"
-                className="trunk absolute left-0 top-0 -z-10 h-[calc(100%+1.5rem)] w-full transition-[filter] duration-500 group-hover:brightness-[1.04] xl:-top-48 xl:h-[calc(100%+13.5rem)]"
-              >
-                <defs>
-                  <linearGradient id={`trunk-${i}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stopColor={t.top} />
-                    <stop offset="1" stopColor={t.bottom} />
-                  </linearGradient>
-                </defs>
-                <rect x="0" y="0" width="100" height="100" fill={`url(#trunk-${i})`} filter="url(#wc-edge)" />
-              </svg>
+              {/* Capitales sans jambage : redescendues pour paraître centrées dans l'anneau */}
+              <span className="translate-y-[0.23em]">{ROMAN[i]}</span>
+            </span>
+            <h3 className="mt-4 text-balance font-display text-lg leading-snug text-ink">{c.title}</h3>
+            <p className="mb-5 mt-2.5 text-pretty text-sm leading-relaxed text-ink">{c.text}</p>
 
-              <div className="px-5 pb-8 pt-5 sm:px-6 xl:px-5 xl:pb-12 xl:pt-6">
-                <h3 className="text-balance font-display text-xl font-normal leading-snug text-ink sm:text-2xl xl:text-[1.35rem]">{c.title}</h3>
-                <p className="mt-2.5 text-pretty text-[0.9375rem] font-medium md:max-xl:text-sm leading-relaxed text-ink">{c.text}</p>
-                <Link
-                  href={`/projets/${c.proof.slug}`}
-                  className="group/link mt-4 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink transition"
-                >
-                  <span className="label-spaced whitespace-nowrap">Vu dans</span>
-                  {/* Titre et flèche insécables : la flèche ne part jamais seule à la ligne */}
-                  <span className="inline-flex items-center gap-2 whitespace-nowrap">
-                    <span className="text-ink underline decoration-ink/30 underline-offset-4 transition group-hover/link:decoration-ink">{c.proof.title}</span>
-                    <ArrowRightIcon size={13} className="transition-transform group-hover/link:translate-x-0.5" />
-                  </span>
-                </Link>
-              </div>
-            </m.li>
-          );
-        })}
+            {/* Le projet où elle s'est vérifiée, sous un filet */}
+            <Link
+              href={`/projets/${c.proof.slug}`}
+              className="group/link mt-auto flex w-full flex-col items-center gap-1 border-t border-ink/15 pt-4 text-ink"
+            >
+              <span className="label-spaced text-ink-soft">Vu dans</span>
+              {/* Titre et flèche insécables : la flèche ne part jamais seule à la ligne */}
+              <span className="inline-flex items-center gap-2 whitespace-nowrap text-sm">
+                <span className="underline decoration-ink/30 underline-offset-4 transition group-hover/link:decoration-ink">{c.proof.title}</span>
+                <ArrowRightIcon size={13} className="transition-transform group-hover/link:translate-x-0.5" />
+              </span>
+            </Link>
+          </m.li>
+        ))}
       </ul>
     </SectionShell>
   );

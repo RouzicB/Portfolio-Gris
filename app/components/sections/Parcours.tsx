@@ -178,7 +178,8 @@ export default function Parcours() {
                 }`}
                 style={{ left: box.x, top: box.y, width: box.w, height: box.h }}
               >
-                <span className="flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-soft">
+                {/* Téléphone : cartes étroites, libellé un peu plus serré pour tenir (« Non emprunté ») */}
+                <span className={`flex min-w-0 items-center gap-1.5 whitespace-nowrap font-semibold uppercase text-ink-soft ${vertical ? "text-[10px] tracking-[0.02em]" : "text-[11px] tracking-[0.06em]"}`}>
                   <NodeGlyph node={node} size={13} className={muted ? "" : "text-ink"} />
                   {kindLabels[node.kind]}
                 </span>

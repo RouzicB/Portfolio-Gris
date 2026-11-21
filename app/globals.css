@@ -163,8 +163,8 @@ body {
 /* Arche : haut en plein cintre, rayon = demi-largeur mesurée (ArchSizer). Jamais de rayon « infini » : il ferait
    réduire tous les rayons, et les coins du bas disparaîtraient. Avant la mesure : demi-largeur, hauteur approchée */
 @utility arch {
-  border-top-left-radius: var(--arch, 50% 30%);
-  border-top-right-radius: var(--arch, 50% 30%);
+  border-top-left-radius: var(--arch, 50% 42%);
+  border-top-right-radius: var(--arch, 50% 42%);
 }
 
 /* ─── Barres de défilement ───────────────────────────────────────────
@@ -293,11 +293,6 @@ body {
 .animate-marquee { animation: marquee 32s linear infinite; }
 .animate-marquee:hover { animation-play-state: paused; }
 
-/* Troncs des convictions : ils se fondent dans le sol en bas ; sur grand écran, ils sortent aussi de la brume en haut */
-.trunk { mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent); }
-@media (min-width: 80rem) {
-  .trunk { mask-image: linear-gradient(to bottom, transparent, #000 10rem, #000 calc(100% - 2.5rem), transparent); }
-}
 
 /* ─── Emblème (anneaux concentriques en orbite) ────────────────────── */
 @keyframes emblem-draw {
