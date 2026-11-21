@@ -16,8 +16,9 @@ import { profiles } from "./data/skills";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Portfolio",
-    template: "%s · Portfolio",
+    // L'onglet commence par « Portfolio » ; le nom reste dans le titre, premier critère pour apparaître sur une recherche de son nom
+    default: `Portfolio · ${site.name}, UX/UI designer & développeur front`,
+    template: `%s · ${site.name}`,
   },
   description: site.description,
   applicationName: `${site.name} — Portfolio`,
@@ -30,6 +31,18 @@ export const metadata: Metadata = {
     "UX designer",
     "UI designer",
     "poste UX/UI",
+    "Baptiste Rouzic UX/UI",
+    "Baptiste Rouzic designer",
+    "Rouzic Baptiste",
+    "UX/UI designer Normandie",
+    "UX/UI designer Rouen",
+    "UX designer Eure",
+    "développeur front Normandie",
+    "Normandie Web School",
+    "Mastère UX/UI",
+    "Expert en design d'expérience utilisateur",
+    "Renault Group alternance UX/UI",
+    "BUT MMI Rouen",
     "développeur front-end",
     ...profiles.flatMap((p) => p.skills.map((s) => s.name)),
   ],
@@ -40,12 +53,23 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" } },
   openGraph: {
-    type: "website",
+    type: "profile",
+    firstName: site.seo.givenName,
+    lastName: site.seo.familyName,
     locale: "fr_FR",
-    siteName: site.name,
-    title: `${site.name} — ${site.role}`,
+    url: "/",
+    siteName: `${site.name} · Portfolio`,
+    title: `${site.name} — UX/UI designer & développeur front`,
     description: site.description,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — UX/UI designer & développeur front`,
+    description: site.description,
+  },
+  // Code de vérification Google Search Console (méthode « balise HTML »), si fourni dans les variables d'environnement Vercel
+  verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
+  category: "portfolio",
 };
 
 export const viewport: Viewport = {

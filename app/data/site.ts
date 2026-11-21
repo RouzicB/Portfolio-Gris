@@ -9,8 +9,23 @@ export const site = {
   tagline: "Je conçois des interfaces calmes et lisibles : la structure d'abord, l'émotion ensuite.",
   // à compléter
   bio: "En 5e année de Mastère UX/UI, spécialité création graphique, je relie la recherche utilisateur, l'architecture de l'information et l'interface. J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.",
+  /** Description des moteurs de recherche (environ 155 caractères : au-delà, Google la coupe) */
   description:
-    "Portfolio de Baptiste Rouzic, étudiant UX/UI en 5e année : profil, convictions, aptitudes, parcours, projets et contact.",
+    "Baptiste Rouzic, UX/UI designer et développeur front en Normandie : Mastère UX/UI à la Normandie Web School, alternance chez Renault Group. Projets, CV, contact.",
+  /** Repères pour le référencement et les données structurées (schema.org) */
+  seo: {
+    givenName: "Baptiste",
+    familyName: "Rouzic",
+    locality: "Courcelles-sur-Seine",
+    region: "Normandie",
+    department: "Eure",
+    credential: { name: "Expert en design d'expérience utilisateur", by: "Normandie Web School" },
+    employer: { name: "Renault Group", url: "https://www.renaultgroup.com/", role: "Développeur full-stack et UX/UI designer (alternance)" },
+    schools: [
+      { name: "Normandie Web School", url: "https://normandiewebschool.fr/" },
+      { name: "IUT de Rouen", url: "https://iutrouen.univ-rouen.fr/" },
+    ],
+  },
   status: "Recherche un poste UX/UI ou développeur front",
   // à compléter
   email: "rouzicb.pro@gmail.com",

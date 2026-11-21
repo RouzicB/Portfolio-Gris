@@ -191,7 +191,24 @@ export function personJsonLd() {
     "@type": "Person",
     "@id": absolute("/#person"),
     name: site.name,
-    jobTitle: site.role,
+    givenName: site.seo.givenName,
+    familyName: site.seo.familyName,
+    alternateName: [`${site.seo.familyName} ${site.seo.givenName}`, `${site.name}, UX/UI designer`],
+    jobTitle: ["UX/UI designer", "Développeur front-end", site.role],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: site.seo.locality,
+      addressRegion: site.seo.region,
+      addressCountry: "FR",
+    },
+    homeLocation: { "@type": "Place", name: `${site.seo.department}, ${site.seo.region}` },
+    worksFor: { "@type": "Organization", name: site.seo.employer.name, url: site.seo.employer.url },
+    hasCredential: {
+      "@type": "EducationalOccupationalCredential",
+      name: site.seo.credential.name,
+      credentialCategory: "Titre certifié (Mastère)",
+      recognizedBy: { "@type": "EducationalOrganization", name: site.seo.credential.by },
+    },
     description: `${site.bio} ${site.status}.`,
     email: `mailto:${site.email}`,
     url: absolute("/"),
@@ -203,7 +220,12 @@ export function personJsonLd() {
       ...bridge,
       ...profiles.flatMap((p) => p.tools.map((t) => t.name)),
     ],
-    alumniOf: schools.map((n) => ({ "@type": "EducationalOrganization", name: n.place })),
+    alumniOf: [
+      ...site.seo.schools.map((s) => ({ "@type": "EducationalOrganization", name: s.name, url: s.url })),
+      ...schools
+        .filter((n) => !site.seo.schools.some((s) => s.name === n.place))
+        .map((n) => ({ "@type": "EducationalOrganization", name: n.place })),
+    ],
     hasOccupation: current
       ? { "@type": "Occupation", name: current.title, description: current.text, skills: current.tags?.join(", ") }
       : undefined,
@@ -218,6 +240,7 @@ export function personJsonLd() {
         "@id": absolute("/#website"),
         url: absolute("/"),
         name: `${site.name} — Portfolio`,
+        alternateName: ["Portfolio de Baptiste Rouzic", "baptiste-rouzic.fr"],
         inLanguage: "fr-FR",
         author: { "@id": absolute("/#person") },
       },

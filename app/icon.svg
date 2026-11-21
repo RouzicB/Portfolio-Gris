@@ -1,29 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Le rond actif du fil de constellation (navigation) : un disque d'encre, l'anneau ouvert (ensō) et sa pierre de clé.
-       Onglets sombres : l'encre devient claire pour rester visible. -->
+  <!-- Le rond du fil de constellation (navigation) : l'anneau ouvert (ensō), sa pierre de clé, et un grand losange
+       de pigment au centre, lisible même à 16 px. Onglets sombres : l'anneau devient clair pour rester visible. -->
   <style>
-    .ink { fill: #2f2e2d; }
     .ring { stroke: #2f2e2d; }
-    .glint { fill: #f3f2f0; }
     @media (prefers-color-scheme: dark) {
-      .ink { fill: #ecebe9; }
       .ring { stroke: #ecebe9; }
-      .glint { fill: #2f2e2d; }
     }
   </style>
-  <defs>
-    <radialGradient id="sheen" cx="0.32" cy="0.22" r="0.8">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22" />
-      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0" />
-    </radialGradient>
-  </defs>
   <!-- Anneau ouvert : le pinceau ne referme pas le tour, l'ouverture en haut à droite -->
-  <path class="ring" d="M28.59 12.02A13.4 13.4 0 1 1 24.61 6.34" fill="none" stroke-width="1.7" stroke-linecap="round" />
-  <!-- Disque d'encre -->
-  <circle class="ink" cx="16" cy="16.6" r="9" />
-  <circle cx="16" cy="16.6" r="9" fill="url(#sheen)" />
-  <!-- Un point de lumière au centre, comme l'icône posée sur la pierre -->
-  <path class="glint" d="M16 13.6 L18.2 16.6 L16 19.6 L13.8 16.6Z" />
+  <path class="ring" d="M28.59 12.02A13.4 13.4 0 1 1 24.61 6.34" fill="none" stroke-width="2.4" stroke-linecap="round" />
+  <!-- Losange de pigment au centre -->
+  <path d="M16 9.2 L21.4 16.6 L16 24 L10.6 16.6Z" fill="#b8433b" />
   <!-- Pierre de clé au sommet de l'anneau -->
-  <path d="M16 0.6 L18.3 3.2 L16 5.8 L13.7 3.2Z" fill="#b8433b" />
+  <path d="M16 0.4 L18.6 3.3 L16 6.2 L13.4 3.3Z" fill="#b8433b" />
 </svg>
