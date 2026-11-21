@@ -35,7 +35,7 @@ export default function NotFound() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/"
-              className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm text-sky-top transition hover:-translate-y-0.5 hover:shadow-lg"
+              className="group inline-flex items-center gap-2 stone rounded-full px-5 py-2.5 text-sm transition hover:-translate-y-0.5"
             >
               Reprendre l&apos;aventure
               <ArrowRightIcon size={16} className="transition-transform group-hover:translate-x-0.5" />

@@ -2,6 +2,7 @@
 
 import { m } from "framer-motion";
 import { site } from "../../data/site";
+import { useYear } from "../../lib/useYear";
 import { ArrowRightIcon, ContactIcon, ScrollIcon } from "../icons/GrisIcons";
 import { useJourneyControls } from "../journey/JourneyContext";
 import { fadeIn, fadeUp, group } from "../journey/motion";
@@ -12,6 +13,7 @@ import SectionShell from "./SectionShell";
 export default function Accueil() {
   const { goTo } = useJourneyControls();
   const [first, ...rest] = site.name.split(" ");
+  const year = useYear();
   return (
     <SectionShell index={0} heading={false}>
       <div className="flex flex-col items-center text-center">
@@ -31,10 +33,7 @@ export default function Accueil() {
         </div>
 
         <m.p variants={fadeUp} className="label-spaced mt-6 text-balance text-ink-soft short:mt-3">
-          Portfolio · 2026 — 2027 · {site.role}
-        </m.p>
-        <m.p variants={fadeUp} className="mt-4 max-w-lg text-balance text-lg text-ink short:mt-2 short:text-base">
-          {site.tagline}
+          Portfolio - {year}
         </m.p>
 
         <m.div variants={group} className="mt-8 flex flex-wrap justify-center gap-3 short:mt-5 tiny:mt-4">
@@ -42,7 +41,7 @@ export default function Accueil() {
             variants={fadeUp}
             type="button"
             onClick={() => goTo(1)}
-            className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm text-sky-top shadow-ink/20 transition hover:-translate-y-0.5 hover:shadow-lg"
+            className="group inline-flex items-center gap-2 stone rounded-full px-5 py-2.5 text-sm transition hover:-translate-y-0.5"
           >
             Commencer le voyage
             <ArrowRightIcon size={16} className="transition-transform group-hover:translate-x-0.5" />

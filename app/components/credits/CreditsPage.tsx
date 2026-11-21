@@ -68,7 +68,7 @@ export default function CreditsPage() {
         <Chapter numeral="I" title="Direction artistique" id="direction">
           <m.article
             variants={fadeUp}
-            className="veil relative mx-auto max-w-3xl rounded-b-3xl rounded-t-[999px] px-6 pb-8 pt-[clamp(4rem,14vw,8rem)] text-center sm:px-14"
+            className="veil panel mx-auto max-w-3xl rounded-b-3xl rounded-t-[999px] px-6 pb-8 pt-[clamp(4rem,14vw,8rem)] text-center sm:px-14"
           >
             <span aria-hidden className="absolute left-1/2 top-0 size-3.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-accent shadow-[0_0_14px_var(--accent)]" />
             <span aria-hidden className="pointer-events-none absolute inset-3 rounded-b-2xl rounded-t-[999px] border border-ink/10" />
@@ -111,7 +111,7 @@ export default function CreditsPage() {
             {fonts.map((f) => {
               const display = "specimen" in f && f.specimen === "display";
               return (
-                <m.figure key={f.name} variants={fadeUp} className="veil relative overflow-hidden rounded-3xl p-6">
+                <m.figure key={f.name} variants={fadeUp} className="veil panel overflow-hidden rounded-3xl p-6">
                   <p className="label-spaced text-ink-soft">{"role" in f ? f.role : ""}</p>
                   <p aria-hidden className={`mt-3 text-6xl leading-none text-ink ${display ? "font-display font-light" : "font-sans font-medium"}`}>
                     Aa
@@ -130,7 +130,7 @@ export default function CreditsPage() {
               );
             })}
           </div>
-          <m.ul variants={fadeUp} className="veil mt-5 divide-y divide-ink/10 rounded-3xl px-6 py-2">
+          <m.ul variants={fadeUp} className="veil panel mt-5 divide-y divide-ink/10 rounded-3xl px-6 py-2">
             {tools.map((r) => (
               <li key={r.name} className="flex flex-col gap-0.5 py-3.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                 <span className="flex items-center gap-3 text-sm text-ink">
@@ -166,7 +166,7 @@ export default function CreditsPage() {
 
         {/* IV — Mentions */}
         <Chapter numeral="IV" title="Mentions" id="mentions">
-          <m.div variants={fadeUp} className="veil mx-auto max-w-3xl rounded-3xl px-6 py-6 text-center sm:px-10">
+          <m.div variants={fadeUp} className="veil panel mx-auto max-w-3xl rounded-3xl px-6 py-6 text-center sm:px-10">
             <p className="text-pretty text-sm leading-relaxed text-ink">
               Projet personnel de {site.name}, sans lien avec {game.studio} ni {game.publisher} et sans usage commercial. Aucun
               personnage, logo ni visuel du jeu n&apos;est reproduit : décors et icônes sont dessinés pour ce site. Les marques

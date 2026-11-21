@@ -1,22 +1,33 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
 import { m } from "framer-motion";
 import { sections } from "../../data/sections";
 import { site } from "../../data/site";
-import { ArrowUpRightIcon, CheckIcon, CopyIcon, DownloadIcon } from "../icons/GrisIcons";
+import BrandIcon, { type BrandName } from "../icons/BrandIcons";
+import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, CopyIcon } from "../icons/GrisIcons";
 import { useJourneyControls } from "../journey/JourneyContext";
-import { fadeIn, fadeUp } from "../journey/motion";
+import { fadeIn, fadeUp, group } from "../journey/motion";
 import Emblem from "../ui/Emblem";
 import SectionShell from "./SectionShell";
 
 const SECTION = sections[6];
 
+/** Feuille de papier, coin plié */
+const CvIcon = () => (
+  <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
+    <path d="M6 3.5h8.5L19 8v12.5H6Z" />
+    <path d="M14.5 3.5V8H19" />
+    <path d="M9 12.5h6.5M9 16h4.5" />
+  </svg>
+);
+
 /**
  * 07 — Contact : le voyage se referme comme il a commencé.
  * L'emblème aux anneaux de l'accueil revient, « Écrivons la suite » en son centre, à côté de la grande lune ;
- * dessous, l'adresse en très grand soulignée d'un coup de pinceau, une ligne de liens, la disponibilité
- * et le retour au début. Tout est centré, sans panneau.
+ * dessous, l'adresse en très grand soulignée d'un coup de pinceau, un bouton par réseau (avec son logo) et le CV,
+ * la disponibilité et le retour au début. Tout est centré, sans panneau.
  */
 export default function Contact() {
   const { goTo } = useJourneyControls();
@@ -32,10 +43,6 @@ export default function Contact() {
     }
   };
 
-  const links = [
-    ...site.socials.map((s) => ({ label: s.label, href: s.href, external: true })),
-    { label: "CV", href: site.cv, external: false },
-  ];
 
   return (
     <SectionShell index={6} heading={false}>
@@ -91,24 +98,34 @@ export default function Contact() {
           </span>
         </m.div>
 
-        {/* Les autres chemins, sur une ligne */}
-        <m.ul variants={fadeUp} className="veil mt-7 grid grid-cols-2 justify-items-center gap-x-6 gap-y-2 rounded-[1.75rem] px-6 py-3 short:mt-5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-1 sm:py-2.5" aria-label="Ailleurs">
-          {links.map((l, i) => (
-            <Fragment key={l.label}>
-              {i > 0 && <li aria-hidden className="mx-3 hidden size-1.5 rotate-45 bg-accent sm:block" />}
-              <li>
-                <a
-                  href={l.href}
-                  {...(l.external ? { target: "_blank", rel: "noreferrer" } : { download: true })}
-                  className="label-spaced inline-flex items-center gap-1.5 py-1 text-ink underline-offset-8 transition hover:underline"
-                >
-                  {l.external ? l.label : "Télécharger le CV"}
-                  {l.external ? <ArrowUpRightIcon size={13} /> : <DownloadIcon size={13} />}
-                  {l.external && <span className="sr-only">(nouvel onglet)</span>}
-                </a>
-              </li>
-            </Fragment>
+        {/* Les autres chemins : chaque réseau a son bouton, avec son logo ; le CV à part, en bouton plein */}
+        <m.ul
+          variants={group}
+          className="mt-7 flex flex-wrap items-center justify-center gap-2.5 short:mt-5"
+          aria-label="Ailleurs"
+        >
+          {site.socials.map((s) => (
+            <m.li key={s.label} variants={fadeUp}>
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                className="veil group inline-flex h-11 items-center gap-2.5 rounded-full pl-3.5 pr-4 text-sm text-ink transition hover:-translate-y-0.5"
+              >
+                <BrandIcon name={s.label.toLowerCase() as BrandName} size={18} />
+                {s.label}
+                <ArrowUpRightIcon size={13} className="opacity-60 transition group-hover:opacity-100" />
+                <span className="sr-only">(nouvel onglet)</span>
+              </a>
+            </m.li>
           ))}
+          <m.li variants={fadeUp}>
+            {/* Le CV s'ouvre d'abord dans le site (page /cv), où on choisit ensuite la version à télécharger */}
+            <Link href="/cv" className="group inline-flex h-11 items-center gap-2.5 stone rounded-full pl-4 pr-5 text-sm transition [text-shadow:none] hover:-translate-y-0.5">
+              <CvIcon />
+              Voir le CV
+            </Link>
+          </m.li>
         </m.ul>
 
         {/* Disponibilité et retour au début */}
@@ -120,14 +137,16 @@ export default function Contact() {
             </span>
             {site.status}
           </p>
+          {/* Retour au début : un vrai bouton, lisible et assez grand pour être visé */}
           <button
             type="button"
             onClick={() => goTo(0)}
-            className="flex items-center gap-3 text-ink-soft transition hover:text-ink"
+            className="veil group mt-1 inline-flex h-11 items-center gap-2.5 rounded-full pl-3 pr-5 text-sm text-ink transition hover:-translate-y-0.5"
           >
-            <span aria-hidden className="h-px w-8 bg-current opacity-60" />
-            <span className="label-spaced text-ink">Revenir au début du voyage</span>
-            <span aria-hidden className="h-px w-8 bg-current opacity-60" />
+            <span className="grid size-7 place-items-center rounded-full bg-ink text-sky-top transition-transform group-hover:-translate-y-0.5">
+              <ArrowRightIcon size={14} className="-rotate-90" />
+            </span>
+            Revenir au début du voyage
           </button>
         </m.div>
       </div>

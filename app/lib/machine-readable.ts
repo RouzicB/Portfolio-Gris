@@ -184,7 +184,8 @@ export function projectJsonLd(p: Project, withContext = true) {
 /** Données structurées de la personne et du portfolio (schema.org), pour l'accueil */
 export function personJsonLd() {
   const current = careerNodes.find((n) => n.kind === "current");
-  const schools = careerNodes.filter((n) => n.domain === "formation" && n.place && n.kind !== "start");
+  // Écoles nommées seulement (pas « 3 semestres (S1 – S3) »)
+  const schools = careerNodes.filter((n) => n.domain === "formation" && n.place && !/^[0-9]/.test(n.place));
   const cv = cvUrl();
   const person = {
     "@type": "Person",

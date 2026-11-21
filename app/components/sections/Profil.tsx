@@ -46,7 +46,7 @@ export default function Profil() {
         {/* Fiche : chaque information est une étoile du fil */}
         <m.div
           variants={fadeUp}
-          className="veil rounded-3xl px-5 py-4 md:col-span-2 lg:col-span-1"
+          className="veil panel rounded-3xl px-5 py-4 md:col-span-2 lg:col-span-1"
         >
           <m.dl variants={group} className="relative">
             <span

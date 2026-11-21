@@ -19,7 +19,7 @@ describe("Parcours (arborescence horizontale)", () => {
   });
 
   it("suit l'ordre du parcours réel", () => {
-    const order = ["bac", "but-tronc", "but-dev", "sesa", "chu", "mastere", "renault"];
+    const order = ["but-tronc", "but-dev", "sesa", "chu", "mastere", "renault"];
     const cols = order.map((id) => careerNodes.find((n) => n.id === id)!.col);
     expect([...cols].sort((x, y) => x - y)).toEqual(cols);
     expect(careerNodes.find((n) => n.id === "renault")!.kind).toBe("current");
@@ -70,8 +70,8 @@ describe("Parcours (arborescence horizontale)", () => {
     // Par défaut : l'étape en cours
     expect(screen.getByRole("heading", { level: 3, name: /Dév full-stack/ })).toBeInTheDocument();
     expect(screen.getByText("Renault Group · applications")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /Bac général/ }));
-    expect(await screen.findByRole("heading", { level: 3, name: "Bac général" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Bac général/ })).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(screen.getByRole("button", { name: /BUT MMI · Tronc commun/ }));
+    expect(await screen.findByRole("heading", { level: 3, name: "BUT MMI · Tronc commun" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /BUT MMI · Tronc commun/ })).toHaveAttribute("aria-pressed", "true");
   });
 });

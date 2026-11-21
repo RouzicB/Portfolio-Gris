@@ -40,7 +40,7 @@ function NodeGlyph({ node, size, className }: { node: FlowNode; size: number; cl
 const kindClass: Record<FlowNode["kind"], string> = {
   start: "veil rounded-xl",
   step: "veil rounded-xl",
-  current: "veil rounded-xl ring-2 ring-accent shadow-[0_0_28px_-6px_var(--accent)]",
+  current: "veil rounded-xl outline-2 -outline-offset-4 outline-accent",
   // Le choix a un fond plein, couleur du ciel teintée d'accent : lisible quelle que soit la scène derrière
   choice:
     "rounded-none bg-[color-mix(in_srgb,var(--sky-top)_80%,var(--accent))] px-5 [clip-path:polygon(14px_0,calc(100%-14px)_0,100%_50%,calc(100%-14px)_100%,14px_100%,0_50%)]",
@@ -209,7 +209,7 @@ export default function Parcours() {
       <m.div
         ref={detailRef}
         variants={fadeUp}
-        className="veil relative mx-auto mt-6 scroll-mb-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
+        className="veil panel mx-auto mt-6 scroll-mb-6 rounded-[2.25rem_0.75rem_2.25rem_0.75rem] px-6 py-5 sm:px-8 short:mt-4"
         style={{ maxWidth: vertical ? undefined : size.width }}
       >
         <AnimatePresence mode="wait" initial={false}>

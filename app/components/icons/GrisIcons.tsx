@@ -276,6 +276,10 @@ export const CheckIcon = make({ strokes: ["M5 12.5 9.5 17 19 7.5"] });
 export const CopyIcon = make({ strokes: ["M8.5 8.5H19.5V19.5H8.5Z", "M5 15.5V4.5H15.5"] });
 export const MailIcon = make({ strokes: ["M3 5.5H21V18.5H3Z", "M3.5 7 12 13 20.5 7"] });
 export const DownloadIcon = make({ strokes: ["M12 4V15", "M7.5 10.5 12 15 16.5 10.5", "M5 19.5H19"] });
+export const SunIcon = make({
+  strokes: [ring(12, 12, 4), "M12 2.5V5", "M12 19V21.5", "M2.5 12H5", "M19 12H21.5", "M5.3 5.3 7 7", "M17 17 18.7 18.7", "M5.3 18.7 7 17", "M17 7 18.7 5.3"],
+});
+export const MoonIcon = make({ strokes: ["M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10Z"] });
 export const ClockIcon = make({ strokes: [ring(12, 12, 8), "M12 7.5V12L15 14"] });
 
 /** Molette : la goutte descend doucement */

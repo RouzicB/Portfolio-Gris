@@ -34,7 +34,7 @@ function Profile({ profile, mirrored = false }: { profile: SkillProfile; mirrore
     <m.section
       variants={fadeUp}
       aria-labelledby={id}
-      className={`veil flex flex-col px-6 py-6 sm:px-8 short:py-4 ${
+      className={`veil panel flex flex-col px-6 py-6 sm:px-8 short:py-4 ${
         mirrored ? "rounded-[0.75rem_3rem_0.75rem_3rem]" : "rounded-[3rem_0.75rem_3rem_0.75rem]"
       }`}
     >

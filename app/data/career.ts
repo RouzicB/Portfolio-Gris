@@ -3,41 +3,28 @@ import type { FlowChapter, FlowEdge, FlowNode } from "../types";
 /*
  * Parcours de Baptiste Rouzic, en arborescence horizontale (le temps se lit de gauche à droite).
  * Couloirs : 0 = formation, 1 = expériences professionnelles, 2 = chemins non empruntés.
- * Les périodes sont déduites du calendrier : bac en 2022, années 4 et 5 d'études = 2025 – 2027.
+ * Le parcours commence au BUT (2022) ; années 4 et 5 d'études = 2025 – 2027.
  * ⚠ Les deux « chemins non empruntés » et les textes de détail sont des propositions : à ajuster.
  */
 
 export const careerChapters: FlowChapter[] = [
-  { id: "lycee", title: "Lycée", cols: [0, 0] },
-  { id: "but", title: "BUT MMI", cols: [1, 4] },
-  { id: "mastere", title: "Mastère", cols: [5, 6] },
-  { id: "suite", title: "La suite", cols: [7, 7] },
+  { id: "but", title: "BUT MMI", cols: [0, 3] },
+  { id: "mastere", title: "Mastère", cols: [4, 5] },
+  { id: "suite", title: "La suite", cols: [6, 6] },
 ];
 
 export const careerNodes: FlowNode[] = [
   {
-    id: "bac",
-    kind: "start",
-    domain: "formation",
-    title: "Bac général",
-    place: "Spécialités NSI & Mathématiques",
-    period: "2019 – 2022",
-    text: "Le point de départ : la logique des mathématiques et le goût du code avec NSI. L'envie de comprendre comment fonctionnent les interfaces qu'on utilise tous les jours.",
-    tags: ["NSI", "Mathématiques"],
-    col: 0,
-    row: 0,
-  },
-  {
     id: "but-tronc",
     short: "BUT MMI · Tronc commun",
-    kind: "step",
+    kind: "start",
     domain: "formation",
     title: "BUT MMI · Tronc commun",
     place: "3 semestres (S1 – S3)",
     period: "2022 – 2024",
     text: "Métiers du multimédia et de l'internet : développement, design graphique, audiovisuel, communication. Une base large avant de choisir sa voie.",
     tags: ["Développement", "Design graphique", "Communication"],
-    col: 1,
+    col: 0,
     row: 0,
   },
   {
@@ -46,7 +33,7 @@ export const careerNodes: FlowNode[] = [
     title: "Quelle spécialité ?",
     period: "Fin 2023",
     text: "Premier choix décisif à la fin du tronc commun : se spécialiser dans le développement web, ou dans la création numérique.",
-    col: 2,
+    col: 1,
     row: 0,
   },
   {
@@ -55,7 +42,7 @@ export const careerNodes: FlowNode[] = [
     kind: "locked",
     title: "Parcours création numérique",
     text: "Chemin non emprunté… même si le design est revenu par une autre porte.",
-    col: 3,
+    col: 2,
     row: 2,
   },
   {
@@ -68,7 +55,7 @@ export const careerNodes: FlowNode[] = [
     period: "2024 – 2025",
     text: "Développement web et dispositifs interactifs : front, back, intégration, et une attention constante à l'expérience de celles et ceux qui utilisent ce qu'on code.",
     tags: ["Front-end", "Back-end", "Intégration"],
-    col: 3,
+    col: 2,
     row: 0,
   },
   {
@@ -81,7 +68,7 @@ export const careerNodes: FlowNode[] = [
     period: "2024 · 2e année (S4)",
     text: "Premier pied en entreprise : développement web au sein d'une équipe, contraintes réelles et livrables utilisés par de vrais clients.",
     tags: ["Développement web", "Travail en équipe"],
-    col: 3,
+    col: 2,
     row: 1,
   },
   {
@@ -94,7 +81,7 @@ export const careerNodes: FlowNode[] = [
     period: "2024 – 2025 · 3e année",
     text: "Communication et supports graphiques pour le service de cardiologie : rendre une information médicale claire, lisible et rassurante pour les patients et les équipes.",
     tags: ["Graphisme", "Communication", "Santé"],
-    col: 4,
+    col: 3,
     row: 1,
   },
   {
@@ -103,7 +90,7 @@ export const careerNodes: FlowNode[] = [
     title: "Après le BUT ?",
     period: "2025",
     text: "Deuxième choix : rester sur le développement pur, ou relier le code et le design dans un mastère UX/UI.",
-    col: 5,
+    col: 4,
     row: 0,
   },
   {
@@ -112,7 +99,7 @@ export const careerNodes: FlowNode[] = [
     kind: "locked",
     title: "Master 100 % développement",
     text: "Chemin non emprunté : le code reste un atout, mais c'est l'expérience utilisateur qui a gagné.",
-    col: 6,
+    col: 5,
     row: 2,
   },
   {
@@ -125,7 +112,7 @@ export const careerNodes: FlowNode[] = [
     period: "2025 – 2027 · années 4 & 5",
     text: "Recherche utilisateur, architecture de l'information, UI design et design system, avec une spécialité en création graphique, en alternance.",
     tags: ["UX research", "UI design", "Création graphique"],
-    col: 6,
+    col: 5,
     row: 0,
   },
   {
@@ -138,7 +125,7 @@ export const careerNodes: FlowNode[] = [
     period: "2025 – 2027",
     text: "Concevoir et développer des applications : de la recherche utilisateur et des maquettes jusqu'au code full-stack. Le lien entre design et développement, au quotidien.",
     tags: ["Full-stack", "UX/UI", "Design produit"],
-    col: 6,
+    col: 5,
     row: 1,
   },
   {
@@ -147,13 +134,12 @@ export const careerNodes: FlowNode[] = [
     title: "?",
     period: "2027",
     text: "Ce chapitre n'est pas encore écrit. Votre équipe pourrait être la prochaine branche.",
-    col: 7,
+    col: 6,
     row: 0.5,
   },
 ];
 
 export const careerEdges: FlowEdge[] = [
-  { from: "bac", to: "but-tronc" },
   { from: "but-tronc", to: "choix-specialite" },
   { from: "choix-specialite", to: "but-dev" },
   { from: "choix-specialite", to: "creation" },

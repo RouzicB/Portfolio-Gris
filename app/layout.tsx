@@ -5,6 +5,8 @@ import "@fontsource-variable/quicksand";
 import "./globals.css";
 import Providers from "./components/Providers";
 import CreditsLink from "./components/layouts/CreditsLink";
+import MusicToggle from "./components/layouts/MusicToggle";
+import SoundPrompt from "./components/layouts/SoundPrompt";
 import { palettes } from "./data/palettes";
 import { site } from "./data/site";
 import { paletteToVars } from "./lib/journey";
@@ -59,6 +61,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Providers>
           {children}
           <CreditsLink />
+          <MusicToggle />
+          <SoundPrompt />
         </Providers>
       </body>
     </html>

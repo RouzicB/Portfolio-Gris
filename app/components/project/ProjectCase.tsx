@@ -103,7 +103,7 @@ export default function ProjectCase({
         {/* Fiche : quatre repères séparés par des filets */}
         <m.dl
           variants={fadeUp}
-          className={`veil mt-8 grid grid-cols-2 gap-y-5 px-5 py-5 text-sm sm:px-7 lg:grid-cols-4 lg:divide-x lg:divide-ink/15 ${leaf()}`}
+          className={`veil panel mt-8 grid grid-cols-2 gap-y-5 px-5 py-5 text-sm sm:px-7 lg:grid-cols-4 lg:divide-x lg:divide-ink/15 ${leaf()}`}
         >
           {[
             { Icon: ProfilIcon, label: "Rôle", value: project.role },
@@ -204,7 +204,7 @@ export default function ProjectCase({
         <Chapter {...chapter.resultats}>
           <m.ul
             variants={fadeUp}
-            className={`veil grid gap-y-6 px-6 py-7 sm:grid-cols-3 sm:divide-x sm:divide-ink/15 sm:px-4 ${leaf()}`}
+            className={`veil panel grid gap-y-6 px-6 py-7 sm:grid-cols-3 sm:divide-x sm:divide-ink/15 sm:px-4 ${leaf()}`}
           >
             {project.outcomes.map((o) => (
               <li key={o.label} className="flex flex-col items-center text-center sm:px-4">
@@ -218,7 +218,7 @@ export default function ProjectCase({
 
         {/* Ce que j'en retiens : des phrases, pas des cartes */}
         <Chapter {...chapter.retenu}>
-          <m.div variants={fadeUp} className={`veil mx-auto max-w-3xl px-6 py-8 text-center sm:px-10 sm:py-10 ${leaf()}`}>
+          <m.div variants={fadeUp} className={`veil panel mx-auto max-w-3xl px-6 py-8 text-center sm:px-10 sm:py-10 ${leaf()}`}>
             {project.learnings.map((l, i) => (
               <div key={l}>
                 {i > 0 && <Hairline />}
@@ -273,7 +273,7 @@ function ExternalLink({ href, label = "Voir le projet" }: { href: string; label?
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="group inline-flex items-center gap-3 rounded-full bg-ink py-2.5 pl-5 pr-3 text-sm font-semibold text-sky-top shadow-lg shadow-ink/15 transition [text-shadow:none] hover:-translate-y-0.5"
+      className="group inline-flex items-center gap-3 stone rounded-full py-2.5 pl-5 pr-3 text-sm font-semibold transition [text-shadow:none] hover:-translate-y-0.5"
     >
       {label}
       <span className="grid size-7 place-items-center rounded-full bg-sky-top/15 transition group-hover:rotate-45">
@@ -297,7 +297,7 @@ function Face({
   children: ReactNode;
 }) {
   return (
-    <m.article variants={fadeUp} className={`veil p-6 sm:p-8 ${leaf(mirrored)}`}>
+    <m.article variants={fadeUp} className={`veil panel p-6 sm:p-8 ${leaf(mirrored)}`}>
       <h3 className={`flex items-center gap-3 ${mirrored ? "lg:flex-row-reverse lg:text-right" : ""}`}>
         <span className="grid size-10 shrink-0 place-items-center rounded-full border border-ink/20 text-ink">
           <IconCmp size={20} />
@@ -337,7 +337,7 @@ function Ring({ children, className = "" }: { children: ReactNode; className?: s
 /** La démarche : un fil horizontal (vertical sur mobile), une perle numérotée par étape */
 function Steps({ steps }: { steps: Project["process"] }) {
   return (
-    <m.div variants={fadeUp} className={`veil relative px-6 py-8 sm:px-8 lg:px-6 lg:py-9 ${leaf()}`}>
+    <m.div variants={fadeUp} className={`veil panel px-6 py-8 sm:px-8 lg:px-6 lg:py-9 ${leaf()}`}>
       {/* Le fil : vertical sur mobile, horizontal sur grand écran (du centre de la première perle à la dernière) */}
       <span
         aria-hidden

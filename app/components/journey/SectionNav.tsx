@@ -58,7 +58,7 @@ export default function SectionNav() {
                     aria-label={s.label}
                     className={`relative grid size-[34px] place-items-center rounded-full transition duration-500 md:size-10 tiny:md:size-8 ${
                       current
-                        ? "bg-ink text-sky-top"
+                        ? "stone"
                         : `veil scale-[0.82] hover:scale-100 ${visited ? "text-ink" : "text-ink-soft hover:text-ink"}`
                     }`}
                   >

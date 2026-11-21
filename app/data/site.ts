@@ -14,12 +14,13 @@ export const site = {
   status: "Recherche une alternance ou un premier poste UX/UI pour 2027",
   // à compléter
   email: "rouzicb.pro@gmail.com",
-  /** Déposez le PDF dans /public */
+  /** CV, deux versions générées par scripts/cv/build.mjs : numérique (fond bleu, proposée d'abord) et imprimable */
   cv: "/cv-baptiste-rouzic.pdf",
+  cvPrint: "/cv-baptiste-rouzic-impression.pdf",
   /** Portrait (chemin dans /public) ; null = monogramme peint */
   portrait: "/portrait.webp" as string | null,
   socials: [
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/baptiste-rouzic" },
     { label: "Behance", href: "https://www.behance.net/" },
     { label: "Dribbble", href: "https://dribbble.com/" },
   ],

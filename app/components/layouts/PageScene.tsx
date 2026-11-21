@@ -6,6 +6,7 @@ import { useMotionValue } from "framer-motion";
 import type { SceneTheme, StageId } from "../../types";
 import { palettes, stageSuns } from "../../data/palettes";
 import { paletteToVars } from "../../lib/journey";
+import { ambient } from "../../lib/ambient";
 import Landscape from "../background/Landscape";
 import { ArrowRightIcon } from "../icons/GrisIcons";
 
@@ -32,6 +33,9 @@ export default function PageScene({
   const stages = useMemo(() => [stage], [stage]);
   // Page qui défile : le texte passe partout, l'astre se range donc dans le coin haut, plus petit
   const suns = useMemo(() => [{ x: 92, y: 10, size: Math.min(stageSuns[stage].size, 180) }], [stage]);
+
+  // La musique suit le décor de la page : le lecteur passe au morceau de cette ambiance
+  useEffect(() => ambient().setStage(stage), [stage]);
 
   // <html> prend aussi l'ambiance (fond hors page, barre d'adresse mobile)
   useEffect(() => {

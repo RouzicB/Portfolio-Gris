@@ -29,7 +29,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
   const { logo, palette, fonts, motif, photo } = universe;
   return (
     <div className="space-y-14">
-      <m.p variants={fadeUp} className={`veil mx-auto max-w-3xl px-6 py-5 text-center text-pretty leading-relaxed text-ink sm:px-10 ${leaf()}`}>
+      <m.p variants={fadeUp} className={`veil panel mx-auto max-w-3xl px-6 py-5 text-center text-pretty leading-relaxed text-ink sm:px-10 ${leaf()}`}>
         {universe.intro}
       </m.p>
 
@@ -51,7 +51,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
 
             {/* Sa lecture, élément par élément, sur un voile : texte sombre, lisible quel que soit le fond de la marque */}
             {(logo.glyphs || logo.note) && (
-              <m.div variants={fadeUp} className={`veil flex flex-col justify-center px-6 py-6 sm:px-8 ${leaf(true)}`}>
+              <m.div variants={fadeUp} className={`veil panel flex flex-col justify-center px-6 py-6 sm:px-8 ${leaf(true)}`}>
                 {logo.glyphs && (
                   <ol className="divide-y divide-ink/15">
                     {logo.glyphs.map((g, i) => (
@@ -112,7 +112,7 @@ export default function Universe({ universe }: { universe: UniverseData }) {
       {/* Les typographies, en spécimen (seulement si leurs fichiers sont hébergés avec le site) */}
       {fonts.length > 0 && (
       <Sub title="Typographies">
-        <m.ul variants={fadeUp} className={`veil divide-y divide-ink/15 px-6 sm:px-8 ${leaf(true)}`}>
+        <m.ul variants={fadeUp} className={`veil panel divide-y divide-ink/15 px-6 sm:px-8 ${leaf(true)}`}>
           {fonts.map((f) => (
             <li key={f.name} className="grid grid-cols-1 items-center gap-x-8 gap-y-3 py-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
               <div aria-hidden className="min-w-0 text-ink" style={{ fontFamily: f.family }}>

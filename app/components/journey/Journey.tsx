@@ -10,6 +10,7 @@ import type { Palette } from "../../types";
 import { JourneyContext, JourneyControlsContext } from "./JourneyContext";
 import Landscape from "../background/Landscape";
 import SectionNav from "./SectionNav";
+import { ambient } from "../../lib/ambient";
 
 const STAGES = sections.map((s) => s.stage);
 const SUNS = sections.map((s) => s.sun);
@@ -69,6 +70,8 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
           if (travel.current === run) root.removeAttribute("data-travel");
         });
       }
+      // La musique d'ambiance (si elle joue) prend la gamme de la zone d'arrivée
+      ambient().setStage(STAGES[target]);
       // Apparition du contenu et navigation : tout de suite, sans React
       if (changed) listeners.current.forEach((fn) => fn(target));
       // Le rendu React (accessibilité, interactivité de la section active) passe en tâche de fond, interruptible :
@@ -97,6 +100,8 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     // Différé d'une image : le rendu serveur (sans ancre) s'hydrate d'abord tel quel
     const index = fromHash();
     const raf = index > 0 ? requestAnimationFrame(() => goTo(index, true)) : 0;
+    // Retour sur l'accueil depuis une autre page : la musique reprend le morceau de la première zone
+    if (index <= 0) ambient().setStage(STAGES[0]);
     // Ancre modifiée sans recharger la page (lien interne, saisie dans la barre d'adresse)
     const onHash = () => {
       const i = fromHash();
