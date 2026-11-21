@@ -25,8 +25,8 @@ export default function CreditsLink() {
     >
       <span className="relative grid size-12 shrink-0 place-items-center">
         {/* Anneau ouvert et sa pierre de clé, en rotation lente */}
-        <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible" aria-hidden focusable="false">
-          <g className="emblem-spin-slow" style={{ transformOrigin: "24px 24px" }}>
+        <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible emblem-spin-slow" aria-hidden focusable="false">
+          <g>
             <circle
               cx="24"
               cy="24"

@@ -1,5 +1,5 @@
 import { Layer } from "../Parallax";
-import { Cloud, Frame, seeded } from "./shared";
+import { Cloud, Frame, Moving, seeded } from "./shared";
 
 /** Anneaux autour d'un fût de colonne (bandes perpendiculaires à son axe) */
 function Bands({ x1, y1, x2, y2, count, width }: { x1: number; y1: number; x2: number; y2: number; count: number; width: number }) {
@@ -109,13 +109,11 @@ export default function GrisArt() {
       </Layer>
 
       <Layer depth={0.7}>
-        <Frame>
-          {/* Brume basse */}
-          <g className="animate-drift">
-            <Cloud x={120} y={900} s={1.8} fill="#ffffff" opacity={0.9} />
-            <Cloud x={1480} y={890} s={1.8} fill="#ffffff" opacity={0.9} />
-          </g>
-        </Frame>
+        {/* Brume basse */}
+        <Moving className="animate-drift">
+          <Cloud x={120} y={900} s={1.8} fill="#ffffff" opacity={0.9} />
+          <Cloud x={1480} y={890} s={1.8} fill="#ffffff" opacity={0.9} />
+        </Moving>
       </Layer>
     </>
   );

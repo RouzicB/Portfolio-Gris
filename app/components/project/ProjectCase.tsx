@@ -334,8 +334,8 @@ function Face({
 function Ring({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <span className={`relative grid size-12 shrink-0 place-items-center text-ink ${className}`}>
-      <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible" aria-hidden>
-        <g className="emblem-spin-slow" style={{ transformOrigin: "24px 24px" }}>
+      <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible emblem-spin-slow" aria-hidden>
+        <g>
           <circle
             cx="24"
             cy="24"

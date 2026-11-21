@@ -1,5 +1,5 @@
 import { Layer } from "../Parallax";
-import { Cloud, Frame, seeded } from "./shared";
+import { Cloud, Frame, Moving, phases, seeded } from "./shared";
 
 /** Tour à dôme : socle à colonnes, fenêtre en arche avec lanterne, dôme, flèche, lianes et fleurs */
 function Tower({
@@ -48,7 +48,6 @@ function Tower({
           </g>
           {/* Fenêtre en arche, centrée, et sa lanterne */}
           <path d={`M${x + w / 2 - 18} ${top + 120} v-40 a18 18 0 0 1 36 0 v40z`} fill="#1c160a" />
-          <circle cx={x + w / 2} cy={top + 102} r="14" fill="#fff1c2" opacity="0.5" filter="url(#wc-glow)" className="animate-twinkle" />
           <circle cx={x + w / 2} cy={top + 102} r="4" fill="#fff1c2" />
           {/* Lianes qui tombent du chapiteau, et grappes de fleurs à leur départ */}
           <g stroke="#e3c26f" strokeWidth="1.6" fill="none" opacity="0.75">
@@ -71,6 +70,12 @@ function Tower({
   );
 }
 
+/** Centre des lanternes des deux grandes tours (x + w / 2, base - h + 102) */
+const LANTERNS = [
+  [145, 612],
+  [1455, 592],
+] as const;
+
 /**
  * Parcours — nuit dorée, un seul ton décliné :
  * grande lune (le soleil du décor), nuages sombres, tours à dômes couvertes de lianes,
@@ -82,12 +87,16 @@ export default function JauneArt() {
   return (
     <>
       <Layer depth={0.05}>
+        {phases(stars, 3.6, 4).map((ph) => (
+          <Moving key={ph.delay} className="animate-twinkle" delay={ph.delay}>
+            <g fill="#fff1c2">
+              {ph.items.map((s, i) => (
+                <circle key={i} cx={s.x} cy={s.y} r={s.r} />
+              ))}
+            </g>
+          </Moving>
+        ))}
         <Frame>
-          <g fill="#fff1c2">
-            {stars.map((s, i) => (
-              <circle key={i} cx={s.x} cy={s.y} r={s.r} className="animate-twinkle" style={{ animationDelay: `${s.d}s` }} />
-            ))}
-          </g>
           <Cloud x={260} y={640} s={1.8} fill="#3a2d12" opacity={0.85} />
           <Cloud x={1360} y={620} s={1.9} fill="#3a2d12" opacity={0.85} />
           <Cloud x={820} y={700} s={2.2} fill="#33270f" opacity={0.8} />
@@ -120,6 +129,12 @@ export default function JauneArt() {
             ))}
           </g>
         </Frame>
+        {/* Halo des lanternes, aux fenêtres des deux grandes tours (calque à part : il scintille sans redessiner les tours) */}
+        <Moving className="animate-twinkle">
+          {LANTERNS.map(([cx, cy]) => (
+            <circle key={cx} cx={cx} cy={cy} r="14" fill="#fff1c2" opacity="0.5" filter="url(#wc-glow)" />
+          ))}
+        </Moving>
       </Layer>
     </>
   );

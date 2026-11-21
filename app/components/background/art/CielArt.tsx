@@ -1,5 +1,5 @@
 import { Layer } from "../Parallax";
-import { Cloud, Frame, archPath, seeded } from "./shared";
+import { Cloud, Frame, Moving, archPath, phases, seeded } from "./shared";
 
 /**
  * Projets — le ciel : au-dessus d'une mer de nuages, des ruines flottent.
@@ -38,12 +38,12 @@ export default function CielArt() {
           </g>
           <path d="M1250 -40 L1600 -40 L700 940 L380 940Z" fill="#f3b9cf" opacity="0.24" />
           <path d="M1380 -40 L1480 -40 L640 940 L560 940Z" fill="#ffffff" opacity="0.16" />
-          <g className="animate-drift">
-            <Cloud x={260} y={190} s={0.7} fill="#ffffff" opacity={0.5} />
-            <Cloud x={880} y={260} s={0.55} fill="#fbeef3" opacity={0.45} />
-            <Cloud x={1420} y={330} s={0.9} fill="#ffffff" opacity={0.55} />
-          </g>
         </Frame>
+        <Moving className="animate-drift">
+          <Cloud x={260} y={190} s={0.7} fill="#ffffff" opacity={0.5} />
+          <Cloud x={880} y={260} s={0.55} fill="#fbeef3" opacity={0.45} />
+          <Cloud x={1420} y={330} s={0.9} fill="#ffffff" opacity={0.55} />
+        </Moving>
       </Layer>
 
       {/* Île lointaine et son temple à colonnade, aqueduc rosé à gauche */}
@@ -125,8 +125,8 @@ export default function CielArt() {
 
       {/* Rocher flottant et son arbre-ombrelle, oiseaux, éclats */}
       <Layer depth={0.55}>
-        <Frame>
-          <g className="animate-float" style={{ animationDuration: "9s" }}>
+        <Moving className="animate-float" duration={9}>
+          <g>
             <g filter="url(#wc-paint)">
               <path d="M1500 770 H1660 L1630 800 L1590 860 L1540 812 L1516 820Z" fill="#7fb2c4" />
               <path d="M1590 860 L1630 800 L1660 770 H1590Z" fill="#5f9fb4" />
@@ -137,14 +137,20 @@ export default function CielArt() {
               <path d="M1522 658 v22 M1534 650 v30 M1548 646 v18 M1596 646 v24 M1610 650 v30 M1624 656 v18" strokeWidth="2" />
             </g>
           </g>
-          <g fill="none" stroke="#56607a" strokeWidth="2" strokeLinecap="round" className="animate-drift-slow" opacity="0.7">
+        </Moving>
+        <Moving className="animate-drift-slow">
+          <g fill="none" stroke="#56607a" strokeWidth="2" strokeLinecap="round" opacity="0.7">
             {birds.map((b, i) => (
               <path key={i} d={`M${b.x - 10 * b.s} ${b.y} q${5 * b.s} ${-6 * b.s} ${10 * b.s} 0 q${5 * b.s} ${-6 * b.s} ${10 * b.s} 0`} />
             ))}
           </g>
-          {motes.map((m, i) => (
-            <g key={i} className="animate-float" style={{ animationDelay: `${m.d}s` }}>
+        </Moving>
+        {/* Éclats en suspens : trois groupes qui flottent à contretemps */}
+        {phases(motes, 6).map((ph) => (
+          <Moving key={ph.delay} className="animate-float" delay={ph.delay}>
+            {ph.items.map((m, i) => (
               <rect
+                key={i}
                 x={m.x}
                 y={m.y}
                 width={m.s}
@@ -153,26 +159,24 @@ export default function CielArt() {
                 opacity="0.7"
                 transform={`rotate(${m.r} ${m.x + m.s / 2} ${m.y + m.s / 2})`}
               />
-            </g>
-          ))}
-        </Frame>
+            ))}
+          </Moving>
+        ))}
       </Layer>
 
       {/* Mer de nuages, deux rangs */}
       <Layer depth={0.8}>
-        <Frame>
-          <g className="animate-drift">
-            <Cloud x={360} y={810} s={1.6} fill="#f6e4ec" opacity={0.85} />
-            <Cloud x={980} y={800} s={1.7} fill="#eef7f9" opacity={0.85} />
-            <Cloud x={1500} y={800} s={1.5} fill="#f6e4ec" opacity={0.85} />
-          </g>
-          <g className="animate-drift-slow">
-            <Cloud x={120} y={870} s={2.1} fill="#ffffff" opacity={0.97} />
-            <Cloud x={640} y={905} s={2.4} fill="#fbeef3" opacity={0.95} />
-            <Cloud x={1150} y={870} s={2.2} fill="#ffffff" opacity={0.97} />
-            <Cloud x={1580} y={895} s={1.9} fill="#fbeef3" opacity={0.95} />
-          </g>
-        </Frame>
+        <Moving className="animate-drift">
+          <Cloud x={360} y={810} s={1.6} fill="#f6e4ec" opacity={0.85} />
+          <Cloud x={980} y={800} s={1.7} fill="#eef7f9" opacity={0.85} />
+          <Cloud x={1500} y={800} s={1.5} fill="#f6e4ec" opacity={0.85} />
+        </Moving>
+        <Moving className="animate-drift-slow">
+          <Cloud x={120} y={870} s={2.1} fill="#ffffff" opacity={0.97} />
+          <Cloud x={640} y={905} s={2.4} fill="#fbeef3" opacity={0.95} />
+          <Cloud x={1150} y={870} s={2.2} fill="#ffffff" opacity={0.97} />
+          <Cloud x={1580} y={895} s={1.9} fill="#fbeef3" opacity={0.95} />
+        </Moving>
       </Layer>
     </>
   );

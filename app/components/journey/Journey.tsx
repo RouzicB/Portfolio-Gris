@@ -123,18 +123,24 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
   // attribut data-palette-live) ; chaque section porte sa propre palette, fixe (SectionShell).
   useEffect(() => {
     let targets: HTMLElement[] = [];
+    // Éléments chargés (navigation : ~190 descendants à recalculer à chaque changement de variable) :
+    // pendant un voyage, une image sur deux suffit, l'écart de teinte d'une image à l'autre est invisible
+    let heavy = new Set<HTMLElement>();
+    let frame = 0;
     const collect = () => {
       targets = Array.from(document.querySelectorAll<HTMLElement>("[data-palette-live]"));
-      last.length = 0;
+      heavy = new Set(targets.filter((el) => el.getElementsByTagName("*").length > 40));
+      lastLight.length = 0;
+      lastHeavy.length = 0;
     };
-    // Dernière valeur écrite par variable : seules celles qui changent sont réécrites
-    const last: string[] = [];
-    const write = (name: string, value: string) => {
-      for (const el of targets) el.style.setProperty(name, value);
-    };
+    // Dernière valeur écrite par variable (éléments légers / chargés) : seules celles qui changent sont réécrites
+    const lastLight: string[] = [];
+    const lastHeavy: string[] = [];
     const apply = (f: number) => {
       // Un élément suivi a pu être remplacé (navigation entre pages) : on relit la liste
       if (targets.length === 0 || targets.some((el) => !el.isConnected)) collect();
+      // Position d'arrivée (entière) : toujours écrite partout
+      const withHeavy = Number.isInteger(f) || frame++ % 2 === 0;
       const { from, to, t } = segment(f, sections.length);
       const a = PARSED[from];
       const b = PARSED[to];
@@ -146,9 +152,14 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
         const bl = Math.round(ca[2] + (cb[2] - ca[2]) * t);
         const al = Math.round((ca[3] + (cb[3] - ca[3]) * t) * 1000) / 1000;
         const value = `rgba(${r}, ${g}, ${bl}, ${al})`;
-        if (last[i] === value) continue;
-        last[i] = value;
-        write(VARS[i], value);
+        const light = lastLight[i] !== value;
+        const loaded = withHeavy && lastHeavy[i] !== value;
+        if (light) lastLight[i] = value;
+        if (loaded) lastHeavy[i] = value;
+        if (!light && !loaded) continue;
+        for (const el of targets) {
+          if (heavy.has(el) ? loaded : light) el.style.setProperty(VARS[i], value);
+        }
       }
     };
     collect();

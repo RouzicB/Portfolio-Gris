@@ -1,5 +1,5 @@
 import { Layer } from "../Parallax";
-import { Frame, seeded } from "./shared";
+import { Frame, Moving, seeded } from "./shared";
 
 /**
  * Profil — désert rouge, un seul ton décliné :
@@ -88,8 +88,12 @@ export default function RougeArt() {
             <path d="M560 900 L620 830 L720 812 L790 900Z" fill="#9b2434" />
             <path d="M620 830 L720 812 L700 870Z" fill="#b8384a" />
           </g>
-          {/* Fragment de rocher en suspens */}
-          <path d="M70 540 L118 520 L140 560 L96 590Z" fill="#c94452" filter="url(#wc-paint)" className="animate-float" />
+        </Frame>
+        {/* Fragment de rocher en suspens */}
+        <Moving className="animate-float">
+          <path d="M70 540 L118 520 L140 560 L96 590Z" fill="#c94452" filter="url(#wc-paint)" />
+        </Moving>
+        <Frame>
           <g fill="#8f1f2d">
             {debris.map((d, i) => (
               <rect key={i} x={d.x} y={d.y} width={d.s} height={d.s} transform={`rotate(${d.r} ${d.x} ${d.y})`} />

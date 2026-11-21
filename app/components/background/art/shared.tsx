@@ -109,6 +109,44 @@ export function Frame({ children, className = "" }: { children: ReactNode; class
   );
 }
 
+/**
+ * Partie animée d'un plan (nuages qui dérivent, pierres qui flottent, étoiles qui scintillent), dans son propre calque.
+ * Une animation posée sur un élément SVG force le navigateur à redessiner tout le SVG à chaque image, filtres
+ * aquarelle compris : c'était le gros du travail au repos. Ici, l'animation porte sur un bloc HTML : le SVG est
+ * dessiné une seule fois, puis le compositeur (carte graphique) se contente de le déplacer ou d'en changer l'opacité.
+ */
+export function Moving({
+  className,
+  delay,
+  duration,
+  children,
+}: {
+  className: string;
+  delay?: number;
+  duration?: number;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`absolute inset-0 will-change-[transform,opacity] ${className}`}
+      style={{ animationDelay: delay ? `${delay}s` : undefined, animationDuration: duration ? `${duration}s` : undefined }}
+    >
+      <Frame>{children}</Frame>
+    </div>
+  );
+}
+
+/**
+ * Répartit des éléments animés en quelques groupes décalés dans le temps (au lieu d'un décalage par élément) :
+ * le scintillement reste irrégulier à l'œil, mais ne coûte plus que quelques calques.
+ */
+export function phases<T extends { d: number }>(items: T[], span: number, count = 3) {
+  return Array.from({ length: count }, (_, k) => ({
+    delay: (k * span) / count,
+    items: items.filter((it) => Math.min(count - 1, Math.floor((it.d / span) * count)) === k),
+  }));
+}
+
 /** Nuage : grappe d'ellipses passées dans le filtre déchiré */
 export function Cloud({
   x,

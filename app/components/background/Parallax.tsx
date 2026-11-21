@@ -45,7 +45,8 @@ export function Layer({ depth = 0, className = "", children }: { depth?: number;
   const px = useTransform(pointer?.x ?? fallback, (v) => v * depth * -24);
   const py = useTransform(pointer?.y ?? fallback, (v) => v * depth * -10);
   return (
-    <m.div className={`absolute inset-[-3%] ${className}`} style={{ x: px, y: py }}>
+    // Calque à part (will-change) : la parallaxe déplace l'image déjà peinte, sans repasser les filtres aquarelle
+    <m.div className={`absolute inset-[-3%] will-change-transform ${className}`} style={{ x: px, y: py }}>
       {children}
     </m.div>
   );

@@ -1,5 +1,5 @@
 import { Layer } from "../Parallax";
-import { Frame, GeoTree, archPath, moundPath, seeded } from "./shared";
+import { Frame, GeoTree, Moving, archPath, moundPath, phases, seeded } from "./shared";
 
 /**
  * Contact & crédits — le jardin de nuit, en prune et rose :
@@ -36,12 +36,17 @@ export default function LuneArt() {
     <>
       {/* Ciel : étoiles, constellations */}
       <Layer depth={0.04}>
+        {/* Étoiles : quatre groupes qui scintillent à contretemps */}
+        {phases(stars, 3.6, 4).map((ph) => (
+          <Moving key={ph.delay} className="animate-twinkle" delay={ph.delay}>
+            <g fill="#fff4d6">
+              {ph.items.map((s, i) => (
+                <circle key={i} cx={s.x} cy={s.y} r={s.r} />
+              ))}
+            </g>
+          </Moving>
+        ))}
         <Frame>
-          <g fill="#fff4d6">
-            {stars.map((s, i) => (
-              <circle key={i} cx={s.x} cy={s.y} r={s.r} className="animate-twinkle" style={{ animationDelay: `${s.d}s` }} />
-            ))}
-          </g>
           <g stroke="#fff4d6" strokeOpacity="0.3" strokeWidth="1" fill="none">
             {constellations.map((c, i) => (
               <path key={i} d={`M${c.map((p) => p.join(" ")).join(" L")}`} />
@@ -76,12 +81,16 @@ export default function LuneArt() {
         <Frame>
           <rect x="-20" y="736" width="1640" height="70" fill="#24122c" opacity="0.85" />
           <rect x="-20" y="736" width="1640" height="70" fill="url(#hatch-light)" opacity="0.25" />
-          <g fill="#ffd9e4">
-            {shimmer.map((s, i) => (
-              <rect key={i} x={s.x} y={s.y} width={s.w} height="1.6" className="animate-twinkle" style={{ animationDelay: `${s.d}s` }} />
-            ))}
-          </g>
         </Frame>
+        {phases(shimmer, 3.6).map((ph) => (
+          <Moving key={ph.delay} className="animate-twinkle" delay={ph.delay}>
+            <g fill="#ffd9e4">
+              {ph.items.map((s, i) => (
+                <rect key={i} x={s.x} y={s.y} width={s.w} height="1.6" />
+              ))}
+            </g>
+          </Moving>
+        ))}
       </Layer>
 
       {/* Porte en arche drapée de lianes, entre deux arbres géométriques */}
@@ -137,14 +146,16 @@ export default function LuneArt() {
             <path d="M1040 812 C1066 776 1100 762 1140 768 C1120 796 1084 812 1040 812Z" />
             <path d="M120 812 C104 784 112 756 140 740 C144 770 138 792 120 812Z" />
           </g>
-          <g fill="#ff9ab3">
-            {petals.map((p, i) => (
-              <g key={i} className="animate-float" style={{ animationDelay: `${p.d}s` }}>
-                <rect x={p.x} y={p.y} width="7" height="7" transform={`rotate(45 ${p.x + 3.5} ${p.y + 3.5})`} />
-              </g>
-            ))}
-          </g>
         </Frame>
+        {phases(petals, 6).map((ph) => (
+          <Moving key={ph.delay} className="animate-float" delay={ph.delay}>
+            <g fill="#ff9ab3">
+              {ph.items.map((p, i) => (
+                <rect key={i} x={p.x} y={p.y} width="7" height="7" transform={`rotate(45 ${p.x + 3.5} ${p.y + 3.5})`} />
+              ))}
+            </g>
+          </Moving>
+        ))}
       </Layer>
     </>
   );
