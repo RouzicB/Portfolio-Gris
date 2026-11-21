@@ -26,13 +26,14 @@
     --ink-soft: #5b5854;
     --veil: rgba(250, 249, 248, 0.82);
     --line: rgba(47, 46, 45, 0.16);
-    /* Une couleur par rubrique : l'accent de la zone du site qui lui correspond */
-    --profil: #a8283a;     /* Profil : désert rouge */
-    --formation: #2a6a45;  /* Formation : la forêt (la pousse) */
-    --aptitudes: #1f7a93;  /* Aptitudes : grotte bleue (assombri pour le papier) */
-    --parcours: #b8862a;   /* Parcours : ville d'or (assombri) */
-    --projets: #b23f6a;    /* Projets : ciel */
-    --contact: #c8466d;    /* Contact : lune */
+    /* Une seule couleur, celle du décor (le rouge du papier gris), déclinée en nuances : une par rubrique.
+       Les nuances qui portent du texte (année des projets, pastille « En cours ») restent assez sombres pour être lues. */
+    --profil: #8f2f3d;     /* Profil : rouge profond */
+    --formation: #6f2834;  /* Formation : lie-de-vin */
+    --aptitudes: #b24f5c;  /* Aptitudes : rouge moyen */
+    --parcours: #9a3644;   /* Expériences : rouge brique */
+    --projets: #a5485a;    /* Projets : rose ancien */
+    --contact: #c2646f;    /* Contact : rose poudré */
     --edge: rgba(255, 255, 255, 0.7);
     --on-accent: #fff;
     --decor: url("decor.jpg");
@@ -46,12 +47,13 @@
     --ink-soft: #a6c6d4;
     --veil: rgba(18, 48, 70, 0.78);
     --line: rgba(234, 247, 252, 0.18);
-    --profil: #f2798a;
-    --formation: #6fd39a;
-    --aptitudes: #7fd3ea;
-    --parcours: #f2c14e;
-    --projets: #f08fb4;
-    --contact: #f06a8f;
+    /* Version numérique : la même idée avec le bleu de la nuit, du bleu glacier au bleu lagon */
+    --profil: #9fd4e6;
+    --formation: #6fb8d6;
+    --aptitudes: #c4e6f1;
+    --parcours: #8cc8e0;
+    --projets: #b2dcea;
+    --contact: #7fc0dc;
     --edge: rgba(127, 211, 234, 0.22);
     --on-accent: #0b2236;
     --decor: url("decor-bleu.jpg");
@@ -86,22 +88,28 @@
     background: radial-gradient(60% 100% at 50% 100%, var(--paper-deep), transparent 70%);
   }
 
-  .page { position: relative; height: calc(100vh - 0.5mm); padding: 10mm 13mm 7.5mm; display: flex; flex-direction: column; }
+  .page { position: relative; height: calc(100vh - 0.5mm); padding: 10mm 13mm 6.5mm; display: flex; flex-direction: column; }
 
   /* ─── En-tête ─── */
-  header { display: grid; grid-template-columns: 48mm 1fr 30mm; gap: 6mm; align-items: center; }
-  .emblem { position: relative; width: 48mm; height: 48mm; color: var(--ink); }
+  /* En-tête sur la grille du corps : l'emblème centré au-dessus du panneau de gauche, le texte aligné sur la colonne de droite */
+  header { display: grid; grid-template-columns: 62mm 1fr; gap: 8mm; align-items: center; }
+  .emblem { justify-self: center; position: relative; width: 58mm; height: 58mm; color: var(--ink); }
   /* QR code vers le site : un astre du décor (disque de lumière cerclé des anneaux de l'emblème) */
-  .qr { align-self: start; margin-top: 1mm; display: flex; flex-direction: column; align-items: center; gap: 1.2mm; text-align: center; }
-  .qr img { width: 30mm; height: 30mm; display: block; }
-  .qr .label { font-size: 5.6pt; letter-spacing: 0.22em; line-height: 1.5; }
+  .qr {
+    display: flex; align-items: center; gap: 3.6mm;
+    padding-top: 3.6mm; border-top: 0.25mm solid var(--line);
+  }
+  .qr img { width: 21mm; height: 21mm; display: block; flex: none; }
+  .qr figcaption { display: flex; flex-direction: column; gap: 1.2mm; }
+  .qr .label { font-size: 6.2pt; letter-spacing: 0.24em; line-height: 1.5; color: var(--ink); }
+  .qr .url { font-size: 7.6pt; color: var(--ink-soft); }
   /* Une image par version */
   .only-digital { display: none !important; }
   :root.numerique .only-digital { display: block !important; }
   :root.numerique .only-print { display: none !important; }
   .emblem svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   .emblem img {
-    position: absolute; inset: 9.2mm; width: 29.6mm; height: 29.6mm; border-radius: 50%;
+    position: absolute; inset: 18%; width: 64%; height: 64%; border-radius: 50%;
     object-fit: cover; object-position: 50% 50%; filter: grayscale(0.1);
   }
   .label {
@@ -129,9 +137,9 @@
   .body { display: grid; grid-template-columns: 62mm 1fr; gap: 8mm; margin-top: 5mm; flex: 1; min-height: 0; }
   aside {
     background: var(--veil); border: 0.25mm solid var(--edge);
-    border-radius: 4mm; padding: 7.5mm 6.6mm 6.5mm;
+    border-radius: 4mm; padding: 7mm 6.6mm 5.6mm;
     box-shadow: 0 2mm 6mm rgba(47, 46, 45, 0.06);
-    display: flex; flex-direction: column; gap: 6.6mm;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 4.6mm;
     position: relative;
   }
   aside::before {
@@ -152,16 +160,23 @@
   h2::after { content: ""; height: 0.25mm; flex: 1; background: var(--line); }
   aside h2 { margin-bottom: 3mm; }
 
-  .contact li { display: flex; gap: 2.8mm; align-items: center; list-style: none; margin-top: 2mm; }
+  .contact li { display: flex; gap: 2.8mm; align-items: center; list-style: none; margin-top: 1.9mm; }
   .contact li:first-child { margin-top: 0; }
   .contact .ico { width: 4.2mm; height: 4.2mm; }
   .contact a { color: inherit; text-decoration: none; }
 
   ul.dots { list-style: none; }
-  ul.dots li { position: relative; padding-left: 3.8mm; margin-top: 1.1mm; }
+  ul.dots li { position: relative; padding-left: 3.8mm; margin-top: 1.4mm; }
+  /* Liste en ligne : les éléments se suivent et passent à la ligne d'eux-mêmes */
+  /* Aptitudes : le dessin et le code côte à côte, une colonne chacun */
+  .apt { display: grid; grid-template-columns: 1fr 1fr; gap: 4.4mm; }
+  .apt .sub { margin: 0 0 2.2mm; }
+  ul.flow { list-style: none; display: flex; flex-direction: column; gap: 2.6mm; font-size: 7.7pt; line-height: 1.32; }
+  ul.flow li { position: relative; padding-left: 2.8mm; text-wrap: balance; }
+  ul.flow li::before { content: ""; position: absolute; left: 0.1mm; top: 1.25mm; width: 1.15mm; height: 1.15mm; transform: rotate(45deg); background: var(--c); opacity: 0.85; }
   ul.dots li::before { content: ""; position: absolute; left: 0.3mm; top: 1.7mm; width: 1.3mm; height: 1.3mm; transform: rotate(45deg); background: var(--c, var(--ink)); opacity: 0.85; }
   .muted { color: var(--ink-soft); }
-  .chips { display: flex; flex-wrap: wrap; gap: 1.6mm 1.4mm; }
+  .chips { display: flex; flex-wrap: wrap; gap: 1.3mm 1.3mm; }
   .chips span { display: inline-flex; align-items: center; gap: 1.3mm; border: 0.25mm solid var(--line); border-radius: 99px; padding: 0.5mm 2.4mm 0.5mm 1.8mm; font-size: 7pt; background: color-mix(in srgb, var(--paper) 55%, transparent); }
   .chips .ico { width: 3mm; height: 3mm; color: var(--ink); }
   /* Logos Adobe : monogramme dans la typo des titres */
@@ -170,7 +185,7 @@
   .sub .ico { width: 3.4mm; height: 3.4mm; color: var(--ink); }
   .sub:first-of-type { margin-top: 0; }
 
-  main { display: flex; flex-direction: column; gap: 5.4mm; padding-top: 1mm; }
+  main { display: flex; flex-direction: column; justify-content: space-between; gap: 5.4mm; padding: 1mm 0 0.6mm; }
   main h2 { margin-bottom: 2.5mm; }
 
   /* Frise : un fil vertical, une pierre par étape (pleine pour l'étape en cours) */
@@ -188,7 +203,7 @@
   .step .when { font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 6.8pt; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); white-space: nowrap; }
   .step .where { font-size: 8.2pt; color: var(--ink-soft); }
   .step p { margin-top: 0.8mm; }
-  .tag { display: inline-block; margin-left: 1.6mm; padding: 0.2mm 2mm; border-radius: 99px; font-size: 6.4pt; font-family: "Josefin Sans", sans-serif; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-accent); background: var(--c); vertical-align: 0.4mm; }
+  .tag { display: inline-block; margin-left: 1.6mm; padding: 0.8mm 1.7mm 0.3mm 2mm; line-height: 1; border-radius: 99px; font-size: 6.4pt; font-family: "Josefin Sans", sans-serif; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-accent); background: var(--c); vertical-align: 0.4mm; }
 
   /* Projets : une carte en arche par projet (le haut en cintre des cartes du site), lavis, filet intérieur
      et pierre de clé au sommet ; l'année et la discipline, le titre, puis ce que le projet a apporté */
@@ -212,9 +227,6 @@
   .projects small { display: block; margin-top: 0.4mm; font-size: 5.8pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); font-family: "Josefin Sans", sans-serif; font-weight: 600; }
   .projects b { display: block; margin-top: 0.9mm; line-height: 1.25; text-wrap: balance; font-family: "Josefin Sans", sans-serif; font-weight: 600; font-size: 8.8pt; }
   .projects span { display: block; font-size: 7.4pt; line-height: 1.38; margin-top: 0.8mm; text-wrap: pretty; color: var(--ink); }
-  footer { margin-top: 4mm; display: flex; justify-content: center; align-items: center; gap: 3mm; }
-  footer .line { height: 0.25mm; width: 22mm; background: var(--line); }
-  footer .gem { width: 1.5mm; height: 1.5mm; transform: rotate(45deg); background: var(--contact); }
 </style>
 </head>
 <body>
@@ -243,7 +255,7 @@
           <circle cx="50" cy="50" r="32.6" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="0.4" />
           <circle cx="85.5" cy="31" r="3.6" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="0.35" />
           <circle cx="85.5" cy="31" r="1.7" fill="currentColor" />
-          <path d="M50 1.2 L51.6 3.1 L50 5 L48.4 3.1Z" fill="#a8283a" />
+          <path d="M50 1.2 L51.6 3.1 L50 5 L48.4 3.1Z" style="fill: var(--profil)" />
         </svg>
         <img src="portrait.png" alt="Portrait de Baptiste Rouzic" />
       </div>
@@ -257,14 +269,9 @@
           l'architecture de l'information et l'interface, puis je construis ce que je dessine.
           J'aime les produits qui prennent soin de leurs utilisateurs, surtout dans les moments difficiles.
         </p>
-        <p class="status"><i data-icon="statut"></i>Recherche une alternance ou un premier poste UX/UI pour 2027</p>
+        <p class="status"><i data-icon="statut"></i>Recherche un premier poste UX/UI à la fin de mes études, en 2027</p>
       </div>
 
-      <figure class="qr">
-        <img class="only-print" src="qr.svg" alt="QR code vers le portfolio baptisterouzic.fr" />
-        <img class="only-digital" src="qr-bleu.svg" alt="QR code vers le portfolio baptisterouzic.fr" />
-        <figcaption class="label">Le voyage<br />en ligne</figcaption>
-      </figure>
     </header>
 
     <div class="body">
@@ -297,21 +304,26 @@
 
         <section style="--c: var(--aptitudes)">
           <h2><i data-icon="aptitudes"></i>Aptitudes</h2>
-          <p class="sub"><i data-icon="conception"></i>Côté dessin</p>
-          <ul class="dots">
+          <div class="apt">
+          <div>
+          <p class="sub"><i data-icon="conception"></i>Dessin</p>
+          <ul class="flow">
             <li>Recherche utilisateur</li>
-            <li>Architecture &amp; parcours</li>
-            <li>UI design &amp; design system</li>
-            <li>Identité &amp; édition</li>
-            <li>Motion &amp; vidéo</li>
+            <li>Architecture&nbsp;&amp; parcours</li>
+            <li>UI design&nbsp;&amp; design system</li>
+            <li>Identité&nbsp;&amp; édition</li>
           </ul>
-          <p class="sub"><i data-icon="interface"></i>Côté code</p>
-          <ul class="dots">
+          </div>
+          <div>
+          <p class="sub"><i data-icon="interface"></i>Code</p>
+          <ul class="flow">
             <li>Intégration responsive</li>
-            <li>React · Next.js · TypeScript</li>
-            <li>Accessibilité &amp; tests</li>
-            <li>Git · Docker · Vercel</li>
+            <li>React&nbsp;· Next.js&nbsp;· TypeScript</li>
+            <li>Accessibilité&nbsp;&amp; tests</li>
+            <li>Git&nbsp;· Docker&nbsp;· Vercel</li>
           </ul>
+          </div>
+          </div>
         </section>
 
         <section style="--c: var(--aptitudes)">
@@ -339,6 +351,13 @@
             <li>Espagnol <span class="muted">· scolaire</span></li>
           </ul>
         </section>
+
+        <!-- Le QR code vers le site, au pied du panneau -->
+        <figure class="qr">
+          <img class="only-print" src="qr.svg" alt="QR code vers le portfolio baptisterouzic.fr" />
+          <img class="only-digital" src="qr-bleu.svg" alt="QR code vers le portfolio baptisterouzic.fr" />
+          <figcaption><span class="label">Le voyage<br />en ligne</span><span class="url">baptisterouzic.fr</span></figcaption>
+        </figure>
       </aside>
 
       <main>
@@ -393,11 +412,6 @@
       </main>
     </div>
 
-    <footer>
-      <span class="line"></span><span class="gem"></span>
-      <span class="label">Tout le voyage sur baptisterouzic.fr</span>
-      <span class="gem"></span><span class="line"></span>
-    </footer>
   </div>
 </body>
 </html>

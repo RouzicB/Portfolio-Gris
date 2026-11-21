@@ -81,9 +81,9 @@ function qrSvg(text, { disc, glow, ink, ring, accent }) {
   const pad = R + 4.2;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${m - pad} ${m - pad} ${pad * 2} ${pad * 2}"><defs><radialGradient id="halo"><stop offset="0.7" stop-color="${glow}" stop-opacity="0.55"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient></defs>${art.join("")}<g fill="${ink}">${dots.join("")}</g>${logo.join("")}</svg>`;
 }
-writeFileSync(resolve(here, "qr.svg"), qrSvg(SITE, { disc: "#fbfaf8", glow: "#ffffff", ink: "#2f2e2d", ring: "#2f2e2d", accent: "#a8283a" }));
+writeFileSync(resolve(here, "qr.svg"), qrSvg(SITE, { disc: "#fbfaf8", glow: "#ffffff", ink: "#2f2e2d", ring: "#2f2e2d", accent: "#8f2f3d" }));
 // Version numérique : fond transparent, code blanc posé sur la nuit (code inversé, lu par les appareils photo récents)
-writeFileSync(resolve(here, "qr-bleu.svg"), qrSvg(SITE, { disc: null, glow: "#7fd3ea", ink: "#ffffff", ring: "#bfe6f2", accent: "#e0566f" }));
+writeFileSync(resolve(here, "qr-bleu.svg"), qrSvg(SITE, { disc: null, glow: "#92cde0", ink: "#ffffff", ring: "#bfe6f2", accent: "#9fd4e6" }));
 
 // ─── Icônes : celles du site (app/components/icons/GrisIcons.tsx), rendues en SVG statique ───
 // Le composant est transpilé à la volée puis rendu avec React : le CV reprend exactement le trait de pinceau,

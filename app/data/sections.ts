@@ -64,7 +64,7 @@ export const sections: Section[] = [
     id: "contact",
     label: "Contact",
     title: "Écrivons la suite",
-    intro: "Une alternance, un premier poste, un projet ? Je réponds sous 48 h.",
+    intro: "Un premier poste, un projet ? Je réponds sous 48 h.",
     icon: "contact",
     stage: "lune",
     sun: { x: 72, y: 40, size: 340 },
