@@ -357,16 +357,29 @@ const VOWELS = {
   ],
 } as const;
 
-/** Réverbération : bruit qui s'éteint lentement (une grande salle) */
-function impulse(ctx: AudioContext, seconds = 5.5) {
-  const len = Math.floor(ctx.sampleRate * seconds);
+/**
+ * Réverbération : bruit qui s'éteint lentement (une grande salle).
+ * La courbe est celle d'une queue de 5,5 s, mais coupée à 3,6 s (avec un court fondu) : au-delà, elle est
+ * à plus de 30 dB sous le départ, inaudible sous la musique. La convolution, le calcul le plus lourd du son,
+ * coûte d'autant moins : sur un PC modeste, c'est elle qui ne tenait pas le rythme et faisait grésiller.
+ */
+function impulse(ctx: AudioContext, seconds = 5.5, cut = 3.6) {
+  const total = ctx.sampleRate * seconds;
+  const len = Math.floor(ctx.sampleRate * cut);
+  const fade = Math.floor(ctx.sampleRate * 0.3);
   const buf = ctx.createBuffer(2, len, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
     const data = buf.getChannelData(c);
-    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
+    for (let i = 0; i < len; i++) {
+      const tail = i > len - fade ? (len - i) / fade : 1;
+      data[i] = (Math.random() * 2 - 1) * (1 - i / total) ** 3 * tail;
+    }
   }
   return buf;
 }
+
+/** Avance (s) avec laquelle chaque mesure est programmée : le son ne dépend plus d'un fil principal à l'heure */
+const LEAD = 1;
 
 class Ambient {
   private ctx: AudioContext | null = null;
@@ -411,11 +424,13 @@ class Ambient {
   /** Position dans le morceau (s) */
   get position() {
     if (!this.playing || !this.ctx) return this.offset;
-    return Math.min(TRACK_LENGTH, this.offset + this.ctx.currentTime - this.startedAt);
+    return Math.min(TRACK_LENGTH, this.offset + Math.max(0, this.ctx.currentTime - this.startedAt));
   }
 
   private setup() {
-    const ctx = new AudioContext();
+    // « playback » : une mémoire tampon plus large. La latence ne compte pas pour une musique d'ambiance ; en échange,
+    // un processeur occupé (voyage entre sections, PC modeste) ne vide plus le tampon : plus de craquements.
+    const ctx = new AudioContext({ latencyHint: "playback" });
     const master = ctx.createGain();
     master.gain.value = 0;
     const comp = ctx.createDynamicsCompressor();
@@ -711,20 +726,31 @@ class Ambient {
     }
   }
 
-  /** Joue la mesure `bar` à partir de `from` secondes, puis programme la suivante */
-  private playBar(bar: number, from: number) {
+  /**
+   * Programme la mesure `bar` à partir de `from` secondes, pour qu'elle sonne à l'instant `start` (horloge audio),
+   * puis la suivante, une seconde avant son tour. Les mesures s'enchaînent sur l'horloge audio, pas sur les minuteries :
+   * une minuterie en retard (processeur occupé) ne décale ni ne tronque plus rien. Avant, chaque mesure partait 30 ms
+   * après sa programmation ; sur un PC lent, ses premières notes démarraient « dans le passé » et claquaient.
+   */
+  private playBar(bar: number, from: number, start: number) {
     if (!this.playing || !this.ctx) return;
+    const ctx = this.ctx;
     if (bar >= BARS) {
-      // Fin du morceau : le suivant enchaîne
-      this.load((this.index + 1) % TRACKS.length, 0, true);
+      // Fin du morceau : le suivant enchaîne, à la fin exacte de la dernière mesure
+      this.timer = window.setTimeout(
+        () => this.load((this.index + 1) % TRACKS.length, 0, true),
+        Math.max(0, (start - ctx.currentTime) * 1000),
+      );
       return;
     }
-    const now = this.ctx.currentTime + 0.03;
+    // Minuterie très en retard (onglet ralenti) : on recale plutôt que de programmer des notes déjà passées
+    const at = Math.max(start, ctx.currentTime + 0.05);
     for (const note of score(this.track, bar)) {
-      if (note.at >= from) this.sound(note, now + note.at - from, note.dur);
-      else if (SUSTAINED.has(note.inst) && note.at + note.dur > from + 0.6) this.sound(note, now, note.at + note.dur - from, true);
+      if (note.at >= from) this.sound(note, at + note.at - from, note.dur);
+      else if (SUSTAINED.has(note.inst) && note.at + note.dur > from + 0.6) this.sound(note, at, note.at + note.dur - from, true);
     }
-    this.timer = window.setTimeout(() => this.playBar(bar + 1, 0), (BAR - from) * 1000);
+    const next = at + BAR - from;
+    this.timer = window.setTimeout(() => this.playBar(bar + 1, 0, next), Math.max(0, (next - LEAD - ctx.currentTime) * 1000));
   }
 
   /** Coupe la voix en cours (fondu court) et en ouvre une neuve */
@@ -748,9 +774,10 @@ class Ambient {
     const ctx = this.ctx!;
     this.freshVoice();
     this.offset = Math.max(0, Math.min(TRACK_LENGTH - 0.1, position));
-    this.startedAt = ctx.currentTime;
+    // Départ légèrement différé : le temps de créer les sons de la première mesure sans en manquer l'attaque
+    this.startedAt = ctx.currentTime + 0.12;
     const bar = Math.floor(this.offset / BAR);
-    this.playBar(bar, this.offset - bar * BAR);
+    this.playBar(bar, this.offset - bar * BAR, this.startedAt);
   }
 
   /** Charge un morceau (et le joue si la lecture est en cours, ou si `play`) */
