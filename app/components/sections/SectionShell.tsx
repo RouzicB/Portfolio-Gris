@@ -21,7 +21,8 @@ const SECTION_VARS = sections.map((s) => paletteToVars(palettes[s.stage]) as CSS
  * Gabarit d'une section : un écran plein, empilé avec les autres.
  * Son zoom et son opacité suivent la position du voyage : quand on avance, elle grossit et s'efface
  * (on entre dans la scène) pendant que la suivante arrive du fond. Seule la section active est interactive.
- * Si le contenu dépasse l'écran (mobile), la section défile à l'intérieur avant de passer à la suivante.
+ * Si le contenu dépasse l'écran (mobile), la section défile à l'intérieur (à la molette, avant de passer à la suivante ;
+ * au doigt, on change de section uniquement avec la barre du bas).
  */
 export default function SectionShell({
   index,

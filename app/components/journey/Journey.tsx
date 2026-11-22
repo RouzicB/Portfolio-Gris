@@ -296,27 +296,8 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       if (next >= 0 && next < sections.length) goTo(next);
     };
 
-    // Tactile : une section plus haute que l'écran se lit d'abord en entier. On ne change de section que si,
-    // au début du geste, le contenu était déjà en butée dans ce sens (sinon le même geste qui amène en bas
-    // enchaînerait aussitôt sur la section suivante). Les balayages horizontaux (canevas du parcours) sont ignorés.
-    let touchX = 0;
-    let touchY = 0;
-    let edge = { down: true, up: true };
-    const onTouchStart = (e: TouchEvent) => {
-      touchX = e.touches[0].clientX;
-      touchY = e.touches[0].clientY;
-      const el = activeEl();
-      edge = el ? { down: !canScrollWithin(el, 1), up: !canScrollWithin(el, -1) } : { down: true, up: true };
-    };
-    const onTouchEnd = (e: TouchEvent) => {
-      const dx = touchX - e.changedTouches[0].clientX;
-      const dy = touchY - e.changedTouches[0].clientY;
-      if (Math.abs(dx) > Math.abs(dy)) return;
-      const step = gestureDirection(dy, 50);
-      if (!step || !ready()) return;
-      if (!(step > 0 ? edge.down : edge.up)) return;
-      goTo(activeRef.current + step);
-    };
+    // Tactile (téléphone, tablette) : pas de changement de section au glissé. Le doigt fait seulement défiler le contenu
+    // d'une section plus haute que l'écran ; on change de section avec la barre de navigation en bas.
 
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
@@ -334,13 +315,9 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     };
 
     window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("keydown", onKey);
     };
   }, [goTo]);

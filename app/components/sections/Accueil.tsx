@@ -57,7 +57,8 @@ export default function Accueil() {
           </m.button>
         </m.div>
 
-        <m.p variants={fadeUp} className="mt-10 flex items-center gap-2 text-xs text-ink short:mt-5 tiny:hidden">
+        {/* Au doigt, on ne change pas de section en glissant (barre du bas) : l'invitation à défiler y est masquée */}
+        <m.p variants={fadeUp} className="mt-10 flex items-center gap-2 text-xs text-ink short:mt-5 tiny:hidden pointer-coarse:hidden">
           <ScrollIcon size={20} />
           Faites défiler
         </m.p>
