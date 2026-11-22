@@ -22,8 +22,8 @@ const VARS = KEYS.map(cssVarName);
 const PARSED: RGBA[][] = STAGES.map((stage) => KEYS.map((k) => parseColor(palettes[stage][k])));
 /** Durée du voyage d'une section à l'autre (zoom), en secondes */
 const TRAVEL = 1.35;
-/** Fondu de couleur des éléments chargés en mode léger (globals.css, [data-glide]) : un peu plus court que le trajet */
-const GLIDE_MS = 1200;
+/** Fondu de couleur des éléments chargés en mode léger (globals.css, [data-glide]) : court, il part dès le geste */
+const GLIDE_MS = 350;
 /** Courbe : départ franc, arrivée très douce */
 const EASE: [number, number, number, number] = [0.65, 0, 0.2, 1];
 
