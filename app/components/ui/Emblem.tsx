@@ -29,10 +29,14 @@ export default function Emblem({ className = "" }: { className?: string }) {
     />
   );
   /** Calque superposé, aux mêmes dimensions ; `spin` : classe de rotation (autour du centre) */
+  // La rotation porte sur un bloc HTML qui contient le SVG : Chrome ne confie pas à la carte graphique une animation
+  // posée sur l'élément <svg> lui-même, et recalculait alors son style à chaque image, même au repos.
   const layer = (spin: string, children: ReactNode) => (
-    <svg viewBox="0 0 200 200" className={`absolute inset-0 size-full overflow-visible ${spin}`} aria-hidden focusable="false">
-      {children}
-    </svg>
+    <span className={`absolute inset-0 block ${spin}`}>
+      <svg viewBox="0 0 200 200" className="size-full overflow-visible" aria-hidden focusable="false">
+        {children}
+      </svg>
+    </span>
   );
   // Le conteneur porte les calques : il doit être positionné (sauf s'il l'est déjà par sa classe)
   const positioned = /\b(absolute|fixed|relative)\b/.test(className) ? "" : "relative ";

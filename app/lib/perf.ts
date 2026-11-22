@@ -58,16 +58,20 @@ export function enableLite() {
   window.dispatchEvent(new Event(EVENT));
 }
 
-/** Cadence trop basse : plus de 28 ms par image en moyenne (< ~35 images/s), ou plus de 20 % d'images très lentes */
+/**
+ * Cadence trop basse : plus de 22 ms par image en moyenne (< ~45 images/s), ou plus de 10 % d'images très lentes
+ * (> 50 ms, un à-coup visible). Mesuré sur PC simulés : un PC ancien (processeur 6× plus lent) reste sous ces seuils
+ * en mode complet ; un PC très ancien (10×) les dépasse, et le mode léger y est nettement plus fluide.
+ */
 const tooSlow = (gaps: number[]) => {
   const avg = gaps.reduce((a, b) => a + b, 0) / gaps.length;
-  return avg > 28 || gaps.filter((g) => g > 50).length / gaps.length > 0.2;
+  return avg > 22 || gaps.filter((g) => g > 50).length / gaps.length > 0.1;
 };
 
 /**
  * Surveille la fluidité sur un ordinateur en décor vivant, aux deux moments qui comptent :
  * - au repos, une fois la page posée (nuages en mouvement, verre dépoli) ;
- * - pendant chaque voyage entre sections (attribut data-travel sur <html>), le moment le plus exigeant.
+ * - pendant chaque voyage entre sections (attribut data-traveling sur <html>), le moment le plus exigeant.
  * Trop lent et le site bascule en mode léger ; après plusieurs voyages fluides, la machine est notée « full »
  * et n'est plus surveillée.
  */
@@ -115,13 +119,13 @@ export function watchFrameRate(): () => void {
 
   // Voyages entre sections
   const observer = new MutationObserver(() => {
-    if (stopped || !root.hasAttribute("data-travel")) return;
-    measure(() => root.hasAttribute("data-travel"), 3000, (gaps) => judge(gaps, 20));
+    if (stopped || !root.hasAttribute("data-traveling")) return;
+    measure(() => root.hasAttribute("data-traveling"), 3000, (gaps) => judge(gaps, 20));
   });
-  observer.observe(root, { attributes: true, attributeFilter: ["data-travel"] });
+  observer.observe(root, { attributes: true, attributeFilter: ["data-traveling"] });
 
   // Repos : laisse passer l'écran de chargement et la mise en place du décor avant de mesurer
-  const timer = window.setTimeout(() => measure(() => !root.hasAttribute("data-travel"), 3000, (gaps) => judge(gaps, 60)), 3500);
+  const timer = window.setTimeout(() => measure(() => !root.hasAttribute("data-traveling"), 3000, (gaps) => judge(gaps, 60)), 3500);
 
   function stop() {
     stopped = true;

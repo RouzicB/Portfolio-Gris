@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useRef, useSyncExternalStore, type ComponentType } from "react";
 import { useReducedMotion, type MotionValue } from "framer-motion";
 import type { StageId, Sun } from "../../types";
+import { palettes } from "../../data/palettes";
 import { segment, stageWeights, zoomScale } from "../../lib/journey";
-import { WIDE_QUERY, bakedScene } from "../../lib/decor";
+import { BAKED_PORTRAIT_SIZES, TOUCH_QUERY, WIDE_QUERY, bakedPortraitSet, bakedScene } from "../../lib/decor";
 import { isLite, subscribeLite } from "../../lib/perf";
 import { PointerProvider } from "./Parallax";
 import { WatercolorDefs } from "./art/shared";
@@ -34,6 +35,9 @@ const ART: Record<StageId, ComponentType> = {
   lune: LuneArt,
 };
 
+/** Dégradé du ciel d'une ambiance, en couleurs fixes */
+const skyOf = (id: StageId) => `linear-gradient(180deg, ${palettes[id].skyTop} 0%, ${palettes[id].skyBottom} 100%)`;
+
 /**
  * Le décor fixe : ciel, soleil (ou lune), une scène par ambiance, grain du papier.
  * `stages[i]` / `suns[i]` décrivent l'étape i ; `progress` est la position continue entre les étapes.
@@ -46,16 +50,46 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
   const reduce = useReducedMotion();
   const sceneRefs = useRef<Partial<Record<StageId, HTMLDivElement | null>>>({});
   const sunRef = useRef<HTMLDivElement>(null);
+  const skyFromRef = useRef<HTMLDivElement>(null);
+  const skyToRef = useRef<HTMLDivElement>(null);
   const live = useLiveScenes();
 
   useEffect(() => {
-    // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (quasi transparentes),
+    // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (invisibles),
     // pour qu'un voyage n'ait pas à peindre d'un coup une scène aquarelle à haute densité de pixels.
     // (Sur ordinateur, inutile : et leurs nuages animés se redessineraient en continu.)
-    const prewarm = isLite();
+    // Pas dès l'ouverture : une scène voisine peinte (même quasi transparente) pendant le chargement concourait avec
+    // la scène visible pour le plus grand affichage (LCP), et son image passait avant. Elles attendent la page chargée.
+    let prewarm = false;
+    let warmTimer = 0;
+    const warm = () => {
+      warmTimer = window.setTimeout(() => {
+        prewarm = isLite();
+        if (prewarm) apply(progress.get());
+      }, 1200);
+    };
+    if (document.readyState === "complete") warm();
+    else window.addEventListener("load", warm, { once: true });
     // Dernier état écrit par scène : on ne touche au DOM que si quelque chose change
     const state: Partial<Record<StageId, "off" | "warm" | "on">> = {};
+    let skyPair = "";
     const apply = (f: number) => {
+      // Ciel : le dégradé de départ et celui d'arrivée, superposés ; seule l'opacité du second suit le voyage.
+      // Le compositeur (carte graphique) fait le fondu sans rien redessiner. Avant, les couleurs du dégradé changeaient
+      // à chaque image et tout l'écran était repeint : sur un PC lent, c'était le plus gros du dessin pendant un voyage.
+      // Le résultat est le même : un fondu entre deux couleurs est le mélange de ces deux couleurs.
+      const seg = segment(f, stages.length);
+      const pair = `${stages[seg.from]}>${stages[seg.to]}`;
+      const skyFrom = skyFromRef.current;
+      const skyTo = skyToRef.current;
+      if (skyFrom && skyTo) {
+        if (pair !== skyPair) {
+          skyPair = pair;
+          skyFrom.style.background = skyOf(stages[seg.from]);
+          skyTo.style.background = skyOf(stages[seg.to]);
+        }
+        skyTo.style.opacity = String(seg.t);
+      }
       const weights = stageWeights(f, stages);
       const lo = Math.floor(f) - 1;
       const hi = Math.ceil(f) + 1;
@@ -72,11 +106,15 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
         if (state[id] !== next) {
           state[id] = next;
           el.style.visibility = next === "off" ? "hidden" : "visible";
+          // Scène éteinte : ses animations (nuages, étoiles) se mettent en pause (globals.css)
+          el.toggleAttribute("data-off", next === "off");
           // Scène écartée : ni styles, ni mise en page, ni peinture (le recalcul de la palette l'ignore)
           el.style.contentVisibility = next === "off" ? "hidden" : "visible";
         }
         if (next === "off") return;
-        el.style.opacity = next === "warm" ? "0.002" : String(w);
+        // Scène préparée d'avance : opacité nulle. Son calque (will-change) est quand même dessiné par le navigateur,
+        // mais elle ne compte plus comme « plus grand affichage » (LCP) : à 0,002, PageSpeed la retenait à la place de la scène visible.
+        el.style.opacity = next === "warm" ? "0" : String(w);
         // Zoom : on entre dans la scène qu'on quitte, la suivante arrive du fond
         el.style.transform = reduce ? "" : `scale(${zoomScale(f - idx)})`;
       });
@@ -100,6 +138,7 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
         sun.style.height = `${size}px`;
         // Sans astre (grotte bleue) : le halo s'efface avec la taille, sinon il resterait visible à taille nulle
         sun.style.opacity = String(Math.min(1, base / 70));
+        sun.style.visibility = "visible";
       }
     };
     apply(progress.get());
@@ -109,6 +148,8 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
     return () => {
       off();
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("load", warm);
+      window.clearTimeout(warmTimer);
     };
   }, [progress, stages, suns, used, reduce]);
 
@@ -117,19 +158,30 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
 
   return (
     <div data-landscape className="fixed inset-0 -z-10 overflow-hidden" aria-hidden>
-      <WatercolorDefs />
-      <div
-        data-palette-live
-        className="absolute inset-0"
-        style={{ background: "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%)" }}
+      {/* Téléphones et tablettes : l'image du décor de départ est demandée dès la lecture du HTML (React la place dans
+          <head>), en priorité haute, au lieu d'attendre que la page la découvre. `media` : seuls les écrans qui
+          l'affichent la téléchargent (un ordinateur garde la scène vivante). */}
+      <link
+        rel="preload"
+        as="image"
+        type="image/avif"
+        imageSrcSet={bakedPortraitSet(stages[0], "avif")}
+        imageSizes={BAKED_PORTRAIT_SIZES}
+        media={`(max-aspect-ratio: 1/1) and ${TOUCH_QUERY.split(", ").join(", (max-aspect-ratio: 1/1) and ")}`}
+        fetchPriority="high"
       />
+      <WatercolorDefs />
+      <div ref={skyFromRef} className="absolute inset-0" style={{ background: skyOf(stages[0]) }} />
+      <div ref={skyToRef} className="absolute inset-0 will-change-[opacity]" style={{ background: skyOf(stages[0]), opacity: 0 }} />
 
       {/* Soleil (ou lune), entouré d'anneaux fins */}
       <div
         ref={sunRef}
         data-palette-live
         className="absolute -translate-x-1/2 -translate-y-1/2"
-        style={{ left: `${sun0.x}%`, top: `${sun0.y}%`, width: sun0.size, height: sun0.size, opacity: Math.min(1, sun0.size / 70) }}
+        // Masqué jusqu'à son placement par le script : sur un écran étroit, l'astre se range dans un coin, et ce saut
+        // juste après l'affichage comptait comme un décalage de mise en page (PageSpeed : CLS de 0,22)
+        style={{ left: `${sun0.x}%`, top: `${sun0.y}%`, width: sun0.size, height: sun0.size, opacity: Math.min(1, sun0.size / 70), visibility: "hidden" }}
       >
         {/* Halo : un dégradé plutôt qu'une ombre floue de 140 px, bien moins coûteuse à redessiner
             à chaque image pendant les voyages (la couleur de l'astre change en continu) */}
@@ -180,9 +232,11 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
               {/* AVIF d'abord (bien plus léger), WebP sinon ; cadrage large sur un écran plus large que haut */}
               <source media={WIDE_QUERY} type="image/avif" srcSet={bakedScene(id, "wide", "avif")} />
               <source media={WIDE_QUERY} srcSet={bakedScene(id, "wide")} />
-              <source type="image/avif" srcSet={bakedScene(id, "portrait", "avif")} />
+              <source type="image/avif" srcSet={bakedPortraitSet(id, "avif")} sizes={BAKED_PORTRAIT_SIZES} />
               <img
                 src={bakedScene(id, "portrait")}
+                srcSet={bakedPortraitSet(id, "webp")}
+                sizes={BAKED_PORTRAIT_SIZES}
                 alt=""
                 loading="lazy"
                 decoding="async"

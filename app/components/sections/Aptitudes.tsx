@@ -93,12 +93,14 @@ function Bridge() {
     >
       <span aria-hidden className="hidden w-px flex-1 bg-gradient-to-b from-transparent to-ink/25 lg:block" />
       <span className="relative grid size-14 shrink-0 place-items-center text-ink" aria-hidden>
-        <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible emblem-spin-slow">
+        <span aria-hidden className="absolute inset-0 size-full emblem-spin-slow block">
+        <svg viewBox="0 0 48 48" className="size-full overflow-visible">
           <g>
             <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="0.9" pathLength={100} strokeDasharray="86 14" opacity="0.7" />
             <path d="M24 -0.5 L26.2 2 L24 4.5 L21.8 2Z" fill="var(--accent)" />
           </g>
         </svg>
+        </span>
         <span className="font-display text-2xl font-light">&amp;</span>
       </span>
       <p className="label-spaced w-full text-center text-ink sm:w-auto lg:w-full">Entre les deux</p>

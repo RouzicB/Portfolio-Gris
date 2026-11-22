@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { m, useAnimationControls, useTransform } from "framer-motion";
 import { sections } from "../../data/sections";
 import { palettes } from "../../data/palettes";
@@ -45,42 +45,55 @@ export default function SectionShell({
   // Apparition pilotée au geste (pas au rendu React, qui est différé) : le contenu de la section visée
   // commence à apparaître dès le clic ou le glissé, celui qu'on quitte s'efface aussitôt.
   const reveal = useAnimationControls();
+  // Lancées une image (apparition) et deux images (effacement) après le geste : la première image du voyage ne porte
+  // plus que le départ du mouvement, et le travail est étalé (sur un PC lent, tout faire d'un coup marquait un à-coup).
+  // Le contenu n'apparaît de toute façon qu'après 0,15 s (delayChildren).
   useEffect(() => {
     let shown = getActive() === index;
+    let frame = 0;
+    const later = (fn: () => void, frames: number) => {
+      cancelAnimationFrame(frame);
+      const step = (n: number) => (frame = requestAnimationFrame(() => (n <= 1 ? fn() : step(n - 1))));
+      step(frames);
+    };
     if (shown) reveal.start("show");
-    return onActivate((target) => {
+    const off = onActivate((target) => {
       if (target === index) {
         shown = true;
-        reveal.start("show");
+        later(() => reveal.start("show"), 1);
       } else if (shown) {
         shown = false;
-        reveal.start("hidden");
+        later(() => reveal.start("hidden"), 2);
       }
     });
+    return () => {
+      off();
+      cancelAnimationFrame(frame);
+    };
   }, [index, getActive, onActivate, reveal]);
 
-  const opacity = useTransform(progress, (f) => contentOpacity(f - index));
+  // La section visée (dès le geste, avant même le rendu React) reste à opacité 1 : un parent en fondu couperait le verre
+  // dépoli (backdrop-filter) de ses cartes pendant tout le trajet ; son contenu apparaît carte par carte (fadeUp).
+  // Seule la section qu'on quitte s'efface en bloc.
+  const opacity = useTransform(progress, (f) => (getActive() === index ? 1 : contentOpacity(f - index)));
   // Sans animation demandée, le zoom est neutralisé en CSS (globals.css) : rendu identique côté serveur et client
   const scale = useTransform(progress, (f) => zoomScale(f - index, 0.35, 0.1));
-  const visibility = useTransform(opacity, (o) => (o < 0.01 ? "hidden" : "visible"));
+  // Effacée : masquée, sauf si elle est préparée comme voisine de la section active (data-ready, Journey.tsx)
+  const ref = useRef<HTMLElement>(null);
+  const visibility = useTransform(opacity, (o) => (o < 0.01 && !ref.current?.hasAttribute("data-ready") ? "hidden" : "visible"));
   // Section effacée : ses styles ne sont plus recalculés pendant les transitions de palette
   const contentVisibility = visibility;
 
   return (
     <m.section
+      ref={ref}
       id={anchorId(section.id)}
       data-section-index={index}
       aria-labelledby={titleId}
       aria-hidden={!isActive}
       inert={!isActive}
-      // La section d'arrivée reste à opacité 1 : un parent en fondu couperait le verre dépoli (backdrop-filter)
-      // de ses cartes pendant tout le trajet. Son contenu apparaît carte par carte (fadeUp) ; seule la section
-      // qu'on quitte s'efface en bloc.
-      style={
-        isActive
-          ? { ...SECTION_VARS[index], opacity: 1, scale, visibility: "visible", contentVisibility: "visible" }
-          : { ...SECTION_VARS[index], opacity, scale, visibility, contentVisibility }
-      }
+      // Opacité et visibilité suivent le voyage (voir `opacity`) ; aria-hidden et inert, eux, changent à la fin du trajet
+      style={{ ...SECTION_VARS[index], opacity, scale, visibility, contentVisibility }}
       className={`absolute inset-0 overflow-y-auto overscroll-contain will-change-transform ${className}`}
     >
       <div className="flex min-h-full items-center px-4 pb-28 pt-24 sm:px-8 md:pb-24 md:pr-24 md:pt-16 short:pt-20 short:md:pb-24 short:md:pt-10">

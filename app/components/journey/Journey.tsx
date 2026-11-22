@@ -7,6 +7,7 @@ import { palettes } from "../../data/palettes";
 import { parseColor, type RGBA } from "../../lib/color";
 import { anchorId, canScrollWithin, clampIndex, cssVarName, gestureDirection, segment } from "../../lib/journey";
 import { settlePalette } from "../../lib/settle";
+import { isLite } from "../../lib/perf";
 import type { Palette } from "../../types";
 import { JourneyContext, JourneyControlsContext } from "./JourneyContext";
 import Landscape from "../background/Landscape";
@@ -40,6 +41,38 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
   const travel = useRef<AnimationPlaybackControls | null>(null);
   const busyUntil = useRef(0);
   const listeners = useRef(new Set<(index: number) => void>());
+  const prerenderTask = useRef(0);
+
+  /**
+   * Au repos, les sections voisines de la section active sont préparées (attribut data-ready) : leur contenu est rendu
+   * (styles et mise en page calculés), visible au sens CSS mais à opacité nulle, et inerte. Au départ d'un voyage, la
+   * section d'arrivée n'a plus qu'à changer d'opacité. Avant, elle passait de « masquée » à « visible » : la visibilité
+   * se transmettant à tout son contenu, le navigateur en recalculait le style d'un coup (~500 éléments) à la première
+   * image du trajet, un à-coup bien visible sur un PC lent. Les autres sections restent non rendues (content-visibility).
+   */
+  const prerenderNeighbors = useCallback((index: number) => {
+    const run = () => {
+      prerenderTask.current = 0;
+      if (activeRef.current !== index) return;
+      stageRef.current?.querySelectorAll<HTMLElement>("[data-section-index]").forEach((el) => {
+        const i = Number(el.dataset.sectionIndex);
+        if (i === index) return;
+        const ready = Math.abs(i - index) === 1;
+        el.toggleAttribute("data-ready", ready);
+        // Les autres sections suivent cette règle à chaque image (SectionShell) ; ici, on l'applique tout de suite
+        if (Number(getComputedStyle(el).opacity) < 0.01) {
+          el.style.visibility = ready ? "visible" : "hidden";
+          el.style.contentVisibility = ready ? "visible" : "hidden";
+        }
+      });
+    };
+    if (prerenderTask.current) window.clearTimeout(prerenderTask.current);
+    // Après le voyage, une fois le navigateur au repos
+    prerenderTask.current = window.setTimeout(
+      () => ("requestIdleCallback" in window ? window.requestIdleCallback(run, { timeout: 1500 }) : run()),
+      300,
+    );
+  }, []);
 
   const goTo = useCallback(
     (index: number, instant = false) => {
@@ -57,32 +90,49 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
         el.style.contentVisibility = "visible";
         el.scrollTop = forward || instant ? 0 : el.scrollHeight;
       }
+      // Voyage en cours : signal pour les autres scripts sur <html> (data-traveling, qu'aucune règle CSS ne lit : un attribut
+      // lu par le CSS, posé sur <html>, ferait recalculer le style de toute la page), et attribut data-travel sur les
+      // éléments qui suivent la palette (leurs transitions de couleur sont suspendues, globals.css)
+      const setTravel = (on: boolean) => {
+        document.documentElement.toggleAttribute("data-traveling", on);
+        // Mode léger : les éléments chargés (navigation, lecteur…) ne changent de couleur qu'à l'arrivée (voir la palette
+        // plus bas), leurs transitions n'ont pas à être suspendues. L'attribut faisait recalculer tout leur contenu
+        // (~600 éléments) au départ et à l'arrivée de chaque voyage.
+        const lite = on && isLite();
+        document.querySelectorAll("[data-palette-live]").forEach((el) => {
+          if (!lite || el.getElementsByTagName("*").length <= 8) el.toggleAttribute("data-travel", on);
+        });
+      };
       if (instant) {
         travel.current = null;
-        document.documentElement.removeAttribute("data-travel");
+        setTravel(false);
         progress.set(target);
       } else {
-        // Voyage en cours : transitions de couleur suspendues (globals.css)
-        const root = document.documentElement;
-        root.setAttribute("data-travel", "");
+        setTravel(true);
         const run = animate(progress, target, { duration, ease: EASE });
         travel.current = run;
         run.then(() => {
-          if (travel.current === run) root.removeAttribute("data-travel");
+          if (travel.current !== run) return;
+          setTravel(false);
+          // Le rendu React (accessibilité, interactivité de la section active) attend la fin du voyage : il change
+          // aria-hidden et inert sur deux sections, ce qui fait recalculer le style de tout leur contenu (~600 éléments).
+          // En plein trajet, sur un PC lent, c'étaient plusieurs images perdues. L'apparence, elle, suit déjà le geste.
+          startTransition(() => setActive(target));
+          prerenderNeighbors(target);
         });
       }
       // La musique d'ambiance (si elle joue) prend la gamme de la zone d'arrivée
       ambient().setStage(STAGES[target]);
       // Apparition du contenu et navigation : tout de suite, sans React
       if (changed) listeners.current.forEach((fn) => fn(target));
-      // Le rendu React (accessibilité, interactivité de la section active) passe en tâche de fond, interruptible :
-      // il ne bloque plus les premières images du voyage
-      if (instant) setActive(target);
-      else startTransition(() => setActive(target));
+      if (instant) {
+        setActive(target);
+        prerenderNeighbors(target);
+      }
       const hash = `#${anchorId(sections[target].id)}`;
       if (window.location.hash !== hash) window.history.replaceState(null, "", target === 0 ? window.location.pathname : hash);
     },
-    [progress, reduce],
+    [progress, reduce, prerenderNeighbors],
   );
 
   // La page d'accueil ne défile plus : chaque section est un écran.
@@ -104,7 +154,10 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     const index = fromHash();
     const raf = index > 0 ? requestAnimationFrame(() => goTo(index, true)) : 0;
     // Retour sur l'accueil depuis une autre page : la musique reprend le morceau de la première zone
-    if (index <= 0) ambient().setStage(STAGES[0]);
+    if (index <= 0) {
+      ambient().setStage(STAGES[0]);
+      prerenderNeighbors(0);
+    }
     // Ancre modifiée sans recharger la page (lien interne, saisie dans la barre d'adresse)
     const onHash = () => {
       const i = fromHash();
@@ -115,7 +168,7 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       cancelAnimationFrame(raf);
       window.removeEventListener("hashchange", onHash);
     };
-  }, [goTo]);
+  }, [goTo, prerenderNeighbors]);
 
   // La palette suit la position, image par image.
   // ⚠ Pas sur :root : Chrome recalculerait alors le style de tous les éléments affichés (~800) à chaque image.
@@ -123,13 +176,16 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
   // attribut data-palette-live) ; chaque section porte sa propre palette, fixe (SectionShell).
   useEffect(() => {
     let targets: HTMLElement[] = [];
-    // Éléments chargés (navigation : ~190 descendants à recalculer à chaque changement de variable) :
-    // pendant un voyage, une image sur deux suffit, l'écart de teinte d'une image à l'autre est invisible
+    // Éléments chargés (navigation : ~190 descendants, lecteur de musique, crédits : tout est recalculé à chaque
+    // changement de variable). Pendant un voyage, une image sur deux suffit : l'écart de teinte est invisible.
+    // Mode léger (ordinateur modeste, téléphone) : ils prennent les couleurs d'arrivée à la fin du voyage, d'un coup.
+    // Chaque mise à jour coûtait jusqu'à 100 ms sur un PC très lent : autant d'à-coups en plein trajet.
+    // Le ciel et l'astre (sans descendants à recalculer) suivent, eux, chaque image.
     let heavy = new Set<HTMLElement>();
     let frame = 0;
     const collect = () => {
       targets = Array.from(document.querySelectorAll<HTMLElement>("[data-palette-live]"));
-      heavy = new Set(targets.filter((el) => el.getElementsByTagName("*").length > 40));
+      heavy = new Set(targets.filter((el) => el.getElementsByTagName("*").length > 8));
       lastLight.length = 0;
       lastHeavy.length = 0;
     };
@@ -140,7 +196,7 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       // Un élément suivi a pu être remplacé (navigation entre pages) : on relit la liste
       if (targets.length === 0 || targets.some((el) => !el.isConnected)) collect();
       // Position d'arrivée (entière) : toujours écrite partout
-      const withHeavy = Number.isInteger(f) || frame++ % 2 === 0;
+      const withHeavy = Number.isInteger(f) || (!isLite() && frame++ % 2 === 0);
       const { from, to, t } = segment(f, sections.length);
       const a = PARSED[from];
       const b = PARSED[to];

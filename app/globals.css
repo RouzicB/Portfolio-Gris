@@ -294,6 +294,16 @@ html.palette-settling *::after {
 .animate-twinkle { animation: twinkle 3.6s ease-in-out infinite; }
 .animate-rise { animation: rise 14s linear infinite; }
 
+/* Animations hors de vue : en pause. Un élément caché (section inactive, scène éteinte, écran de chargement effacé)
+   ne peut pas être confié à la carte graphique : ses animations avançaient sur le processeur, à chaque image,
+   pour rien. Sur un PC lent, c'était autant de temps pris aux voyages. Les tracés qui ne se jouent qu'une fois
+   (emblem-draw, emblem-fade) continuent, pour que tout soit dessiné à l'arrivée. */
+.page-loader.is-done *,
+[data-section-index][aria-hidden="true"] *:not(.emblem-draw):not(.emblem-fade),
+[data-scene][data-off] * {
+  animation-play-state: paused !important;
+}
+
 @keyframes nudge {
   0%, 100% { transform: translateY(0); opacity: 1; }
   60% { transform: translateY(3px); opacity: 0.3; }
@@ -361,10 +371,14 @@ html.warming [data-scene] {
 
 /* Pendant un voyage entre sections, la palette change à chaque image : une transition de couleur
    (classes `transition`) en démarrerait puis annulerait des milliers par image, et la couleur traînerait
-   derrière le décor. On ne garde que les transitions de forme et d'opacité. */
-html[data-travel] *,
-html[data-travel] *::before,
-html[data-travel] *::after {
+   derrière le décor. On ne garde que les transitions de forme et d'opacité.
+   Seuls les éléments qui suivent la palette en direct (data-palette-live : navigation, lecteur, crédits…) sont
+   concernés, et l'attribut est posé sur eux (Journey.tsx) : posé sur <html>, il faisait recalculer le style de toute
+   la page (~700 éléments) au départ et à l'arrivée de chaque voyage. Les sections gardent leur propre palette, fixe. */
+[data-palette-live][data-travel],
+[data-palette-live][data-travel] *,
+[data-palette-live][data-travel] *::before,
+[data-palette-live][data-travel] *::after {
   transition-property: translate, scale, rotate, opacity !important;
 }
 

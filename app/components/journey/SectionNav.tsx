@@ -85,12 +85,14 @@ export default function SectionNav() {
 /** Anneau ouvert et pierre de clé autour de la section active, en rotation lente */
 function ActiveRing() {
   return (
-    <svg viewBox="0 0 48 48" className="pointer-events-none absolute -inset-[6px] overflow-visible text-ink emblem-spin-slow" aria-hidden focusable="false">
+    <span aria-hidden className="pointer-events-none absolute -inset-[6px] text-ink emblem-spin-slow block">
+        <svg viewBox="0 0 48 48" className="size-full overflow-visible" aria-hidden focusable="false">
       <g>
         <circle cx="24" cy="24" r="23" fill="none" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" pathLength={100} strokeDasharray="86 14" opacity="0.7" />
         <path d="M24 -1 L26.2 1.6 L24 4.2 L21.8 1.6Z" fill="var(--accent)" />
       </g>
     </svg>
+        </span>
   );
 }
 

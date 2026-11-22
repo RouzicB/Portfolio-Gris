@@ -172,6 +172,9 @@ function Portrait() {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={site.portrait}
+              // Petite version (360 px, scripts/decor-variants.mjs) pour les téléphones, où la photo s'affiche en ~150 px
+              srcSet={`${site.portrait.replace(/\.webp$/, "-360.webp")} 360w, ${site.portrait} 720w`}
+              sizes="(max-width: 767px) 160px, 320px"
               alt={site.name}
               className="absolute inset-0 size-full object-cover object-bottom"
             />

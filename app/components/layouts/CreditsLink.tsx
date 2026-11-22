@@ -25,7 +25,8 @@ export default function CreditsLink() {
     >
       <span className="relative grid size-12 shrink-0 place-items-center">
         {/* Anneau ouvert et sa pierre de clé, en rotation lente */}
-        <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible emblem-spin-slow" aria-hidden focusable="false">
+        <span aria-hidden className="absolute inset-0 size-full emblem-spin-slow block">
+        <svg viewBox="0 0 48 48" className="size-full overflow-visible" aria-hidden focusable="false">
           <g>
             <circle
               cx="24"
@@ -42,6 +43,7 @@ export default function CreditsLink() {
             <path d="M24 -0.6 L26 2 L24 4.6 L22 2Z" fill="var(--accent)" />
           </g>
         </svg>
+        </span>
         <span className="veil grid size-9 place-items-center rounded-full transition duration-500 group-hover:scale-105">
           <CreditsIcon size={18} />
         </span>

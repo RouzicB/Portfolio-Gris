@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { TRACKS, TRACK_LENGTH, ambient } from "../../lib/ambient";
-import { bakedScene } from "../../lib/decor";
+import { sceneThumb } from "../../lib/decor";
 
 const SERVER_SNAP = { playing: false, index: 0, version: 0, volume: 0.8, muted: false };
 const VOLUME_KEY = "portfolio-volume";
@@ -223,7 +223,7 @@ export default function MusicToggle() {
         {/* Pochette : le décor de la zone ; l'égaliseur y ondule pendant la lecture */}
         <span className="music-cover relative size-12 shrink-0 overflow-hidden rounded-[0.6rem_0.25rem_0.6rem_0.25rem] bg-wash-far">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={bakedScene(track.stage, "portrait")} alt="" loading="lazy" className="size-full object-cover object-[50%_70%]" />
+          <img src={sceneThumb(track.stage)} alt="" loading="lazy" className="size-full object-cover" />
           <span aria-hidden className="music-eq absolute inset-x-0 bottom-0 flex h-4 items-end justify-center gap-[2px] pb-1 text-white">
             {[0.5, 0.9, 0.65, 1].map((h, i) => (
               <span key={i} className="music-bar block w-[2px] rounded-full bg-current" style={{ "--h": h, animationDelay: `${-i * 0.27}s` } as CSSProperties} />

@@ -334,7 +334,8 @@ function Face({
 function Ring({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <span className={`relative grid size-12 shrink-0 place-items-center text-ink ${className}`}>
-      <svg viewBox="0 0 48 48" className="absolute inset-0 size-full overflow-visible emblem-spin-slow" aria-hidden>
+      <span aria-hidden className="absolute inset-0 size-full emblem-spin-slow block">
+        <svg viewBox="0 0 48 48" className="size-full overflow-visible" aria-hidden>
         <g>
           <circle
             cx="24"
@@ -350,6 +351,7 @@ function Ring({ children, className = "" }: { children: ReactNode; className?: s
           <path d="M24 -1 L26.2 1.6 L24 4.2 L21.8 1.6Z" fill="var(--accent)" />
         </g>
       </svg>
+        </span>
       {children}
     </span>
   );

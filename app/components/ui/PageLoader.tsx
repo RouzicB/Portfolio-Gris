@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { site } from "../../data/site";
-import { WIDE_QUERY, bakedScene, supportsAvif } from "../../lib/decor";
+import { BAKED_PORTRAIT_SIZES, WIDE_QUERY, bakedPortraitSet, bakedScene, supportsAvif } from "../../lib/decor";
 import { isLite } from "../../lib/perf";
 import type { StageId } from "../../types";
 import Emblem from "./Emblem";
@@ -14,11 +14,22 @@ const MAX_MS = 9000;
 
 const frame = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
 
+/** Une image à précharger ; avec `srcset`, le navigateur choisit la même taille que celle que la page affichera */
+interface Source {
+  src: string;
+  srcset?: string;
+  sizes?: string;
+}
+
 /** Télécharge et décode une image : affichée ensuite, elle sort du cache sans attente */
-function preload(src: string): Promise<void> {
+function preload({ src, srcset, sizes }: Source): Promise<void> {
   return new Promise((resolve) => {
     const img = new Image();
     img.decoding = "async";
+    if (srcset && sizes) {
+      img.sizes = sizes;
+      img.srcset = srcset;
+    }
     img.src = src;
     const done = () => resolve();
     if (typeof img.decode === "function") img.decode().then(done, done);
@@ -61,17 +72,27 @@ export default function PageLoader() {
   useEffect(() => {
     let cancelled = false;
     const start = performance.now();
-    // Décors des autres ambiances : chargés en arrière-plan une fois la page affichée
-    const later: string[] = [];
+    // Images des autres sections et décors des autres ambiances : chargés en arrière-plan une fois la page affichée
+    const later: Source[] = [];
+    const sectionImages: Source[] = [];
 
     const run = async () => {
-      // Images de la page : celles chargées d'emblée, et toutes celles des sections de l'accueil
+      // Images à attendre : seulement celles de l'écran d'arrivée. Celles des autres sections de l'accueil (vignettes
+      // des projets, portrait…) se chargent juste après, en arrière-plan : sur un téléphone lent, les attendre toutes
+      // gardait l'écran de chargement plusieurs secondes de plus (PageSpeed : affichage principal à 5 s).
       const urls = new Set<string>();
+      const scenes: Source[] = [];
       document.querySelectorAll("img").forEach((img) => {
         if (img.closest(".scene-baked")) return;
-        if (img.loading === "lazy" && !img.closest("[data-section-index]")) return;
+        const section = img.closest<HTMLElement>("[data-section-index]");
+        if (img.loading === "lazy" && !section) return;
         const src = img.currentSrc || img.getAttribute("src");
-        if (src) urls.add(src);
+        if (!src) return;
+        if (section && getComputedStyle(section).contentVisibility === "hidden") {
+          sectionImages.push({ src, srcset: img.srcset || undefined, sizes: img.sizes || undefined });
+          return;
+        }
+        urls.add(src);
       });
       // Décors pré-rendus, au cadrage et au format que l'écran affichera. On n'attend que la scène visible
       // et ses voisines (déjà dessinées d'avance) : les autres arrivent en arrière-plan, bien avant qu'on y voyage.
@@ -79,13 +100,18 @@ export default function PageLoader() {
         const format = window.matchMedia(WIDE_QUERY).matches ? "wide" : "portrait";
         const ext = (await supportsAvif()) ? "avif" : "webp";
         document.querySelectorAll<HTMLElement>("[data-scene]").forEach((s) => {
-          const url = bakedScene(s.dataset.scene as StageId, format, ext);
-          if (s.style.visibility === "hidden") later.push(url);
-          else urls.add(url);
+          const id = s.dataset.scene as StageId;
+          // Cadrage portrait : la même largeur que celle choisie par la page (srcset), pas l'image pleine taille
+          const img: Source =
+            format === "portrait"
+              ? { src: bakedScene(id, format, ext), srcset: bakedPortraitSet(id, ext), sizes: BAKED_PORTRAIT_SIZES }
+              : { src: bakedScene(id, format, ext) };
+          if (s.style.visibility === "hidden") later.push(img);
+          else scenes.push(img);
         });
       }
 
-      const total = urls.size + 2;
+      const total = urls.size + scenes.length + 2;
       let count = 0;
       const tick = () => {
         count += 1;
@@ -94,7 +120,11 @@ export default function PageLoader() {
 
       await warmUp();
       tick();
-      await Promise.all([...Array.from(urls, (u) => preload(u).then(tick)), (document.fonts?.ready ?? Promise.resolve()).then(tick)]);
+      await Promise.all([
+        ...Array.from(urls, (u) => preload({ src: u }).then(tick)),
+        ...scenes.map((img) => preload(img).then(tick)),
+        (document.fonts?.ready ?? Promise.resolve()).then(tick),
+      ]);
     };
 
     const finish = () => {
@@ -109,9 +139,9 @@ export default function PageLoader() {
           // Pages seulement (pas les fichiers : CV en PDF…)
           (href) => href && href !== window.location.pathname && !/\.[a-z0-9]+$/i.test(href) && router.prefetch(href),
         );
-      // Puis, l'un après l'autre (sans concurrencer ce qui s'affiche), les décors des autres ambiances
+      // Puis, l'un après l'autre (sans concurrencer ce qui s'affiche), les images des autres sections et les décors des autres ambiances
       const rest = async () => {
-        for (const url of later) {
+        for (const url of [...sectionImages, ...later]) {
           if (cancelled) return;
           await preload(url);
         }
