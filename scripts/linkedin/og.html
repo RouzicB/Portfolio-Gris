@@ -4,9 +4,10 @@
 <meta charset="utf-8" />
 <title>Image de partage — Baptiste Rouzic</title>
 <!--
-  Image de partage du site (Open Graph, 1200 × 630) : celle qui s'affiche quand on colle le lien du portfolio
-  sur LinkedIn, dans une messagerie ou un moteur de recherche. Même direction artistique que la bannière LinkedIn
-  (banner.html), avec l'adresse du site en plus. Générée par node scripts/linkedin/build.mjs vers app/opengraph-image.png.
+  Image de partage du site (1200 × 630 : LinkedIn, réseaux, messageries), dans la même direction que la bannière :
+  le monde blanc et gris de l'accueil (palette « gris »), son décor peint, l'emblème aux anneaux, le nom, le rôle, l'adresse.
+  {{DECOR}} : dossier actuel des décors peints, remplacé par scripts/linkedin/build.mjs.
+  Générer l'image : node scripts/linkedin/build.mjs
 -->
 <style>
   @font-face { font-family: "Josefin Sans"; src: url("../../node_modules/@fontsource-variable/josefin-sans/files/josefin-sans-latin-wght-normal.woff2") format("woff2"); font-weight: 100 700; }
@@ -14,14 +15,13 @@
   @font-face { font-family: "Quicksand"; src: url("../../node_modules/@fontsource-variable/quicksand/files/quicksand-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 300 700; unicode-range: U+0100-024F, U+2000-206F, U+20AC; }
 
   :root {
-    /* Palette « bleu » du site (app/data/palettes.ts) */
-    --sky-top: #081a2b;
-    --sky-bottom: #1d5677;
-    --accent: #7fd3ea;
-    --ink: #eaf7fc;
-    --ink-soft: #c6e3ef;
-    --sun: #d9f4ff;
-    --pigment: #9fd4e6;
+    /* Palette « gris » du site (app/data/palettes.ts) */
+    --sky-top: #d4d3d1;
+    --sky-bottom: #f3f2f0;
+    --ink: #2f2e2d;
+    --ink-soft: #4c4946;
+    --sun: #fbfaf8;
+    --pigment: #66625e;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1200px; height: 630px; overflow: hidden; }
@@ -32,59 +32,48 @@
     background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
   }
 
-  /* Lumière qui tombe dans la grotte */
+  /* Le soleil pâle derrière le nom, comme sur l'accueil */
   .glow {
     position: absolute; inset: 0;
-    background:
-      radial-gradient(38% 120% at 74% 0%, color-mix(in srgb, var(--sun) 26%, transparent), transparent 70%),
-      radial-gradient(30% 80% at 30% 100%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+    background: radial-gradient(30% 50% at 50% 44%, color-mix(in srgb, var(--sun) 90%, transparent), transparent 72%);
   }
-  /* Le décor de la grotte bleue : l'arbre de lumière à droite, les parois sombres sur les bords */
+  /* Le décor peint de l'accueil : l'arche brisée à gauche, la colonne penchée à droite, le sol pâle */
   .decor {
     position: absolute; inset: 0;
-    background: url("../../public/decor/bleu-wide.webp") 22% 62% / 1900px auto no-repeat;
-    opacity: 0.55;
+    background: url("../../public{{DECOR}}/gris-wide-3200.webp") 50% 100% / 1320px auto no-repeat;
   }
-  /* Voile sombre derrière le texte, pour la lecture */
+  /* Voile clair derrière le texte, pour la lecture */
   .shade {
     position: absolute; inset: 0;
-    background: radial-gradient(52% 62% at 50% 50%, color-mix(in srgb, var(--sky-top) 62%, transparent), transparent 75%);
+    background: radial-gradient(44% 48% at 50% 50%, color-mix(in srgb, var(--sky-bottom) 80%, transparent), transparent 80%);
   }
   /* Grain du papier, comme sur le site */
   .grain {
-    position: absolute; inset: 0; opacity: 0.16; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 -0.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+    position: absolute; inset: 0; opacity: 0.22; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.5 -0.15'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 
   /* Emblème : les anneaux de l'accueil, en grand, derrière le texte */
-  .emblem { position: absolute; left: 50%; top: 50%; width: 600px; height: 600px; transform: translate(-50%, -50%); color: var(--ink); opacity: 0.22; }
+  .emblem { position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; transform: translate(-50%, -50%); color: var(--ink); opacity: 0.3; }
 
   .content {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     width: 1100px; text-align: center;
   }
-  .label {
-    font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 13px;
-    letter-spacing: 0.42em; text-transform: uppercase; color: var(--ink-soft);
-    display: inline-flex; align-items: center; gap: 16px; padding-left: 0.42em;
-  }
-  .label i, .domain i { display: block; width: 7px; height: 7px; transform: rotate(45deg); background: var(--pigment); }
   h1 {
-    margin-top: 0;
     font-family: "Josefin Sans", sans-serif; font-weight: 300; font-size: 60px; line-height: 1;
     letter-spacing: 0.32em; padding-left: 0.32em; text-transform: uppercase;
   }
   .role {
     margin-top: 18px;
     font-family: "Josefin Sans", sans-serif; font-weight: 500; font-size: 19px;
-    letter-spacing: 0.28em; padding-left: 0.28em; text-transform: uppercase;
+    letter-spacing: 0.28em; padding-left: 0.28em; text-transform: uppercase; color: var(--ink-soft);
   }
   .divider { margin: 20px auto 0; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--ink-soft); }
   .divider span { width: 56px; height: 1px; background: currentColor; opacity: 0.5; }
-  .divider i { width: 7px; height: 7px; transform: rotate(45deg); background: var(--pigment); }
-  .tagline { margin-top: 18px; font-size: 18px; color: var(--ink-soft); }
+  .divider i, .domain i { display: block; width: 7px; height: 7px; transform: rotate(45deg); background: var(--pigment); }
 
-  /* Adresse du site, sous l'accroche */
+  /* Adresse du site, sous le filet */
   .domain {
     margin-top: 24px; padding-left: 0.3em;
     display: inline-flex; align-items: center; gap: 12px;
@@ -105,7 +94,7 @@
     <circle cx="50" cy="50" r="41.5" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="0.4 1.4" />
     <circle cx="85.5" cy="31" r="2.4" fill="none" stroke="currentColor" stroke-width="0.2" />
     <circle cx="85.5" cy="31" r="1" fill="currentColor" />
-    <path d="M50 0.2 L51.2 1.6 L50 3 L48.8 1.6Z" fill="#9fd4e6" />
+    <path d="M50 0.2 L51.2 1.6 L50 3 L48.8 1.6Z" fill="#66625e" />
   </svg>
 
   <div class="content">

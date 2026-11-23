@@ -11,9 +11,51 @@ import { vibesEcrans, vibesUniverse } from "./vibes";
 
 // Études de cas, dans n'importe quel ordre (triées par année ci-dessous).
 const all: Project[] = [
+  // ── Applications développées de bout en bout (alternance) ──
+  // ⚠ À compléter : textes, démarche, résultats, ce que j'en retiens, outils, images (cover / thumb dans public/projets/{slug}/).
+  // Les chapitres vides ne s'affichent pas sur la page du projet.
+  {
+    slug: "cartographie-cleon",
+    title: "Cartographie de Cléon",
+    category: "dev",
+    context: "Alternance Renault Group · application web",
+    year: 2026,
+    role: "Développeur full-stack (solo)",
+    duration: "",
+    summary: "Une application de cartographie de l'usine Renault de Cléon, que j'ai développée de bout en bout.",
+    problem: "",
+    solution: "",
+    process: [],
+    learnings: [],
+    outcomes: [],
+    tags: [],
+    tools: [],
+    hues: ["#1f3b52", "#7fb6d6"],
+    stage: "bleu",
+  },
+  {
+    slug: "signature-campagnes",
+    title: "Signature de campagnes",
+    category: "dev",
+    context: "Alternance Renault Group · application web",
+    year: 2026,
+    role: "Développeur full-stack (solo)",
+    duration: "",
+    summary: "Une application pour faire signer des campagnes, que j'ai développée de bout en bout.",
+    problem: "",
+    solution: "",
+    process: [],
+    learnings: [],
+    outcomes: [],
+    tags: [],
+    tools: [],
+    hues: ["#2a2f4a", "#9aa6e0"],
+    stage: "bleu",
+  },
   {
     slug: "vibes",
     title: "Vibes",
+    category: "design",
     context: "Projet de fin de M1 · UX/UI & Webflow",
     year: 2026,
     role: "UX/UI designer & développeur Webflow (solo)",
@@ -85,6 +127,7 @@ const all: Project[] = [
   {
     slug: "slift",
     title: "Slift",
+    category: "design",
     context: "Projet d'école · identité de marque",
     year: 2026,
     role: "Designer graphique (solo)",
@@ -146,6 +189,7 @@ const all: Project[] = [
   {
     slug: "chronicles-of-elyndor",
     title: "Elyndor",
+    category: "design",
     context: "Projet d'école · design system",
     year: 2026,
     role: "UX/UI designer (projet à trois)",
@@ -212,6 +256,7 @@ const all: Project[] = [
   {
     slug: "ia-robotique-industrielle",
     title: "IA & Robotique",
+    category: "design",
     context: "Projet d'école · affiche",
     year: 2026,
     role: "Designer graphique",
@@ -279,6 +324,7 @@ const all: Project[] = [
   {
     slug: "delta",
     title: "Delta",
+    category: "design",
     context: "Projet d'école · éco-design",
     year: 2025,
     role: "Designer graphique",
@@ -342,6 +388,7 @@ const all: Project[] = [
   {
     slug: "pluies-de-juillet",
     title: "Pluies de Juillet",
+    category: "design",
     context: "Examen de M1 · UX/UI",
     year: 2025,
     role: "UX/UI designer",
@@ -396,6 +443,7 @@ const all: Project[] = [
   {
     slug: "bambou",
     title: "Bambou",
+    category: "design",
     context: "Projet d'école · documentation",
     year: 2025,
     role: "Designer graphique",
@@ -460,6 +508,7 @@ const all: Project[] = [
   {
     slug: "holograph",
     title: "Holograph'",
+    category: "design",
     context: "Projet de début de M1 · anti-design",
     year: 2025,
     role: "UX/UI designer",
@@ -524,9 +573,10 @@ const all: Project[] = [
 export const projects: Project[] = [...all].sort((a, b) => b.year - a.year);
 
 /** Les seuls champs d'une carte : c'est tout ce que la galerie envoie au navigateur */
-export const toCard = ({ slug, title, context, year, summary, hues, thumb, cover }: Project): ProjectCard => ({
+export const toCard = ({ slug, title, category, context, year, summary, hues, thumb, cover }: Project): ProjectCard => ({
   slug,
   title,
+  category,
   context,
   year,
   summary,
@@ -535,10 +585,20 @@ export const toCard = ({ slug, title, context, year, summary, hues, thumb, cover
   cover,
 });
 
-/** Projet précédent et suivant (en boucle) pour la navigation entre études de cas */
+/** Les deux galeries de la section Projets, dans l'ordre d'affichage */
+export const projectCategories: { id: Project["category"]; label: string }[] = [
+  { id: "design", label: "Design & UX/UI" },
+  { id: "dev", label: "Développement" },
+];
+
+/** Projet précédent et suivant (en boucle, dans la même galerie) pour la navigation entre études de cas */
 export function adjacentProjects(slug: string) {
-  const i = projects.findIndex((p) => p.slug === slug);
-  if (i === -1) return null;
-  const n = projects.length;
-  return { index: i, prev: projects[(i - 1 + n) % n], next: projects[(i + 1) % n] };
+  const project = projects.find((p) => p.slug === slug);
+  if (!project) return null;
+  const list = projects.filter((p) => p.category === project.category);
+  const i = list.indexOf(project);
+  const n = list.length;
+  const prev = list[(i - 1 + n) % n];
+  const next = list[(i + 1) % n];
+  return { index: i, total: n, prev: { project: prev, index: list.indexOf(prev) }, next: { project: next, index: list.indexOf(next) } };
 }

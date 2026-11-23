@@ -40,9 +40,9 @@ export default async function ProjectPage({ params }: Props) {
         project={project}
         nav={{
           index: nav.index,
-          total: projects.length,
-          prev: { ...toCard(nav.prev), index: projects.indexOf(nav.prev) },
-          next: { ...toCard(nav.next), index: projects.indexOf(nav.next) },
+          total: nav.total,
+          prev: { ...toCard(nav.prev.project), index: nav.prev.index },
+          next: { ...toCard(nav.next.project), index: nav.next.index },
         }}
       />
     </>

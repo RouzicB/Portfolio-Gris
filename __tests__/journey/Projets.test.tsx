@@ -1,9 +1,12 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { motionValue } from "framer-motion";
 import Projets from "@/app/components/sections/Projets";
 import { JourneyContext } from "@/app/components/journey/JourneyContext";
 import { projects, toCard } from "@/app/data/projects";
+
+const design = projects.filter((p) => p.category === "design");
+const dev = projects.filter((p) => p.category === "dev");
 
 const renderGallery = () =>
   render(
@@ -19,16 +22,28 @@ describe("Projets (galerie d'arches)", () => {
     expect([...years].sort((a, b) => b - a)).toEqual(years);
   });
 
-  it("n'affiche qu'une page de la galerie à la fois et la parcourt", async () => {
+  it("ouvre sur le chapitre design et parcourt la galerie une page à la fois", async () => {
     renderGallery();
-    // Trois arches visibles par défaut : les autres sont inertes et absentes de l'arbre d'accessibilité
-    expect(screen.getAllByRole("link")).toHaveLength(3);
-    expect(screen.getByRole("link", { name: new RegExp(projects[0].title) })).toHaveAttribute("href", `/projets/${projects[0].slug}`);
+    // Trois arches visibles : l'ouverture du chapitre I (sans lien) et les deux premières études de design
+    expect(screen.getByText("Chapitre I")).toBeInTheDocument();
+    expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(design.slice(0, 2).map((p) => `/projets/${p.slug}`));
     expect(screen.getByRole("button", { name: "Projets précédents" })).toBeDisabled();
 
     await userEvent.click(screen.getByRole("button", { name: "Projets suivants" }));
-    expect(screen.getByRole("link", { name: new RegExp(projects[3].title) })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: new RegExp(projects[0].title) })).toBeNull();
+    expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(design.slice(2, 5).map((p) => `/projets/${p.slug}`));
     expect(screen.getByRole("button", { name: /Page 2 sur/ })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("montre les deux familles dans la frise, et mène au chapitre développement", async () => {
+    expect(design.length).toBeGreaterThan(0);
+    expect(dev.length).toBe(2);
+    renderGallery();
+    expect(screen.queryByRole("tab")).toBeNull();
+    const frise = within(screen.getByRole("list", { name: "Chapitres et pages" }));
+    expect(frise.getByRole("button", { name: "Design & UX/UI" })).toHaveAttribute("aria-current", "true");
+    await userEvent.click(frise.getByRole("button", { name: "Développement" }));
+    expect(screen.getByText("Chapitre II")).toBeInTheDocument();
+    expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(dev.map((p) => `/projets/${p.slug}`));
+    expect(frise.getByRole("button", { name: "Développement" })).toHaveAttribute("aria-current", "true");
   });
 });

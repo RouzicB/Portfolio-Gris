@@ -108,6 +108,14 @@ function Portrait() {
                 <stop offset="0" stopColor="var(--sky-top)" />
                 <stop offset="1" stopColor="var(--sky-bottom)" />
               </linearGradient>
+              {/* Bord d'aquarelle à peine irrégulier, et hachures dans l'ombre du monticule */}
+              <filter id="portrait-paint" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="9" result="warp" />
+                <feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+              <pattern id="portrait-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+                <path d="M0 3.5h7" stroke="#000" strokeOpacity="0.22" strokeWidth="1.1" />
+              </pattern>
             </defs>
             <rect width="120" height="160" fill="url(#portrait-sky)" />
             {/* Astre et ses anneaux : avec la photo, un halo plus grand derrière la tête */}
@@ -137,7 +145,7 @@ function Portrait() {
               strokeWidth="0.5"
             />
             {/* Relief à deux faces et monticule hachuré */}
-            <g filter="url(#wc-paint)">
+            <g filter="url(#portrait-paint)">
               <path
                 d="M18 138 L42 112 L66 138Z"
                 fill="var(--wash-near)"
@@ -156,7 +164,7 @@ function Portrait() {
             </g>
             <path
               d="M-10 160 C10 138 40 132 64 134 S108 140 130 160Z"
-              fill="url(#hatch)"
+              fill="url(#portrait-hatch)"
             />
             <rect
               x="90"

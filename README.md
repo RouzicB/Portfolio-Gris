@@ -6,13 +6,13 @@ Le décor part du gris et se teinte au fil du scroll ; aucun texte ne l'annonce,
 
 | # | Section | Contenu | Décor |
 | --- | --- | --- | --- |
-| 01 | Accueil | Nom, rôle, accroche | Monde blanc et gris : grande arche brisée à facettes, colonne effondrée, éclats, nuages lourds |
-| 02 | Profil | Présentation, valeurs, fiche | Désert rouge : montagnes triangulaires, rochers à facettes, arbre en ombrelle |
-| 03 | Méthode | Une tige qui pousse : cinq nœuds en onglets, feuilles en triangle, détail dans un panneau en feuille | Forêt verte : troncs-colonnes, triangles suspendus, tronc en arche |
-| 04 | Aptitudes | Deux panneaux-feuilles face à face (designer / développeur web), savoir-faire sans niveau chiffré, logos des outils, « & » au centre pour ce qui relie les deux | Grotte bleue sans astre : arbre lumineux, cadres translucides, eau |
-| 05 | Parcours | Arborescence horizontale : formation, expériences, choix, chemins non empruntés | Nuit dorée : grande lune, tours à dômes, terrasse en gradins |
-| 06 | Projets | Galerie d'arches (1 à 3 visibles, flèches, losanges, glissement) vers les études de cas | Ciel pastel : temple sur une île flottante, escalier suspendu, arche brisée, aqueduc, rocher et arbre-ombrelle, oiseaux, mer de nuages |
-| 07 | Contact | Le voyage se referme : l'emblème de l'accueil revient, adresse en très grand soulignée au pinceau, liens sur un ruban de verre, retour au début | Nuit prune : constellations, sommets à deux faces, lac scintillant, porte en arche et lianes, arbres géométriques, terrasse à balustres fleurie |
+| 01 | Accueil | Nom, rôle, accroche | Monde blanc et gris : grande arche brisée (le cercle de son tracé laissé au crayon), colonne qui penche, éclats, nuages lourds |
+| 02 | Profil | Présentation, valeurs, fiche | Désert rouge : montagnes pâles, rochers rouges à facettes, arbre aux fils pendants à contre-jour, pétales |
+| 03 | Méthode | Une tige qui pousse : cinq nœuds en onglets, feuilles en triangle, détail dans un panneau en feuille | Forêt verte : troncs dans la brume, lianes aux feuilles inégales, butte d'herbe, rais de lumière |
+| 04 | Aptitudes | Deux panneaux-feuilles face à face (designer / développeur web), savoir-faire sans niveau chiffré, logos des outils, « & » au centre pour ce qui relie les deux | Grotte bleue sans astre : parois sombres, rais de lumière, temple englouti, marches dans l'eau, racines claires |
+| 05 | Parcours | Arborescence horizontale : formation, expériences, choix, chemins non empruntés | Nuit dorée : grande lune, étoiles inégales, deux tours à dôme, dunes et ville lointaine |
+| 06 | Projets | Galerie d'arches (1 à 3 visibles, flèches, losanges, glissement) vers les études de cas | Ciel pastel : mer de nuages, île flottante et son escalier, tour lointaine, oiseaux à l'encre |
+| 07 | Contact | Le voyage se referme : l'emblème de l'accueil revient, adresse en très grand soulignée au pinceau, liens sur un ruban de verre, retour au début | Nuit prune, épurée : montagnes basses, lac qui reflète la lune, un arbre aux feuilles carrées, roseaux |
 
 **Crédits** (`/credits`) : direction artistique, mentions, ressources et galerie d'icônes, sur une page à part,
 accessible par un lien discret fixé en bas à gauche de l'écran.
@@ -23,9 +23,16 @@ et tourne (`app/template.tsx`, `PageLoader`, `Emblem`). La disparition est en CS
 **Pages projet** (`/projets/[slug]`, générées statiquement) : en-tête et fiche, vignette peinte, problème et réponse,
 démarche, résultats, enseignements, projet précédent / suivant. Chaque projet a sa propre ambiance de décor.
 
-**Langage visuel** : aplats géométriques nets (arches, troncs, triangles, carrés), dégradés doux, grain de pigment
-dans les formes (`wc-paint`), hachures dans les ombres, mers de nuages. Les compositions sont originales :
+**Langage visuel** : des formes simples (arches, troncs, triangles, carrés) peintes à l'aquarelle : bord ondulé où le
+pigment s'accumule, densité inégale, grain, couleurs repassées dans le lavis encore humide, trait d'encre qui s'effile,
+posé un peu à côté de la couleur, traits de construction au crayon laissés visibles. Les compositions sont originales :
 aucune illustration, aucun personnage ni décor du jeu n'est reproduit.
+
+**Décors** : peints d'avance en images (`scripts/decor/` : une scène par ambiance, outils de peinture dans `paint.mjs`).
+`node scripts/decor/bake.mjs` les rend avec le Chrome de la machine et les décline en AVIF et WebP dans `public/decor/<empreinte>/` ;
+`--preview <dossier>` donne des aperçus sur leur ciel. Le site n'affiche qu'une image par scène : la carte graphique la
+zoome et la fond sans rien redessiner, même sur un portable modeste. Les navigateurs gardent ces images un an : le
+dossier porte une empreinte des images, renommé par le script dès qu'un décor change (`app/lib/decor-dir.ts`).
 
 ## Stack
 
@@ -48,9 +55,9 @@ npm run lint
 
 ## Comment le décor évolue
 
-1. L'accueil ne défile pas : un geste (molette, glissé tactile, ↑/↓, Page↑/↓, Espace, Début/Fin) amène à la
-   section voisine. Les rafales de molette et l'inertie du pavé tactile ne comptent que pour un pas.
-   Une section plus haute que l'écran (mobile) se parcourt d'abord, puis le geste suivant change de section.
+1. L'accueil ne défile pas : un geste (molette, ↑/↓, Page↑/↓, Espace, Début/Fin) amène à la section voisine ;
+   au doigt, on change de section avec la barre du bas. Les rafales de molette et l'inertie du pavé tactile ne comptent que pour un pas.
+   Une section plus haute que l'écran (mobile) se parcourt d'abord, puis le geste suivant (molette) change de section.
 2. `Journey.tsx` anime alors une position continue (`progress`) d'une section à l'autre, en zoom :
    la scène quittée grossit et s'efface (on entre dedans), la suivante arrive du fond.
 3. Les palettes des deux sections voisines (`app/data/palettes.ts`) sont mélangées et écrites en variables CSS
@@ -90,8 +97,7 @@ app/
 ├── icon.svg              # Favicon (icône Accueil)
 ├── components/
 │   ├── journey/          # Journey (moteur), JourneyContext, SectionNav, motion
-│   ├── background/       # Landscape (ciel, soleil, scènes), Parallax (souris)
-│   │   └── art/          # Une scène aquarelle SVG par ambiance + filtres partagés
+│   ├── background/       # Landscape (ciel, soleil, décors peints, parallaxe à la souris)
 │   ├── icons/            # GrisIcons : le jeu d'icônes maison
 │   ├── sections/         # SectionShell + Accueil, Profil, Methode, Aptitudes, Parcours, Projets, Contact
 │   ├── project/          # ProjectCase : la page d'une étude de cas
@@ -117,7 +123,7 @@ public/                   # CV, favicon, images
 
 Direction artistique inspirée de l'esthétique aquarelle de **GRIS** (Nomada Studio, 2018), où le monde
 retrouve ses couleurs au fil du récit. Projet personnel sans lien avec Nomada Studio ni Devolver Digital :
-aucun personnage, logo ni visuel du jeu n'est reproduit, tous les décors sont dessinés en SVG pour ce site.
+aucun personnage, logo ni visuel du jeu n'est reproduit, tous les décors sont dessinés et peints pour ce site.
 
 ## Docker
 

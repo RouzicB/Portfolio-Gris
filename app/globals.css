@@ -269,38 +269,12 @@ html.palette-settling *::after {
   }
 }
 
-/* ─── Mouvements lents ─────────────────────────────────────────────── */
-@keyframes drift {
-  from { transform: translateX(-4%); }
-  to { transform: translateX(4%); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-@keyframes twinkle {
-  0%, 100% { opacity: 0.35; }
-  50% { opacity: 1; }
-}
-@keyframes rise {
-  from { transform: translateY(0); opacity: 0; }
-  15% { opacity: 0.7; }
-  to { transform: translateY(-110vh); opacity: 0; }
-}
-
-.animate-drift { animation: drift 38s ease-in-out infinite alternate; }
-.animate-drift-slow { animation: drift 60s ease-in-out infinite alternate-reverse; }
-.animate-float { animation: float 7s ease-in-out infinite; }
-.animate-twinkle { animation: twinkle 3.6s ease-in-out infinite; }
-.animate-rise { animation: rise 14s linear infinite; }
-
-/* Animations hors de vue : en pause. Un élément caché (section inactive, scène éteinte, écran de chargement effacé)
+/* Animations hors de vue : en pause. Un élément caché (section inactive, écran de chargement effacé)
    ne peut pas être confié à la carte graphique : ses animations avançaient sur le processeur, à chaque image,
    pour rien. Sur un PC lent, c'était autant de temps pris aux voyages. Les tracés qui ne se jouent qu'une fois
    (emblem-draw, emblem-fade) continuent, pour que tout soit dessiné à l'arrivée. */
 .page-loader.is-done *,
-[data-section-index][aria-hidden="true"] *:not(.emblem-draw):not(.emblem-fade),
-[data-scene][data-off] * {
+[data-section-index][aria-hidden="true"] *:not(.emblem-draw):not(.emblem-fade) {
   animation-play-state: paused !important;
 }
 
@@ -382,20 +356,6 @@ html.warming [data-scene] {
   transition-property: translate, scale, rotate, opacity !important;
 }
 
-/* Mode léger : les éléments chargés (navigation, lecteur, crédits) reçoivent les couleurs d'arrivée dès le départ du
-   voyage, et ce fondu court les y amène (Journey.tsx). Il part sans délai (courbe qui démarre vite) : la bascule d'une
-   icône vers sa version inversée doit se voir dès le geste, pas une seconde plus tard. */
-[data-palette-live][data-glide],
-[data-palette-live][data-glide] *,
-[data-palette-live][data-glide] *::before,
-[data-palette-live][data-glide] *::after {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, text-shadow,
-    box-shadow !important;
-  transition-duration: 0.35s !important;
-  transition-delay: 0s !important;
-  transition-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1) !important;
-}
-
 /* Éléments animés par framer-motion (opacité et transform écrits en style en ligne) : une classe `transition`
    ne doit toucher ni à l'un ni à l'autre.
    - `transform` : une transition CSS relancée à chaque image rendrait les apparitions saccadées et coûteuses ;
@@ -407,27 +367,13 @@ html.warming [data-scene] {
     translate, scale, rotate !important;
 }
 
-/* Scènes du décor : leurs couleurs sont écrites en dur, elles ne lisent pas la palette.
-   En y figeant les variables, le navigateur arrête là la propagation : quand la palette change
-   (à chaque image d'un voyage), les centaines de formes SVG ne sont plus recalculées. */
-[data-scene] {
-  --sky-top: #000; --sky-bottom: #000; --accent: #000; --ink: #000; --ink-soft: #000;
-  --veil: #000; --wash-near: #000; --wash-far: #000; --sun: #000;
-}
-
 /* Téléphones et tablettes : le processeur graphique est le goulot. On garde le rendu, on retire ce qui
    se recalcule à chaque image :
    - le verre dépoli (backdrop-filter) devient un voile plus couvrant, sans flou ;
    - le grain du papier n'est plus fusionné (multiply) avec le décor qui bouge ;
-   - les nuages et brumes du décor ne dérivent plus : chaque scène, passée dans des filtres aquarelle,
-     se dessine une fois puis n'est plus que déplacée et zoomée par le compositeur ;
-   - le fond fixe de la page (iOS, Android) ne force plus de redessin au défilement. */
-/* Décor pré-rendu (images) réservé aux écrans tactiles ; l'ordinateur garde la scène vivante */
-.scene-baked { display: none; }
-
+   - le fond fixe de la page (iOS, Android) ne force plus de redessin au défilement.
+   (Le décor lui-même est peint d'avance en images sur tous les écrans : rien à alléger de ce côté.) */
 @media (pointer: coarse), (max-width: 767px) {
-  .scene-live { display: none; }
-  .scene-baked { display: block; }
   html { background-attachment: scroll; }
   .veil {
     backdrop-filter: none;
@@ -441,16 +387,9 @@ html.warming [data-scene] {
   .legible,
   .max-md\:legible { text-shadow: 0 0 1px var(--sky-top), 0 0 3px var(--sky-top), 0 0 8px color-mix(in srgb, var(--sky-top) 70%, transparent); }
   .paper-grain { mix-blend-mode: normal; opacity: 0.1; }
-  [data-landscape] .animate-drift,
-  [data-landscape] .animate-drift-slow,
-  [data-landscape] .animate-float,
-  [data-landscape] .animate-twinkle,
-  [data-landscape] .animate-rise { animation: none; }
 }
 
 /* Ordinateur modeste (classe `lite`, lib/perf.ts) : les mêmes allègements que sur téléphone */
-html.lite .scene-live { display: none; }
-html.lite .scene-baked { display: block; }
 html.lite { background-attachment: scroll; }
 html.lite .veil {
   backdrop-filter: none;
@@ -463,20 +402,10 @@ html.lite [class*="backdrop-blur"] {
 /* Halo de lisibilité : une seule ombre courte (les ombres larges se redessinent à chaque changement de palette) */
 html.lite .legible { text-shadow: 0 0 1px var(--veil), 0 0 3px var(--veil), 0 0 8px color-mix(in srgb, var(--veil) 70%, transparent); }
 html.lite .paper-grain { mix-blend-mode: normal; opacity: 0.1; }
-html.lite [data-landscape] .animate-drift,
-html.lite [data-landscape] .animate-drift-slow,
-html.lite [data-landscape] .animate-float,
-html.lite [data-landscape] .animate-twinkle,
-html.lite [data-landscape] .animate-rise { animation: none; }
 
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .animate-drift,
-  .animate-drift-slow,
-  .animate-float,
-  .animate-twinkle,
-  .animate-rise,
   .animate-nudge,
   .animate-marquee,
 

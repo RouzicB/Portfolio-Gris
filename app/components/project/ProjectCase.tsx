@@ -41,14 +41,21 @@ export default function ProjectCase({
   /** Position de l'étude et ses voisines (cartes seulement) */
   nav: { index: number; total: number; prev: ProjectCard & { index: number }; next: ProjectCard & { index: number } };
 }) {
-  // Chapitres présents (le document à feuilleter est facultatif)
+  // Chapitres présents : le document et l'univers sont facultatifs, et un chapitre encore vide (étude en cours d'écriture)
+  // n'apparaît pas
+  const has = {
+    enjeu: Boolean(project.problem || project.solution),
+    demarche: project.process.length > 0,
+    resultats: project.outcomes.length > 0,
+    retenu: project.learnings.length + project.tags.length > 0,
+  };
   const chapters = [
-    { id: "enjeu", title: "L'enjeu", hint: "Le problème de départ, et la réponse" },
-    { id: "demarche", title: "Démarche", hint: "Les étapes, de la recherche à l'écran" },
+    ...(has.enjeu ? [{ id: "enjeu", title: "L'enjeu", hint: "Le problème de départ, et la réponse" }] : []),
+    ...(has.demarche ? [{ id: "demarche", title: "Démarche", hint: "Les étapes, de la recherche à l'écran" }] : []),
     ...(project.universe ? [{ id: "univers", title: "L'univers graphique", hint: "Logo, couleurs, typographies" }] : []),
     ...(project.book ? [{ id: "document", title: project.book.title, hint: `${project.book.pages.length} pages à feuilleter` }] : []),
-    { id: "resultats", title: "Résultats", hint: "Ce que le projet a produit" },
-    { id: "retenu", title: "Ce que j'en retiens", hint: "Les leçons pour la suite" },
+    ...(has.resultats ? [{ id: "resultats", title: "Résultats", hint: "Ce que le projet a produit" }] : []),
+    ...(has.retenu ? [{ id: "retenu", title: "Ce que j'en retiens", hint: "Les leçons pour la suite" }] : []),
   ].map((c, i) => ({ ...c, numeral: ROMAN[i] }));
   const chapter = Object.fromEntries(chapters.map((c) => [c.id, c]));
 
@@ -110,7 +117,9 @@ export default function ProjectCase({
             { Icon: ClockIcon, label: "Durée", value: project.duration },
             { Icon: FormationIcon, label: "Année", value: String(project.year) },
             { Icon: OutilsIcon, label: "Outils", value: project.tools.join(" · ") },
-          ].map(({ Icon, label, value }) => (
+          ]
+            .filter(({ value }) => value)
+            .map(({ Icon, label, value }) => (
             <div key={label} className="flex items-start gap-3 pr-3 lg:px-5 lg:first:pl-0">
               <span className="grid size-9 shrink-0 place-items-center rounded-full border border-ink/20 text-ink">
                 <Icon size={18} />
@@ -138,8 +147,9 @@ export default function ProjectCase({
           </div>
         </m.figure>
 
-        {/* Sommaire : un fil de lecture, chaque chapitre est une étape (son numéro dans un anneau, son titre, ce qu'on y trouve).
+        {/* Sommaire (dès qu'il y a de quoi lire) : un fil de lecture, chaque chapitre est une étape (son numéro dans un anneau, son titre, ce qu'on y trouve).
             Grand écran : les étapes se suivent sur un fil horizontal. Téléphone : le fil descend, comme une table des matières. */}
+        {chapters.length > 0 && (
         <m.nav variants={fadeUp} aria-labelledby="sommaire-titre" className={`veil panel mt-8 px-5 pb-5 pt-7 sm:px-8 sm:pb-7 ${leaf()}`}>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <h2 id="sommaire-titre" className="label-spaced text-ink">
@@ -178,7 +188,10 @@ export default function ProjectCase({
           </ol>
         </m.nav>
 
+        )}
+
         {/* L'enjeu : le problème et la réponse se font face */}
+        {has.enjeu && (
         <Chapter {...chapter.enjeu}>
           <div className="grid gap-5 lg:grid-cols-[1fr_5.5rem_1fr] lg:gap-0">
             <Face icon={RechercheIcon} title="Le problème">
@@ -197,10 +210,14 @@ export default function ProjectCase({
           </div>
         </Chapter>
 
+        )}
+
         {/* Démarche : les étapes posées sur un fil */}
-        <Chapter {...chapter.demarche}>
-          <Steps steps={project.process} />
-        </Chapter>
+        {has.demarche && (
+          <Chapter {...chapter.demarche}>
+            <Steps steps={project.process} />
+          </Chapter>
+        )}
 
         {/* L'univers graphique de la marque */}
         {project.universe && (
@@ -222,6 +239,7 @@ export default function ProjectCase({
         )}
 
         {/* Résultats : de grands chiffres sur une seule plaque */}
+        {has.resultats && (
         <Chapter {...chapter.resultats}>
           <m.ul
             variants={fadeUp}
@@ -237,7 +255,10 @@ export default function ProjectCase({
           </m.ul>
         </Chapter>
 
+        )}
+
         {/* Ce que j'en retiens : des phrases, pas des cartes */}
+        {has.retenu && (
         <Chapter {...chapter.retenu}>
           <m.div variants={fadeUp} className={`veil panel mx-auto max-w-3xl px-6 py-8 text-center sm:px-10 sm:py-10 ${leaf()}`}>
             {project.learnings.map((l, i) => (
@@ -256,6 +277,8 @@ export default function ProjectCase({
             </ul>
           </m.div>
         </Chapter>
+
+        )}
 
         {/* Études voisines : deux feuilles qui se font face */}
         <nav aria-label="Autres études de cas" className="mt-24 grid gap-4 sm:grid-cols-2">

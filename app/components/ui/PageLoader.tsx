@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { site } from "../../data/site";
-import { BAKED_PORTRAIT_SIZES, WIDE_QUERY, bakedPortraitSet, bakedScene, supportsAvif } from "../../lib/decor";
-import { isLite } from "../../lib/perf";
+import { BAKED_PORTRAIT_SIZES, BAKED_WIDE_SIZES, WIDE_QUERY, bakedPortraitSet, bakedScene, bakedWideSet, supportsAvif } from "../../lib/decor";
 import type { StageId } from "../../types";
 import Emblem from "./Emblem";
 
@@ -59,7 +58,7 @@ async function warmUp() {
 /**
  * Écran de chargement : le monde redevient gris le temps de tout préparer, l'emblème se trace et tourne,
  * puis tout s'efface et la page apparaît avec ses couleurs, prête.
- * Il attend réellement la page : polices, images (portrait, vignettes), décors pré-rendus (écrans tactiles),
+ * Il attend réellement la page : polices, images (portrait, vignettes), décors peints,
  * et une première mise en page de chaque section. Ensuite, les autres pages sont préchargées en arrière-plan.
  * Rendu par app/template.tsx (recréé à chaque navigation : une page déjà en cache passe en un battement).
  * Sans JavaScript, une animation CSS de secours l'efface de toute façon (globals.css).
@@ -94,18 +93,17 @@ export default function PageLoader() {
         }
         urls.add(src);
       });
-      // Décors pré-rendus, au cadrage et au format que l'écran affichera. On n'attend que la scène visible
-      // et ses voisines (déjà dessinées d'avance) : les autres arrivent en arrière-plan, bien avant qu'on y voyage.
-      if (isLite()) {
-        const format = window.matchMedia(WIDE_QUERY).matches ? "wide" : "portrait";
+      // Décors peints, au cadrage, au format et à la largeur que l'écran affichera (srcset). On n'attend que la scène
+      // visible : les autres arrivent en arrière-plan, bien avant qu'on y voyage.
+      const sceneEls = document.querySelectorAll<HTMLElement>("[data-scene]");
+      if (sceneEls.length) {
+        const wide = window.matchMedia(WIDE_QUERY).matches;
         const ext = (await supportsAvif()) ? "avif" : "webp";
-        document.querySelectorAll<HTMLElement>("[data-scene]").forEach((s) => {
+        sceneEls.forEach((s) => {
           const id = s.dataset.scene as StageId;
-          // Cadrage portrait : la même largeur que celle choisie par la page (srcset), pas l'image pleine taille
-          const img: Source =
-            format === "portrait"
-              ? { src: bakedScene(id, format, ext), srcset: bakedPortraitSet(id, ext), sizes: BAKED_PORTRAIT_SIZES }
-              : { src: bakedScene(id, format, ext) };
+          const img: Source = wide
+            ? { src: bakedScene(id, "wide", ext), srcset: bakedWideSet(id, ext), sizes: BAKED_WIDE_SIZES }
+            : { src: bakedScene(id, "portrait", ext), srcset: bakedPortraitSet(id, ext), sizes: BAKED_PORTRAIT_SIZES };
           if (s.style.visibility === "hidden") later.push(img);
           else scenes.push(img);
         });

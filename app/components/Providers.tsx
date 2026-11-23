@@ -15,7 +15,7 @@ export default function Providers({ children }: Readonly<{ children: ReactNode }
   // Premier affichage : <html> arrive avec les transitions coupées (palette-settling) ; elles reviennent une fois
   // la palette de la page posée par les composants enfants (leurs effets passent avant celui-ci)
   useEffect(() => settlePalette(250), []);
-  // Ordinateur trop lent pour le décor vivant : bascule en mode léger (lib/perf.ts)
+  // Ordinateur trop lent pour le verre dépoli et la parallaxe : bascule en mode léger (lib/perf.ts)
   useEffect(() => watchFrameRate(), []);
   return (
     <LazyMotion features={domAnimation} strict>

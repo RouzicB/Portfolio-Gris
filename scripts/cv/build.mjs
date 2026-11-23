@@ -24,9 +24,11 @@ mkdirSync(previews, { recursive: true });
 sharp.cache(false);
 const flat = (file, out, bg, resize, quality = 74) =>
   sharp(resolve(publicDir, file)).flatten({ background: bg }).resize(resize).jpeg({ quality, mozjpeg: true }).toFile(resolve(here, out));
+// Dossier actuel des décors peints (son nom change à chaque nouveau dessin, voir scripts/decor/bake.mjs)
+const decorDir = readFileSync(resolve(root, "app/lib/decor-dir.ts"), "utf8").match(/DECOR_DIR = "\/([^"]+)"/)[1];
 await Promise.all([
-  flat("decor/gris-wide.webp", "decor.jpg", "#ffffff", { width: 1600 }, 72),
-  flat("decor/bleu-wide.webp", "decor-bleu.jpg", "#0b2236", { width: 1600 }, 72),
+  flat(`${decorDir}/gris-wide-2400.webp`, "decor.jpg", "#ffffff", { width: 1600 }, 72),
+  flat(`${decorDir}/bleu-wide-2400.webp`, "decor-bleu.jpg", "#0b2236", { width: 1600 }, 72),
 ]);
 // Portrait : carré pris sur toute la largeur de la photo, visage au centre (ni zoomé ni décalé vers le haut).
 // Fond transparent (PNG) : le portrait se pose directement sur le papier ou sur la nuit de la version numérique.

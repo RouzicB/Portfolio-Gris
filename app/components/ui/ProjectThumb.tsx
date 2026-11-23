@@ -1,6 +1,5 @@
 import type { ProjectCard } from "../../types";
-import { archPath, moundPath } from "../background/art/shared";
-
+import { archPath, moundPath } from "./shapes";
 
 /**
  * Vignette peinte à partir des deux teintes du projet, dans le vocabulaire des décors :
@@ -57,6 +56,14 @@ export default function ProjectThumb({
   return (
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden focusable="false">
       <defs>
+        {/* Bord d'aquarelle à peine irrégulier, et hachures pour l'ombre du monticule (propres à la vignette) */}
+        <filter id={`${id}-paint`} x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="9" result="warp" />
+          <feDisplacementMap in="SourceGraphic" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <pattern id={`${id}-hatch`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+          <path d="M0 3.5h7" stroke="#000" strokeOpacity="0.22" strokeWidth="1.1" />
+        </pattern>
         <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={b} />
           <stop offset="1" stopColor="#ffffff" stopOpacity="0.85" />
@@ -77,7 +84,7 @@ export default function ProjectThumb({
             <circle cx="228" cy="62" r="58" fill="none" stroke="#ffffff" strokeOpacity="0.25" />
           </>
         )}
-        <g filter="url(#wc-paint)">
+        <g filter={`url(#${id}-paint)`}>
           <g transform={arch ? `translate(160 166) scale(0.78) translate(${-MOTIF_CENTER[motif]} -166)` : undefined}>
           {motif === 0 && <path fillRule="evenodd" d={archPath(40, 70, 90, 110, 46, 0.3)} fill={a} opacity="0.85" />}
           {motif === 1 && (
@@ -121,7 +128,7 @@ export default function ProjectThumb({
           )}
           <path d={moundPath(-30, 360, 215, 150, 40)} fill={a} />
         </g>
-        <path d={moundPath(-30, 360, 215, 150, 40)} fill="url(#hatch)" />
+        <path d={moundPath(-30, 360, 215, 150, 40)} fill={`url(#${id}-hatch)`} />
       </g>
     </svg>
   );

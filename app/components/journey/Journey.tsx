@@ -22,8 +22,6 @@ const VARS = KEYS.map(cssVarName);
 const PARSED: RGBA[][] = STAGES.map((stage) => KEYS.map((k) => parseColor(palettes[stage][k])));
 /** Durée du voyage d'une section à l'autre (zoom), en secondes */
 const TRAVEL = 1.35;
-/** Fondu de couleur des éléments chargés en mode léger (globals.css, [data-glide]) : court, il part dès le geste */
-const GLIDE_MS = 350;
 /** Courbe : départ franc, arrivée très douce */
 const EASE: [number, number, number, number] = [0.65, 0, 0.2, 1];
 
@@ -41,7 +39,7 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
   const stageRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
   /** Section visée par le voyage en cours (null : déplacement instantané) */
-  const glideTo = useRef<number | null>(null);
+  const travelTo = useRef<number | null>(null);
   const travel = useRef<AnimationPlaybackControls | null>(null);
   const busyUntil = useRef(0);
   const listeners = useRef(new Set<(index: number) => void>());
@@ -84,7 +82,7 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       const forward = target >= activeRef.current;
       const changed = target !== activeRef.current;
       activeRef.current = target;
-      glideTo.current = instant ? null : target;
+      travelTo.current = instant ? null : target;
       travel.current?.stop();
       const duration = instant ? 0 : reduce ? 0.45 : TRAVEL;
       busyUntil.current = performance.now() + duration * 1000;
@@ -100,13 +98,11 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       // éléments qui suivent la palette (leurs transitions de couleur sont suspendues, globals.css)
       const setTravel = (on: boolean) => {
         document.documentElement.toggleAttribute("data-traveling", on);
-        // Mode léger : les éléments chargés (navigation, lecteur…) ne changent de couleur qu'à l'arrivée (voir la palette
-        // plus bas), leurs transitions n'ont pas à être suspendues. L'attribut faisait recalculer tout leur contenu
-        // (~600 éléments) au départ et à l'arrivée de chaque voyage.
-        const lite = on && isLite();
-        document.querySelectorAll("[data-palette-live]").forEach((el) => {
-          if (!lite || el.getElementsByTagName("*").length <= 8) el.toggleAttribute("data-travel", on);
-        });
+        // Aussi en mode léger : sans cet attribut, le bouton de la section qui s'allume (ou s'éteint) faisait sa propre
+        // transition de couleur pendant le voyage, et l'icône de chaque bouton, qui hérite de cette couleur, était
+        // recalculée à chaque image (sur un portable lent : ~100 ms par image). Le recalcul que coûte l'attribut tombe au
+        // départ, dans la même image que les nouvelles couleurs, et à l'arrivée, quand le mouvement est fini.
+        document.querySelectorAll("[data-palette-live]").forEach((el) => el.toggleAttribute("data-travel", on));
       };
       if (instant) {
         travel.current = null;
@@ -183,8 +179,9 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
     let targets: HTMLElement[] = [];
     // Éléments chargés (navigation : ~190 descendants, lecteur de musique, crédits : tout est recalculé à chaque
     // changement de variable). Pendant un voyage, une image sur deux suffit : l'écart de teinte est invisible.
-    // Mode léger (ordinateur modeste, téléphone) : ils reçoivent les couleurs d'arrivée au départ, et un fondu CSS les y amène.
-    // Chaque mise à jour coûtait jusqu'à 100 ms sur un PC très lent : autant d'à-coups en plein trajet.
+    // Mode léger (ordinateur modeste, téléphone) : ils prennent les couleurs d'arrivée d'un coup, au départ du voyage
+    // (une seule mise à jour). Chaque mise à jour coûtait jusqu'à 100 ms sur un PC très lent ; un fondu de couleur, lui,
+    // recalculait les ~580 tracés des icônes à chaque image : autant d'à-coups en plein trajet.
     // Le ciel et l'astre (sans descendants à recalculer) suivent, eux, chaque image.
     let heavy = new Set<HTMLElement>();
     let frame = 0;
@@ -202,11 +199,11 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
       if (targets.length === 0 || targets.some((el) => !el.isConnected)) collect();
       // Position d'arrivée (entière) : toujours écrite partout
       const lite = isLite();
-      const goal = glideTo.current;
-      // Mode léger, voyage en cours : les éléments chargés reçoivent tout de suite les couleurs d'arrivée, et un fondu CSS
-      // (data-glide, globals.css) les y amène pendant le trajet. Une seule mise à jour par voyage, sans changement brusque.
-      const glide = lite && goal !== null && !Number.isInteger(f);
-      const withHeavy = Number.isInteger(f) || glide || (!lite && frame++ % 2 === 0);
+      const goal = travelTo.current;
+      // Mode léger, voyage en cours : les éléments chargés prennent tout de suite les couleurs d'arrivée (leurs transitions
+      // de couleur sont suspendues pendant le voyage, data-travel) : le changement suit le geste, sans coût pendant le trajet
+      const jump = lite && goal !== null && !Number.isInteger(f);
+      const withHeavy = Number.isInteger(f) || jump || (!lite && frame++ % 2 === 0);
       const { from, to, t } = segment(f, sections.length);
       const a = PARSED[from];
       const b = PARSED[to];
@@ -214,20 +211,14 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
         `rgba(${Math.round(ca[0] + (cb[0] - ca[0]) * t)}, ${Math.round(ca[1] + (cb[1] - ca[1]) * t)}, ${Math.round(
           ca[2] + (cb[2] - ca[2]) * t,
         )}, ${Math.round((ca[3] + (cb[3] - ca[3]) * t) * 1000) / 1000})`;
-      let glideStarted = false;
       for (let i = 0; i < KEYS.length; i++) {
         const value = rgba(a[i], b[i], t);
-        const heavyValue = glide ? rgba(PARSED[goal][i], PARSED[goal][i], 0) : value;
+        const heavyValue = jump ? rgba(PARSED[goal][i], PARSED[goal][i], 0) : value;
         const light = lastLight[i] !== value;
         const loaded = withHeavy && lastHeavy[i] !== heavyValue;
         if (light) lastLight[i] = value;
         if (loaded) lastHeavy[i] = heavyValue;
         if (!light && !loaded) continue;
-        // Le fondu est activé dans la même image que l'écriture des couleurs : un seul recalcul de style
-        if (loaded && glide && !glideStarted) {
-          glideStarted = true;
-          startGlide();
-        }
         for (const el of targets) {
           if (heavy.has(el)) {
             if (loaded) el.style.setProperty(VARS[i], heavyValue);
@@ -235,20 +226,11 @@ export default function Journey({ children }: Readonly<{ children: ReactNode }>)
         }
       }
     };
-    // Fondu des éléments chargés : actif le temps du trajet, puis retiré (les survols retrouvent leurs propres durées)
-    let glideTimer = 0;
-    const startGlide = () => {
-      window.clearTimeout(glideTimer);
-      heavy.forEach((el) => el.setAttribute("data-glide", ""));
-      glideTimer = window.setTimeout(() => heavy.forEach((el) => el.removeAttribute("data-glide")), GLIDE_MS + 100);
-    };
     collect();
     apply(progress.get());
     const off = progress.on("change", apply);
     return () => {
       off();
-      window.clearTimeout(glideTimer);
-      for (const el of targets) el.removeAttribute("data-glide");
       // Le lien Crédits survit à la page d'accueil : il reprend la palette de la page suivante
       for (const el of targets) VARS.forEach((name) => el.style.removeProperty(name));
     };

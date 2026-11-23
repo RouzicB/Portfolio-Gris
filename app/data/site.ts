@@ -63,7 +63,7 @@ export const credits = {
     { name: "Josefin Sans", detail: "Santiago Orozco — SIL Open Font License", specimen: "display", role: "Titres" },
     { name: "Quicksand", detail: "Andrew Paglinawan — SIL Open Font License", specimen: "sans", role: "Texte" },
     { name: "Next.js, React, Tailwind CSS, Framer Motion", detail: "Licence MIT" },
-    { name: "Décors et icônes", detail: "Dessinés en SVG pour ce portfolio" },
+    { name: "Décors et icônes", detail: "Dessinés et peints à l'aquarelle numérique pour ce portfolio" },
     { name: "Logos des outils", detail: "Simple Icons (CC0) ; les marques appartiennent à leurs détenteurs" },
     { name: "Mockups du projet Delta", detail: "Affiche et flyer mis en scène sur des mockups Vecteezy (vecteezy.com)" },
     { name: "Site d'origine des Pluies de Juillet", detail: "Capture d'archive (Internet Archive, Wayback Machine), présentée pour comparaison" },

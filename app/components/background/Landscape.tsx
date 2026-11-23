@@ -1,42 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useSyncExternalStore, type ComponentType } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useReducedMotion, type MotionValue } from "framer-motion";
 import type { StageId, Sun } from "../../types";
 import { palettes } from "../../data/palettes";
 import { segment, stageWeights, zoomScale } from "../../lib/journey";
-import { BAKED_PORTRAIT_SIZES, TOUCH_QUERY, WIDE_QUERY, bakedPortraitSet, bakedScene } from "../../lib/decor";
-import { isLite, subscribeLite } from "../../lib/perf";
-import { PointerProvider } from "./Parallax";
-import { WatercolorDefs } from "./art/shared";
-import GrisArt from "./art/GrisArt";
-import RougeArt from "./art/RougeArt";
-import VertArt from "./art/VertArt";
-import BleuArt from "./art/BleuArt";
-import JauneArt from "./art/JauneArt";
-import CielArt from "./art/CielArt";
-import LuneArt from "./art/LuneArt";
-
-/**
- * Scènes vivantes (SVG) seulement sur les écrans à souris : ailleurs, les images pré-rendues les remplacent.
- * Côté serveur, aucune : le HTML ne transporte plus ~2 000 éléments SVG que les téléphones masquaient sans les afficher.
- * Sur ordinateur, elles se montent juste après l'hydratation, sous l'écran de chargement.
- */
-// Écrans tactiles et ordinateurs en mode léger (lib/perf.ts) : images pré-rendues
-const useLiveScenes = () => useSyncExternalStore(subscribeLite, () => !isLite(), () => false);
-
-const ART: Record<StageId, ComponentType> = {
-  gris: GrisArt,
-  rouge: RougeArt,
-  vert: VertArt,
-  bleu: BleuArt,
-  jaune: JauneArt,
-  ciel: CielArt,
-  lune: LuneArt,
-};
+import { BAKED_PORTRAIT_SIZES, BAKED_WIDE_SIZES, TOUCH_QUERY, WIDE_QUERY, bakedPortraitSet, bakedScene, bakedWideSet } from "../../lib/decor";
+import { isLite } from "../../lib/perf";
 
 /** Dégradé du ciel d'une ambiance, en couleurs fixes */
 const skyOf = (id: StageId) => `linear-gradient(180deg, ${palettes[id].skyTop} 0%, ${palettes[id].skyBottom} 100%)`;
+
+/** Cadrage portrait : tout écran qui n'est pas plus large que haut (le contraire exact de WIDE_QUERY) */
+const PORTRAIT_QUERY = `not all and ${WIDE_QUERY}`;
 
 /**
  * Le décor fixe : ciel, soleil (ou lune), une scène par ambiance, grain du papier.
@@ -44,28 +20,30 @@ const skyOf = (id: StageId) => `linear-gradient(180deg, ${palettes[id].skyTop} 0
  * Les scènes se fondent l'une dans l'autre et le soleil glisse, sans transition déclenchée :
  * les styles sont écrits directement à chaque changement de `progress` (aucun rendu React par frame).
  * Une page projet passe une seule étape : le décor est alors immobile.
+ *
+ * Chaque scène est une aquarelle peinte d'avance (scripts/decor/) : une seule image, que la carte graphique zoome,
+ * fond et déplace sans rien redessiner. Les scènes dessinées en direct (SVG passés dans des filtres aquarelle, sept à dix
+ * calques plein écran par scène) faisaient saccader les voyages sur les portables à carte graphique modeste.
  */
 export default function Landscape({ progress, stages, suns }: { progress: MotionValue<number>; stages: StageId[]; suns: Sun[] }) {
   const used = useMemo(() => Array.from(new Set(stages)), [stages]);
   const reduce = useReducedMotion();
   const sceneRefs = useRef<Partial<Record<StageId, HTMLDivElement | null>>>({});
+  const scenesRef = useRef<HTMLDivElement>(null);
   const sunRef = useRef<HTMLDivElement>(null);
   const skyFromRef = useRef<HTMLDivElement>(null);
   const skyToRef = useRef<HTMLDivElement>(null);
-  const live = useLiveScenes();
 
   useEffect(() => {
-    // Téléphones et tablettes : les scènes voisines sont dessinées d'avance (invisibles),
-    // pour qu'un voyage n'ait pas à peindre d'un coup une scène aquarelle à haute densité de pixels.
-    // (Sur ordinateur, inutile : et leurs nuages animés se redessineraient en continu.)
-    // Pas dès l'ouverture : une scène voisine peinte (même quasi transparente) pendant le chargement concourait avec
-    // la scène visible pour le plus grand affichage (LCP), et son image passait avant. Elles attendent la page chargée.
+    // Les scènes voisines sont préparées d'avance (image décodée et posée, mais transparente) : un voyage n'a pas à
+    // décoder d'un coup une grande image. Pas dès l'ouverture : une scène voisine affichée pendant le chargement
+    // concourait avec la scène visible pour le plus grand affichage (LCP). Elles attendent la page chargée.
     let prewarm = false;
     let warmTimer = 0;
     const warm = () => {
       warmTimer = window.setTimeout(() => {
-        prewarm = isLite();
-        if (prewarm) apply(progress.get());
+        prewarm = true;
+        apply(progress.get());
       }, 1200);
     };
     if (document.readyState === "complete") warm();
@@ -75,9 +53,7 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
     let skyPair = "";
     const apply = (f: number) => {
       // Ciel : le dégradé de départ et celui d'arrivée, superposés ; seule l'opacité du second suit le voyage.
-      // Le compositeur (carte graphique) fait le fondu sans rien redessiner. Avant, les couleurs du dégradé changeaient
-      // à chaque image et tout l'écran était repeint : sur un PC lent, c'était le plus gros du dessin pendant un voyage.
-      // Le résultat est le même : un fondu entre deux couleurs est le mélange de ces deux couleurs.
+      // Le compositeur (carte graphique) fait le fondu sans rien redessiner.
       const seg = segment(f, stages.length);
       const pair = `${stages[seg.from]}>${stages[seg.to]}`;
       const skyFrom = skyFromRef.current;
@@ -106,14 +82,11 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
         if (state[id] !== next) {
           state[id] = next;
           el.style.visibility = next === "off" ? "hidden" : "visible";
-          // Scène éteinte : ses animations (nuages, étoiles) se mettent en pause (globals.css)
-          el.toggleAttribute("data-off", next === "off");
-          // Scène écartée : ni styles, ni mise en page, ni peinture (le recalcul de la palette l'ignore)
+          // Scène écartée : ni mise en page, ni peinture
           el.style.contentVisibility = next === "off" ? "hidden" : "visible";
         }
         if (next === "off") return;
-        // Scène préparée d'avance : opacité nulle. Son calque (will-change) est quand même dessiné par le navigateur,
-        // mais elle ne compte plus comme « plus grand affichage » (LCP) : à 0,002, PageSpeed la retenait à la place de la scène visible.
+        // Scène préparée d'avance : opacité nulle (elle ne compte pas comme « plus grand affichage »)
         el.style.opacity = next === "warm" ? "0" : String(w);
         // Zoom : on entre dans la scène qu'on quitte, la suivante arrive du fond
         el.style.transform = reduce ? "" : `scale(${zoomScale(f - idx)})`;
@@ -153,24 +126,67 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
     };
   }, [progress, stages, suns, used, reduce]);
 
+  // Parallaxe à la souris : le paysage glisse de quelques pixels devant le ciel et l'astre, immobiles.
+  // Un seul calque déplacé par la carte graphique (propriété `translate`), suivi en douceur, puis plus rien au repos.
+  // Ni sur écran tactile, ni en mode léger, ni si le visiteur préfère moins d'animations.
+  useEffect(() => {
+    const layer = scenesRef.current;
+    if (!layer || reduce || window.matchMedia(TOUCH_QUERY).matches) return;
+    let tx = 0;
+    let ty = 0;
+    let x = 0;
+    let y = 0;
+    let raf = 0;
+    const step = () => {
+      x += (tx - x) * 0.06;
+      y += (ty - y) * 0.06;
+      const done = Math.abs(tx - x) < 0.05 && Math.abs(ty - y) < 0.05;
+      if (done) {
+        x = tx;
+        y = ty;
+      }
+      layer.style.translate = `${x.toFixed(2)}px ${y.toFixed(2)}px`;
+      raf = done ? 0 : requestAnimationFrame(step);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      const lite = isLite();
+      tx = lite ? 0 : -((e.clientX / window.innerWidth) * 2 - 1) * 14;
+      ty = lite ? 0 : -((e.clientY / window.innerHeight) * 2 - 1) * 6;
+      if (!raf) raf = requestAnimationFrame(step);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, [reduce]);
+
   const initial = stageWeights(progress.get(), stages);
   const sun0 = suns[0];
 
   return (
     <div data-landscape className="fixed inset-0 -z-10 overflow-hidden" aria-hidden>
-      {/* Téléphones et tablettes : l'image du décor de départ est demandée dès la lecture du HTML (React la place dans
-          <head>), en priorité haute, au lieu d'attendre que la page la découvre. `media` : seuls les écrans qui
-          l'affichent la téléchargent (un ordinateur garde la scène vivante). */}
+      {/* L'image du décor de départ est demandée dès la lecture du HTML (React la place dans <head>), en priorité
+          haute, au lieu d'attendre que la page la découvre. `media` : chaque écran ne télécharge que son cadrage. */}
       <link
         rel="preload"
         as="image"
         type="image/avif"
         imageSrcSet={bakedPortraitSet(stages[0], "avif")}
         imageSizes={BAKED_PORTRAIT_SIZES}
-        media={`(max-aspect-ratio: 1/1) and ${TOUCH_QUERY.split(", ").join(", (max-aspect-ratio: 1/1) and ")}`}
+        media={PORTRAIT_QUERY}
         fetchPriority="high"
       />
-      <WatercolorDefs />
+      <link
+        rel="preload"
+        as="image"
+        type="image/avif"
+        imageSrcSet={bakedWideSet(stages[0], "avif")}
+        imageSizes={BAKED_WIDE_SIZES}
+        media={WIDE_QUERY}
+        fetchPriority="high"
+      />
       <div ref={skyFromRef} className="absolute inset-0" style={{ background: skyOf(stages[0]) }} />
       <div ref={skyToRef} className="absolute inset-0 will-change-[opacity]" style={{ background: skyOf(stages[0]), opacity: 0 }} />
 
@@ -200,52 +216,44 @@ export default function Landscape({ progress, stages, suns }: { progress: Motion
         <div className="absolute inset-[-60%] rounded-full border opacity-15" style={{ borderColor: "var(--sun)" }} />
       </div>
 
-      {used.map((id) => {
-        const Art = ART[id];
-        const w = initial[id] ?? 0;
-        return (
-          <div
-            key={id}
-            ref={(el) => {
-              sceneRefs.current[id] = el;
-            }}
-            data-scene={id}
-            className="absolute inset-0 origin-[50%_58%] will-change-[opacity,transform]"
-            style={{
-              opacity: w,
-              visibility: w < 0.004 ? "hidden" : "visible",
-              contentVisibility: w < 0.004 ? "hidden" : "visible",
-            }}
-          >
-            {/* Ordinateur : la scène vivante (SVG, filtres aquarelle, parallaxe, nuages qui dérivent) */}
-            {live && (
-              <div className="scene-live absolute inset-0">
-                <PointerProvider>
-                  <Art />
-                </PointerProvider>
-              </div>
-            )}
-            {/* Écrans tactiles : la même scène, pré-rendue en image (globals.css choisit l'une ou l'autre).
-                Les filtres aquarelle se calculent pixel par pixel sur le processeur : à densité ×3, une seule
-                scène pouvait demander plusieurs secondes de dessin à sa première apparition. */}
-            <picture className="scene-baked absolute inset-[-3%]">
-              {/* AVIF d'abord (bien plus léger), WebP sinon ; cadrage large sur un écran plus large que haut */}
-              <source media={WIDE_QUERY} type="image/avif" srcSet={bakedScene(id, "wide", "avif")} />
-              <source media={WIDE_QUERY} srcSet={bakedScene(id, "wide")} />
-              <source type="image/avif" srcSet={bakedPortraitSet(id, "avif")} sizes={BAKED_PORTRAIT_SIZES} />
-              <img
-                src={bakedScene(id, "portrait")}
-                srcSet={bakedPortraitSet(id, "webp")}
-                sizes={BAKED_PORTRAIT_SIZES}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover object-bottom"
-              />
-            </picture>
-          </div>
-        );
-      })}
+      {/* Les scènes, dans un calque que la parallaxe déplace d'un bloc */}
+      <div ref={scenesRef} className="absolute inset-0 will-change-transform">
+        {used.map((id) => {
+          const w = initial[id] ?? 0;
+          return (
+            <div
+              key={id}
+              ref={(el) => {
+                sceneRefs.current[id] = el;
+              }}
+              data-scene={id}
+              className="absolute inset-0 origin-[50%_58%] will-change-[opacity,transform]"
+              style={{
+                opacity: w,
+                visibility: w < 0.004 ? "hidden" : "visible",
+                contentVisibility: w < 0.004 ? "hidden" : "visible",
+              }}
+            >
+              <picture className="scene-baked absolute inset-[-3%]">
+                {/* AVIF d'abord (bien plus léger), WebP sinon ; cadre entier sur un écran plus large que haut */}
+                <source media={WIDE_QUERY} type="image/avif" srcSet={bakedWideSet(id, "avif")} sizes={BAKED_WIDE_SIZES} />
+                <source media={WIDE_QUERY} type="image/webp" srcSet={bakedWideSet(id, "webp")} sizes={BAKED_WIDE_SIZES} />
+                <source type="image/avif" srcSet={bakedPortraitSet(id, "avif")} sizes={BAKED_PORTRAIT_SIZES} />
+                <img
+                  src={bakedScene(id, "portrait")}
+                  srcSet={bakedPortraitSet(id, "webp")}
+                  sizes={BAKED_PORTRAIT_SIZES}
+                  alt=""
+                  // La scène de départ tout de suite ; les autres quand elles approchent (préparées d'avance, voir plus haut)
+                  loading={w > 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="h-full w-full object-cover object-bottom"
+                />
+              </picture>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Grain du papier et léger vignettage */}
       <div

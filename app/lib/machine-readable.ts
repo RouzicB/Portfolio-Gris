@@ -43,21 +43,25 @@ const career = careerNodes
   .sort((a, b) => a.col - b.col || a.row - b.row);
 
 function projectMarkdown(p: Project, full: boolean): string {
+  // Une étude encore en cours d'écriture a des champs vides : on ne les écrit pas
   const out = [
     `### ${p.title} (${p.year})`,
     "",
     `- Étude de cas : ${projectUrl(p)}`,
+    `- Galerie : ${p.category === "dev" ? "développement" : "design & UX/UI"}`,
     `- Contexte : ${p.context}`,
     `- Rôle : ${p.role}`,
-    `- Durée : ${p.duration}`,
-    `- Outils : ${p.tools.join(", ")}`,
-    `- Compétences : ${p.tags.join(", ")}`,
+    ...(p.duration ? [`- Durée : ${p.duration}`] : []),
+    ...(p.tools.length ? [`- Outils : ${p.tools.join(", ")}`] : []),
+    ...(p.tags.length ? [`- Compétences : ${p.tags.join(", ")}`] : []),
   ];
   if (p.link) out.push(`- ${p.linkLabel ?? "Lien"} : ${p.link}`);
   if (p.book?.pdf) out.push(`- Document complet (PDF) : ${absolute(p.book.pdf)}`);
   out.push("", p.summary);
   if (!full) return out.join("\n");
-  out.push("", `**Le problème.** ${p.problem}`, "", `**La réponse.** ${p.solution}`, "", "**Démarche :**");
+  if (p.problem) out.push("", `**Le problème.** ${p.problem}`);
+  if (p.solution) out.push("", `**La réponse.** ${p.solution}`);
+  if (p.process.length) out.push("", "**Démarche :**");
   p.process.forEach((s, i) => out.push(`${i + 1}. ${s.title} : ${s.text}`));
   if (p.universe) {
     const u = p.universe;
@@ -73,8 +77,8 @@ function projectMarkdown(p: Project, full: boolean): string {
     out.push("", `**${p.book.title}** (${p.book.pages.length} × ${p.book.unit ?? "page"}) :`);
     p.book.pages.forEach((pg, i) => out.push(`${i + 1}. ${pg.title}${pg.text ? ` : ${pg.text}` : ""}`));
   }
-  out.push("", `**Résultats :** ${p.outcomes.map((o) => `${o.value} ${o.label}`).join(" ; ")}`);
-  out.push("", "**Ce que j'en retiens :**");
+  if (p.outcomes.length) out.push("", `**Résultats :** ${p.outcomes.map((o) => `${o.value} ${o.label}`).join(" ; ")}`);
+  if (p.learnings.length) out.push("", "**Ce que j'en retiens :**");
   p.learnings.forEach((l) => out.push(`- ${l}`));
   return out.join("\n");
 }
@@ -179,11 +183,11 @@ export function projectJsonLd(p: Project, withContext = true) {
     name: p.title,
     headline: `${p.title} — ${p.context}`,
     abstract: p.summary,
-    description: `${p.problem} ${p.solution}`,
+    description: [p.problem, p.solution].filter(Boolean).join(" ") || p.summary,
     dateCreated: String(p.year),
     inLanguage: "fr-FR",
     genre: p.context,
-    keywords: [...p.tags, ...p.tools].join(", "),
+    keywords: [...p.tags, ...p.tools].join(", ") || undefined,
     image: p.cover ? absolute(p.cover) : undefined,
     creator: { "@type": "Person", "@id": absolute("/#person"), name: site.name },
     contributor: { "@type": "Role", roleName: p.role },

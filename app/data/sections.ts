@@ -55,7 +55,7 @@ export const sections: Section[] = [
     id: "projets",
     label: "Projets",
     title: "Études de cas",
-    intro: "Du problème de départ à ce que j'en ai retenu. Faites défiler la galerie pour tout parcourir.",
+    intro: "En design comme en développement : du problème de départ à ce que j'en ai retenu.",
     icon: "projets",
     stage: "ciel",
     sun: { x: 74, y: 18, size: 120 },

@@ -3,7 +3,7 @@
 import { m } from "framer-motion";
 import { site } from "../../data/site";
 import { useYear } from "../../lib/useYear";
-import { ArrowRightIcon, ContactIcon, ScrollIcon } from "../icons/GrisIcons";
+import { ArrowRightIcon, ContactIcon, ProjetsIcon, ScrollIcon } from "../icons/GrisIcons";
 import { useJourneyControls } from "../journey/JourneyContext";
 import { fadeIn, fadeUp, group } from "../journey/motion";
 import Emblem from "../ui/Emblem";
@@ -45,6 +45,16 @@ export default function Accueil() {
           >
             Commencer le voyage
             <ArrowRightIcon size={16} className="transition-transform group-hover:translate-x-0.5" />
+          </m.button>
+          {/* Accès direct aux projets, sans passer par tout le voyage */}
+          <m.button
+            variants={fadeUp}
+            type="button"
+            onClick={() => goTo(5)}
+            className="veil inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm text-ink transition hover:border-accent"
+          >
+            <ProjetsIcon size={16} />
+            Voir les projets
           </m.button>
           <m.button
             variants={fadeUp}

@@ -103,9 +103,13 @@ export interface Conviction {
   proof: { slug: string; title: string };
 }
 
+/** Galerie d'un projet : design d'interfaces et UX/UI, ou application développée */
+export type ProjectCategory = "design" | "dev";
+
 export interface Project {
   slug: string;
   title: string;
+  category: ProjectCategory;
   context: string;
   year: number;
   role: string;
@@ -143,7 +147,7 @@ export interface Project {
  * `tint` reteinte les dessins du décor (mode de fusion « color » : la teinte change, les valeurs restent).
  */
 /** Ce qu'une carte de projet affiche (galerie, études voisines) : le reste de l'étude de cas ne quitte pas le serveur */
-export type ProjectCard = Pick<Project, "slug" | "title" | "context" | "year" | "summary" | "hues" | "thumb" | "cover">;
+export type ProjectCard = Pick<Project, "slug" | "title" | "category" | "context" | "year" | "summary" | "hues" | "thumb" | "cover">;
 
 export interface SceneTheme {
   palette?: Partial<Palette>;

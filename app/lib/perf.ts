@@ -1,9 +1,9 @@
 import { TOUCH_QUERY } from "./decor";
 
 /**
- * Mode léger : le même rendu que sur téléphone (décors en images pré-rendues, verre sans flou, décor immobile),
- * pour les ordinateurs peu puissants. Les scènes vivantes (SVG passés dans des filtres aquarelle, nuages qui
- * dérivent, verre dépoli, parallaxe) demandent une vraie carte graphique.
+ * Mode léger : les mêmes allègements que sur téléphone (verre sans flou, grain du papier non fusionné, décor sans
+ * parallaxe, navigation qui prend ses couleurs d'un fondu à l'arrivée), pour les ordinateurs peu puissants.
+ * Le décor, lui, est peint d'avance en images sur tous les écrans (scripts/decor/).
  *
  * Deux façons d'y entrer :
  * - avant le premier affichage, d'après le matériel (PERF_SCRIPT, dans <head>) : peu de cœurs ou de mémoire,
@@ -30,7 +30,7 @@ if(/swiftshader|llvmpipe|software|basic render/i.test(r))lite=true;}}catch(e){}}
 if(lite)d.classList.add("lite");
 }catch(e){}})();`;
 
-/** Décor en images pré-rendues : écran tactile ou étroit, ou ordinateur en mode léger */
+/** Allègements actifs : écran tactile ou étroit, ou ordinateur en mode léger */
 export function isLite(): boolean {
   if (typeof window === "undefined") return false;
   return document.documentElement.classList.contains("lite") || window.matchMedia(TOUCH_QUERY).matches;
@@ -69,8 +69,8 @@ const tooSlow = (gaps: number[]) => {
 };
 
 /**
- * Surveille la fluidité sur un ordinateur en décor vivant, aux deux moments qui comptent :
- * - au repos, une fois la page posée (nuages en mouvement, verre dépoli) ;
+ * Surveille la fluidité sur un ordinateur en mode complet, aux deux moments qui comptent :
+ * - au repos, une fois la page posée (verre dépoli, parallaxe) ;
  * - pendant chaque voyage entre sections (attribut data-traveling sur <html>), le moment le plus exigeant.
  * Trop lent et le site bascule en mode léger ; après plusieurs voyages fluides, la machine est notée « full »
  * et n'est plus surveillée.
