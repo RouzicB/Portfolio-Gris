@@ -12,45 +12,144 @@ import { vibesEcrans, vibesUniverse } from "./vibes";
 // Études de cas, dans n'importe quel ordre (triées par année ci-dessous).
 const all: Project[] = [
   // ── Applications développées de bout en bout (alternance) ──
-  // ⚠ À compléter : textes, démarche, résultats, ce que j'en retiens, outils, images (cover / thumb dans public/projets/{slug}/).
-  // Les chapitres vides ne s'affichent pas sur la page du projet.
+  // Applications internes : les vidéos (scripts/demos, enregistrées par scripts/record-demos.mjs) n'utilisent que des données fictives.
   {
-    slug: "cartographie-cleon",
-    title: "Cartographie de Cléon",
+    slug: "lokali",
+    title: "Lokali",
     category: "dev",
     context: "Alternance Renault Group · application web",
     year: 2026,
     role: "Développeur full-stack (solo)",
-    duration: "",
-    summary: "Une application de cartographie de l'usine Renault de Cléon, que j'ai développée de bout en bout.",
-    problem: "",
-    solution: "",
-    process: [],
-    learnings: [],
-    outcomes: [],
-    tags: [],
-    tools: [],
+    duration: "Depuis février 2026",
+    summary:
+      "Une cartographie interactive de l'usine : bâtiments, étages et poteaux, pour placer, retrouver et partager des points d'intérêt.",
+    problem:
+      "Dans une usine, savoir où se trouve un équipement, un défaut ou une zone de travaux passe par des plans papier, des tableurs et un repère, le poteau, que seuls les habitués maîtrisent. Chaque service tient sa propre liste, rien n'est relié à un plan à jour, et montrer une situation précise à quelqu'un qui n'est pas sur place est difficile.",
+    solution:
+      "Lokali superpose les plans d'étage à la carte du site et les cale sur la grille des poteaux. Chaque application métier (maintenance, sécurité, travaux…) y pose ses points, avec un statut coloré et une fiche structurée. On retrouve un point par la recherche, on filtre par application ou par statut, et on partage une vue filtrée par un lien ou dans un autre outil, en iframe.",
+    process: [
+      {
+        title: "Besoin",
+        text: "Échanges avec les équipes terrain : quoi localiser, avec quels statuts, et quel repère commun. Le poteau s'impose comme l'adresse que tout le monde comprend.",
+      },
+      {
+        title: "Carte",
+        text: "Google Maps, bâtiments en polygones GeoJSON, plans d'étage en surimpression, points regroupés par bâtiment aux zooms éloignés.",
+      },
+      {
+        title: "Placement",
+        text: "Calibration de la grille de poteaux sur l'image du plan, puis glisser-déposer depuis une bibliothèque de pictos, aimanté au poteau le plus proche.",
+      },
+      {
+        title: "Ouverture",
+        text: "API REST documentée (Swagger), jetons pour les applications tierces, vues filtrées partageables et intégration en iframe.",
+      },
+      {
+        title: "Production",
+        text: "Connexion LDAP et JWT, trois rôles, tests Jest, pipeline GitLab CI jusqu'au déploiement Docker Swarm, quality gate SonarQube sans nouvelle issue.",
+      },
+    ],
+    learnings: [
+      "Un repère que tout le monde connaît déjà, le poteau, vaut mieux qu'une coordonnée précise que personne ne sait lire.",
+      "Penser l'outil comme une brique (API, liens, iframe) plutôt que comme une application isolée change toute l'architecture.",
+      "Un quality gate strict ralentit au début, puis rend chaque modification plus sereine.",
+    ],
+    outcomes: [
+      { value: "164", label: "fichiers de tests automatisés" },
+      { value: "18", label: "groupes de routes dans l'API REST" },
+      { value: "0", label: "nouvelle issue tolérée par SonarQube" },
+    ],
+    tags: ["Full-stack", "Cartographie", "API REST", "CI/CD"],
+    tools: ["Next.js", "Express", "PostgreSQL", "Google Maps", "Docker"],
     hues: ["#1f3b52", "#7fb6d6"],
     stage: "bleu",
+    cover: "/projets/lokali/lokali-explorer.webp",
+    thumb: "/projets/lokali/logo.svg",
+    videos: [
+      {
+        src: "/projets/lokali/lokali-explorer.mp4",
+        poster: "/projets/lokali/lokali-explorer.webp",
+        title: "Explorer le site",
+        text: "De la vue d'ensemble de l'usine aux points d'un bâtiment, colorés selon leur statut ; recherche d'un équipement, sa fiche, puis la liste des points visibles.",
+        duration: "0:38",
+      },
+      {
+        src: "/projets/lokali/lokali-placer.mp4",
+        poster: "/projets/lokali/lokali-placer.webp",
+        title: "Placer un point",
+        text: "Un picto glissé de la barre d'outils crée le point sur la carte ; on complète sa fiche (titre, description, statut), aussitôt à jour pour tous.",
+        duration: "0:45",
+      },
+    ],
   },
   {
-    slug: "signature-campagnes",
-    title: "Signature de campagnes",
+    slug: "meetsign",
+    title: "MeetSign",
     category: "dev",
     context: "Alternance Renault Group · application web",
     year: 2026,
     role: "Développeur full-stack (solo)",
-    duration: "",
-    summary: "Une application pour faire signer des campagnes, que j'ai développée de bout en bout.",
-    problem: "",
-    solution: "",
-    process: [],
-    learnings: [],
-    outcomes: [],
-    tags: [],
-    tools: [],
+    duration: "Depuis mai 2026",
+    summary:
+      "Des campagnes de lecture et de signature numérique (documents, vidéo, quiz, pass QR) et un tableau de bord pour suivre qui a signé.",
+    problem:
+      "Consignes de sécurité, formations, chartes internes : la preuve de lecture reposait sur des feuilles d'émargement papier ou des tableaux à consolider à la main. À l'accueil, les visiteurs signaient une plaquette sans que leur compréhension soit vérifiée, et personne ne savait d'un coup d'œil qui restait à former.",
+    solution:
+      "MeetSign organise des campagnes : un document à lire, une vidéo et son quiz, puis une signature horodatée, liée à la version du document. Le périmètre se choisit dans l'organigramme, synchronisé avec le SIRH, ou par entreprise externe. Les visiteurs se forment avant d'arriver et reçoivent un pass QR contrôlé à l'accueil ; un tableau de bord suit l'avancement équipe par équipe et repère les questions mal comprises.",
+    process: [
+      {
+        title: "Cadrage",
+        text: "Le parcours d'accueil existant, observé avec les équipes accueil et HSE, et comparé à d'autres sites : former avant l'arrivée, vérifier la compréhension, tout historiser.",
+      },
+      {
+        title: "Parcours",
+        text: "Un assistant de création en quatre étapes ; côté participant, vidéo, quiz, signature et pass, pensés pour le téléphone et la tablette de l'accueil.",
+      },
+      {
+        title: "Organisation",
+        text: "Hiérarchie importée du SIRH et figée au lancement pour des statistiques stables, participants externes, import de listes Excel.",
+      },
+      {
+        title: "Suivi",
+        text: "Tableau de bord, comparaison entre campagnes, traçabilité (qui, quand, quelle version, quel score) et relances par e-mail.",
+      },
+      {
+        title: "Production",
+        text: "API Express et PostgreSQL, tests Jest, pipeline GitLab CI, déploiement Docker Swarm, quality gate SonarQube sans nouvelle issue.",
+      },
+    ],
+    learnings: [
+      "Une signature ne vaut que si l'on peut prouver ce qui a été signé : versionner les documents a compté autant que l'écran de signature.",
+      "Figer la hiérarchie au lancement : invisible pour l'utilisateur, mais sans cela les taux changeaient à chaque mutation.",
+      "Un même parcours doit marcher sur ordinateur, téléphone et borne : partir du mobile a simplifié tout le reste.",
+    ],
+    outcomes: [
+      { value: "4", label: "étapes pour créer une campagne" },
+      { value: "118", label: "fichiers de tests automatisés" },
+      { value: "0", label: "nouvelle issue tolérée par SonarQube" },
+    ],
+    tags: ["Full-stack", "Signature numérique", "Tableau de bord", "Parcours mobile"],
+    tools: ["Next.js", "Express", "PostgreSQL", "Chart.js", "Docker"],
     hues: ["#2a2f4a", "#9aa6e0"],
     stage: "bleu",
+    cover: "/projets/meetsign/meetsign-suivi.webp",
+    thumb: "/projets/meetsign/logo.svg",
+    videos: [
+      {
+        src: "/projets/meetsign/meetsign-campagne.mp4",
+        poster: "/projets/meetsign/meetsign-campagne.webp",
+        title: "Créer une campagne",
+        text: "L'assistant en quatre étapes : informations, périmètre (un département de l'organigramme et une entreprise extérieure), document à lire, puis confirmation.",
+        duration: "1:10",
+      },
+      {
+        src: "/projets/meetsign/meetsign-suivi.mp4",
+        poster: "/projets/meetsign/meetsign-suivi.webp",
+        title: "Suivre les signatures",
+        text: "Le détail d'une campagne, avec sa progression équipe par équipe et ses participants, puis le tableau de bord et la traçabilité de chaque signature.",
+        duration: "0:48",
+      },
+    ],
   },
   {
     slug: "vibes",

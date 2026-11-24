@@ -134,6 +134,8 @@ export interface Project {
   thumb?: string;
   /** Document du projet (charte, rapport…) feuilletable page par page dans l'étude de cas */
   book?: Book;
+  /** Courtes vidéos de démonstration (applications internes : données fictives) */
+  videos?: ProjectVideo[];
   /** Univers graphique (projets de marque) : logotype, couleurs, typographies, motif, photographie */
   universe?: Universe;
   /** Libellé du lien externe (par défaut « Voir le projet ») */
@@ -178,6 +180,19 @@ export interface Book {
   /** Chapitres : titre et numéro de leur première page (à partir de 1) ; peut être vide */
   chapters: { title: string; page: number }[];
   pages: { src: string; mini: string; title: string; text?: string }[];
+}
+
+/** Vidéo de démonstration d'une étude de cas */
+export interface ProjectVideo {
+  /** Fichier MP4 dans public/projets/{slug}/ */
+  src: string;
+  /** Image affichée avant la lecture */
+  poster: string;
+  title: string;
+  /** Ce que montre la vidéo (lu aussi par les lecteurs d'écran) */
+  text: string;
+  /** Durée affichée, ex. « 0:22 » */
+  duration: string;
 }
 
 /** Univers graphique d'une marque, présenté dans son étude de cas */

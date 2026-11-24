@@ -22,6 +22,7 @@ import { fadeUp, stagger } from "../journey/motion";
 import { Chapter, Hairline, ROMAN } from "../ui/Chapter";
 import ProjectThumb from "../ui/ProjectThumb";
 import BookReader from "./BookReader";
+import ProjectVideos from "./ProjectVideos";
 import Universe from "./Universe";
 
 /** Panneau en feuille ; « mirrored » inverse les coins, pour deux panneaux qui se font face */
@@ -52,6 +53,9 @@ export default function ProjectCase({
   const chapters = [
     ...(has.enjeu ? [{ id: "enjeu", title: "L'enjeu", hint: "Le problème de départ, et la réponse" }] : []),
     ...(has.demarche ? [{ id: "demarche", title: "Démarche", hint: "Les étapes, de la recherche à l'écran" }] : []),
+    ...(project.videos?.length
+      ? [{ id: "videos", title: "En vidéo", hint: `${project.videos.length} démo${project.videos.length > 1 ? "s" : ""} de l'application` }]
+      : []),
     ...(project.universe ? [{ id: "univers", title: "L'univers graphique", hint: "Logo, couleurs, typographies" }] : []),
     ...(project.book ? [{ id: "document", title: project.book.title, hint: `${project.book.pages.length} pages à feuilleter` }] : []),
     ...(has.resultats ? [{ id: "resultats", title: "Résultats", hint: "Ce que le projet a produit" }] : []),
@@ -218,6 +222,13 @@ export default function ProjectCase({
             <Steps steps={project.process} />
           </Chapter>
         )}
+
+        {/* Les démos vidéo de l'application */}
+        {project.videos?.length ? (
+          <Chapter {...chapter.videos}>
+            <ProjectVideos videos={project.videos} />
+          </Chapter>
+        ) : null}
 
         {/* L'univers graphique de la marque */}
         {project.universe && (
